@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+	// com test
 	/* This is basic - uses default settings */
 
 	$("a#single_image").fancybox();
