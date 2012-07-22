@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>My face show 3D</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<style>
+body {
+	color: #61443e;
+	font-family: Monospace;
+	font-size: 13px;
+	text-align: center;
+	background-color: #bfd1e5;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#info {
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	padding: 5px;
+}
+
+a {
+	color: #a06851;
+}
+</style>
+
+</head>
+<body>
+	<script src="js/jquery.js"></script>
+	<script src="js/build/Three.js"></script>
+	<script src="js/ImprovedNoise.js"></script>
+	<script src="js/Detector.js"></script>
+	<script src="js/Stats.js"></script>
+	<script src="js/myFaceShow.js"></script>
+	
+	<div style="display: none;">
+		<div id="x">x</div>
+		<div id="y">y</div>
+		<div id="z">z</div>
+	</div>
+	<div style="display: none;">
+		<canvas id="D" width="200" height="200">
+			This text is displayed if your browser does not support HTML5 Canvas.
+		</canvas>
+	</div>
+	<div style="display: none;">
+		<canvas id="Q" width="600" height="300">
+			This text is displayed if your browser does not support HTML5 Canvas.
+		</canvas>
+	</div>
+	<div id="container">
+	</div>
+
+</body>
+</html>
