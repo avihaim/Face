@@ -29,14 +29,18 @@ function fancyboxHref(href) {
 		'transitionIn'	: 'elastic',
 		'transitionOut'	: 'elastic',
 		'title'			: this.title,
-		'width'		    : 900,
-		'height'		: 550,
+		'width'		    : 1000,
+		'height'		: 650,
 		'href'			: href,
 		'type'			: 'iframe'
 	});
-	
-}
 
+}
+function onImageSelected(e) {
+	 if(e.which == 2){
+     	imageSelected();
+     }
+}
 
 function imageSelected() {
 
@@ -246,14 +250,10 @@ function getData(from, direction) {
 $(document)
 		.ready(
 				function() {
+					
 					getData(0,'next');
 					 
-					$('#largephoto').bind('click', function(e){
-				        if(e.which == 2){
-				        	alert("2");
-				        	imageSelected();
-				        }
-				    });
+					$('#largephoto').click(onImageSelected);
 
 
 				});

@@ -92,6 +92,16 @@ public class ImageRGBServlet extends HttpServlet {
 
 		System.out.println("ImageRGBServlet start doGet");
 		String fileName = request.getParameter("fileName");
+		
+		String scaleSizeParameter = request.getParameter("scaleSize");
+		
+		
+		int scaleSize = 5;
+
+		if(scaleSizeParameter != null) {
+			scaleSize = Integer.parseInt(scaleSizeParameter);
+		}
+		
 		System.out.println(fileName);
 		BufferedImage img;
 
@@ -111,7 +121,7 @@ public class ImageRGBServlet extends HttpServlet {
 
 		int[] texture = getImageRgb(img);
 		
-		int[] depth = getImageD(img, fileNameD);
+		int[] depth = getImageD(img, fileNameD,scaleSize);
 		
 		FaceImage faceImage = new FaceImage(texture, depth, img.getHeight(),
 				img.getWidth());
@@ -124,7 +134,7 @@ public class ImageRGBServlet extends HttpServlet {
 
 	}
 
-	private int[] getImageD(BufferedImage img, FaceData fileNameD) {
+	private int[] getImageD(BufferedImage img, FaceData fileNameD, int scaleSize) {
 
 		BufferedImage imgD = null;
 		int[] pixelData = null;
@@ -157,7 +167,7 @@ public class ImageRGBServlet extends HttpServlet {
 						int picxlZ = rgb[0];
 						
 						if (picxlZ > 0) {
-							picxlZ = picxlZ * 5;
+							picxlZ = picxlZ * scaleSize;
 
 							if (minZ > picxlZ) {
 								minZ = picxlZ;
