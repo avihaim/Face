@@ -47,4 +47,14 @@
 		<servlet-name>DebugServlet</servlet-name>
 		<url-pattern>/DebugServlet</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>ZipServlet</display-name>
+		<servlet-name>ZipServlet</servlet-name>
+		<servlet-class>org.my.image.servlets.ZipServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ZipServlet</servlet-name>
+		<url-pattern>/ZipServlet</url-pattern>
+	</servlet-mapping>
 </web-app>

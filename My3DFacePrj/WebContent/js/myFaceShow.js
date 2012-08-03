@@ -10,8 +10,11 @@ $(document)
 					var mouseDelta = 0;
 					var isClick = false;
 					var isRightClick = false;
+					var sceneData;
+					var uniforms;
+					var scaleSize = 5;
 				
-					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" //FF doesn't recognize mousewheel as of FF3.x
+					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
 						 
 					if (document.attachEvent) //if IE (and Opera depending on user setting)
 					    document.attachEvent("on"+mousewheelevt,onMousewheel);
@@ -29,7 +32,31 @@ $(document)
 					
 					document.addEventListener('onContextMenu',
 							onContextMenuEvet, false); 
-						
+					
+					$('#scaleSizeSubmit').click(scaleSizeOninput);
+					
+//					$('#modeSelect').addEventListener('onchange',
+//							selectModeEvent, false);
+					
+					 $("select").change(function () {
+				          var mode = "";
+				          $("select option:selected").each(function () {
+				        	  mode += $(this).text();
+				              });
+				          
+				            $('#ajaxBusy').show();
+				          
+				          	var urlQuery = location.search;
+							urlQuery = urlQuery.replace('?', '');
+							var split = urlQuery.split('=');
+
+							var fileName = split[1];
+							
+							updateSceneData(fileName,scaleSize,mode);
+							
+							
+				        });
+
 
 					var SCREEN_WIDTH = window.innerWidth;
 					var SCREEN_HEIGHT = window.innerHeight;
@@ -79,17 +106,36 @@ $(document)
 
 						$('#ajaxBusy').show();
 
-						container = document.getElementById('container');
-
 						scene = new THREE.Scene();
-
-						// camera = new THREE.PerspectiveCamera( 0, 0, 0, 0 );
+						
+//						 camera = new THREE.PerspectiveCamera( 0, 0, 0, 0 );
 						camera = new THREE.PerspectiveCamera(63,
 								window.innerWidth / window.innerHeight, 1,
 								20000);
 						scene.add(camera);
+						
+						// LIGHTS
 
+						ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+						scene.add( ambientLight );
+//
+//						pointLight = new THREE.PointLight( 0xffffff, 1.25, 1000 );
+//						pointLight.position.set( 0, 0, 600 );
+//
+//						scene.add( pointLight );
+//
+//						directionalLight = new THREE.DirectionalLight( 0xffffff );
+//						directionalLight.position.set( 1, -0.5, -1 );
+//						scene.add( directionalLight );
+						
+						
+						
+						
+						
 						controls = new THREE.PathControls(camera);
+						
+						
+						
 //						controls.movementSpeed = 1000;
 //						controls.lookSpeed = 0.1;
 
@@ -100,92 +146,17 @@ $(document)
 						var split = urlQuery.split('=');
 
 						var fileName = split[1];
-						var dataString = "fileName=" + fileName;
-
-						$
-								.ajax({
-									url : "ImageRGBServlet",
-									data : dataString,
-									dataType : "json",
-									contentType : "application/json",
-									success : function(data) {
-										faceData = data;
-										values = faceData.depth;
-										worldWidth = faceData.width;
-										worldDepth = faceData.height;
-										worldHalfWidth = worldWidth / 2;
-										worldHalfDepth = worldDepth / 2;
-										// =====================
-
-										camera.position.y = values[worldHalfDepth
-												+ worldHalfWidth * worldDepth] + 5000;
-										 camera.position.x = camera.position.x + 40;
-										// - 180;
-										// camera.position.y = camera.position.y
-										// + 180;
-										camera.position.z = 1500;
-										startX = camera.position.x;
-										startY = camera.position.y;
-										startZ = camera.position.Z;
-
-										var geometry = new THREE.PlaneGeometry(
-												4000, 4000, worldWidth - 1,
-												worldDepth - 1);// 7500
-
-										for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
-
-											if (values[i] > 0) {
-												// values[ i ] -= minZ;
-												geometry.vertices[i].y = values[i];
-											} else {
-												geometry.vertices[i].y = 1;
-											}
-
-										}
-
-										texture = new THREE.Texture(
-												generateTexture(
-														faceData.texture,
-														worldWidth, worldDepth),
-												new THREE.UVMapping(),
-												THREE.ClampToEdgeWrapping,
-												THREE.ClampToEdgeWrapping);
-										texture.needsUpdate = true;
-
-										mesh = new THREE.Mesh(geometry,
-												new THREE.MeshBasicMaterial({
-													map : texture
-												}));
-										scene.add(mesh);
-
-										renderer = new THREE.WebGLRenderer();
-										renderer.setSize(window.innerWidth,window.innerHeight);
-										
-										container.innerHTML = "";
-
-										container
-												.appendChild(renderer.domElement);
-
-										stats = new Stats();
-										stats.domElement.style.position = 'absolute';
-										stats.domElement.style.top = '0px';
-										container.appendChild(stats.domElement);
-										
-										$('#ajaxBusy').hide();
-										$("#container div:not(#canvas)")
-												.children().remove();
-//										---
-//										document.addEventListener('wheel',
-//												onMousewheel, false); 
-										
-									
-										
-									},
-									error : function(jqXHR, textStatus,
-											errorThrown) {
-										alert(errorThrown);
-									}
-								});
+						
+						var mode = "";
+				          $("select option:selected").each(function () {
+				        	  mode += $(this).text();
+				              });
+						
+						updateSceneData(fileName,scaleSize,mode);
+						
+						$('body')
+						.append(
+								'<div class="zipLink"><a href="ZipServlet?fileName='+fileName+'">download</a></div>');
 
 					}
 
@@ -222,7 +193,7 @@ $(document)
 						if(event.which == 1){
 							isClick = true;
 						} else if(event.which == 3){
-							isRightClick = false;
+							isRightClick = true;
 						}
 
 					}
@@ -242,9 +213,17 @@ $(document)
 						if(isClick){
 							mouseX = (event.clientX - windowHalfX);
 							mouseY = (event.clientY - windowHalfY);
-						} else if(isClick){
+							
+							mouseRightX = 0;
+							mouseRightY = 0;
+							
+						} else if(isRightClick){
+							
 							mouseRightX = (event.clientX - windowHalfX);
 							mouseRightY = (event.clientY - windowHalfY);
+							
+							mouseX = 0;
+							mouseY = 0;
 						}
 
 					}
@@ -259,10 +238,23 @@ $(document)
 				 }
 					
 					function onContextMenuEvet(event) {
+						alert("onContextMenuEvet");
+					//	event.preventDefault();
 						return false;
 					}
 					
-
+					function scaleSizeOninput() {
+						scaleSize = $("#scaleSize").val();
+						
+//						var urlQuery = location.search;
+//						urlQuery = urlQuery.replace('?', '');
+//						var split = urlQuery.split('=');
+//
+//						var fileName = split[1];
+//						
+						updateData(sceneData,parseInt(scaleSize));
+					}
+					
 					function animate() {
 
 						requestAnimationFrame(animate);
@@ -271,11 +263,120 @@ $(document)
 						stats.update();
 
 					}
+					
+					function updateSceneData(fileName,scaleSize,mode) {
+						
+						container = document.getElementById('container');
+
+						var dataString = new Object();
+						dataString["fileName"] = fileName;
+						dataString["mode"] = mode;
+
+						$
+								.ajax({
+									url : "ImageRGBServlet",
+									data : dataString,
+									dataType : "json",
+									contentType : "application/json",
+									success : successUpdateData,
+									error : function(jqXHR, textStatus,
+											errorThrown) {
+										alert(errorThrown);
+									}
+								});
+					}
+					function successUpdateData(data) {
+						sceneData = data;
+						var scaleSize = $("#scaleSize").val();
+						updateData(data,parseInt(scaleSize));
+					}
+					
+					function updateData(data,scaleSize) {
+						
+						faceData = data;
+						values = faceData.depth;
+						worldWidth = faceData.width;
+						worldDepth = faceData.height;
+						worldHalfWidth = worldWidth / 2;
+						worldHalfDepth = worldDepth / 2;
+						// =====================
+						
+						
+
+
+						camera.position.y = values[worldHalfDepth
+								+ worldHalfWidth * worldDepth] + 5000;
+						 camera.position.x = camera.position.x + 40;
+						// - 180;
+						// camera.position.y = camera.position.y
+						// + 180;
+						camera.position.z = 1500;
+						startX = camera.position.x;
+						startY = camera.position.y;
+						startZ = camera.position.Z;
+						
+						
+						var geometry = new THREE.PlaneGeometry(
+								4000, 4000, worldWidth - 1,
+								worldDepth - 1);// 7500
+						
+
+						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
+
+							if (values[i] > 0) {
+								geometry.vertices[i].y = values[i]*scaleSize;
+							} else {
+								geometry.vertices[i].y = 1;
+							}
+
+						}
+
+						texture = new THREE.Texture(
+								generateTexture(
+										faceData.texture,
+										worldWidth, worldDepth),
+								new THREE.UVMapping(),
+								THREE.ClampToEdgeWrapping,
+								THREE.ClampToEdgeWrapping);
+						
+						
+						texture.needsUpdate = true;
+						
+						var ambient = 0x111111, diffuse = 0xbbbbbb, specular = 0x060606, shininess = 35;
+
+						// , shading: THREE.FlatShading
+						var material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
+						//MeshLambertMaterial
+						//MeshBasicMaterial
+						
+						mesh = new THREE.Mesh(geometry,material);
+						
+						
+						scene.add(mesh);
+
+						renderer = new THREE.WebGLRenderer();
+						renderer.setSize(window.innerWidth,window.innerHeight);
+						
+						container.innerHTML = "";
+
+						container
+								.appendChild(renderer.domElement);
+
+						stats = new Stats();
+						stats.domElement.style.position = 'absolute';
+						stats.domElement.style.top = '0px';
+						container.appendChild(stats.domElement);
+						
+						$('#ajaxBusy').hide();
+						$("#container div:not(#canvas)")
+								.children().remove();
+						
+					}
 
 					function render() {
 
 						 $('#x').html('<p>x=' + camera.position.x + ' mx ='+mouseRightX+'</p>');
-						 $('#y').html('<p>y=' + camera.position.y + ' mx ='+mouseRightY+'</p>');
+						 $('#y').html('<p>y=' + camera.position.y + ' my ='+mouseRightY+'</p>');
 						 $('#z').html('<p>z='+camera.position.z+'</p>');
 						//						
 
@@ -284,11 +385,20 @@ $(document)
 						// renderer.enableScissorTest( false );
 						// renderer.clear();
 						// renderer.enableScissorTest( true );
-
+						 
+						 var imageMoveX = 0;
+						 var imageMoveY = 0;
+						 
+						 if (mouseRightX > mouseRightY) {
+							 camera.position.z = camera.position.z + 5; 
+							// imageMoveY = -mouseRightX; 
+						 } else {
+							 imageMoveY = mouseRightY; 
+						 }
 						
 							
-						camera.position.x = startX - mouseX * 7 + mouseRightX*50;
-						camera.position.y = startY - mouseY * 7 + mouseRightY*50;
+						camera.position.x = startX - mouseX * 7 + imageMoveX;
+						camera.position.y = startY - mouseY * 7 + imageMoveY;
 						
 						//if ((camera.position.z - mouseDelta * 70 <= 3000) && (camera.position.z - mouseDelta * 70 >= 1500)) {
 							camera.position.z = camera.position.z - mouseDelta * 70;
@@ -304,6 +414,11 @@ $(document)
 						
 					}
 				});
+
+
+
+
+
 //function touch() {
 //	// Detect touch support
 //	$.support.touch = 'ontouchend' in document;

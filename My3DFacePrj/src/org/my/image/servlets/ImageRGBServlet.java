@@ -21,7 +21,296 @@ import org.json.JSONObject;
 public class ImageRGBServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	
+
+	/**
+	 * Default constructor.
+	 */
+	public ImageRGBServlet() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		System.out.println("ImageRGBServlet start doGet");
+		String fileName = request.getParameter("fileName");
+		
+		String mode = request.getParameter("mode");
+		System.out.println("mode : " + mode);
+		
+		
+		
+		int scaleSize = 1;
+
+//		String scaleSizeParameter = request.getParameter("scaleSize");
+//		
+//		if(scaleSizeParameter != null) {
+//			scaleSize = Integer.parseInt(scaleSizeParameter);
+//			System.out.println("scaleSize : " + scaleSize);
+//		}
+		
+		System.out.println(fileName);
+		BufferedImage img;
+
+		long currentTimeMillis = System.currentTimeMillis();
+		
+		System.out.println("ImageRGBServlet start to FaceDataManager init");
+		if (!FaceDataManager.isInit()) {
+			FaceDataManager.init(getServletContext().getRealPath("images"));
+		}
+		
+		System.out.println("ImageRGBServlet start to getFaceData for file " + fileName);
+		FaceData fileNameD = FaceDataManager.getFaceData(fileName);
+
+		FaceImage faceImage = null;
+				
+		if("rgb".equals(mode)) {
+			faceImage = handleRGB(fileName, scaleSize, fileNameD);
+		} else if("gray".equals(mode))  {
+			String fullFileNameD = getServletContext().getRealPath(fileNameD.getdImageName());
+			
+			BufferedImage imgD = ImageIO.read(new File(fullFileNameD));
+			int[] texture = createGrayImage(imgD);
+			int[] depth = createImageDepth(imgD, scaleSize, imgD, 0,0);
+			
+			faceImage = new FaceImage(texture, depth, imgD.getHeight(),
+					imgD.getWidth());
+			
+		} else if("singleColor".equals(mode))  {
+			String fullFileNameD = getServletContext().getRealPath(fileNameD.getdImageName());
+			
+			BufferedImage imgD = ImageIO.read(new File(fullFileNameD));
+			int[] texture = createSingleColorImage(imgD);
+			int[] depth = createImageDepth(imgD, scaleSize, imgD, 0,0);
+			
+			faceImage = new FaceImage(texture, depth, imgD.getHeight(),
+					imgD.getWidth());
+			
+		} else if("SingleToning".equals(mode))  {
+			String fullFileNameD = getServletContext().getRealPath(fileNameD.getdImageName());
+			
+			BufferedImage imgD = ImageIO.read(new File(fullFileNameD));
+			int[] texture = createSingleToningImage(imgD);
+			int[] depth = createImageDepth(imgD, scaleSize, imgD, 0,0);
+			
+			faceImage = new FaceImage(texture, depth, imgD.getHeight(),
+					imgD.getWidth());
+			
+		}
+
+		long tolal = System.currentTimeMillis() - currentTimeMillis;
+		System.out.println("Total time " + tolal);
+
+		JSONObject jsonObject = new JSONObject(faceImage);
+		response.getWriter().print(jsonObject);
+
+	}
+
+	private FaceImage handleRGB(String fileName, int scaleSize,
+			FaceData fileNameD) throws IOException {
+		BufferedImage img;
+		fileName = getServletContext().getRealPath("images/textures/" + fileName);
+		System.out.println(fileName);
+		img = ImageIO.read(new File(fileName));
+
+		int[] texture = getImageRgb(img);
+		
+		int[] depth = getImageDepthForTexture(img, fileNameD,scaleSize);
+		
+		FaceImage faceImage = new FaceImage(texture, depth, img.getHeight(),
+				img.getWidth());
+		return faceImage;
+	}
+
+	private int[] getImageDepthForTexture(BufferedImage img, FaceData fileNameD, int scaleSize) {
+
+		BufferedImage imgD = null;
+		int[] pixelData = null;
+
+		try {
+			String fullFileNameD = getServletContext().getRealPath(fileNameD.getdImageName());
+			System.out.println(fullFileNameD);
+			imgD = ImageIO.read(new File(fullFileNameD));
+
+			int facePosY = fileNameD.getFacePosY();
+			int facePosX = fileNameD.getFacePosX();
+			
+			
+			pixelData = createImageDepth(img, scaleSize, imgD, facePosY,facePosX);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return pixelData;
+	}
+
+	private int[] createImageDepth(BufferedImage img, int scaleSize,
+			BufferedImage imgD, int facePosY, int facePosX) {
+		int[] pixelData;
+		int facePosTopX = facePosX + imgD.getHeight(); // 189;
+		int facePosTopY = facePosY + imgD.getWidth(); // 385
+
+		int[] rgb;
+		pixelData = new int[img.getHeight() * img.getWidth()];
+		
+		List<Integer> list = new ArrayList<Integer>();
+		
+		
+		int minZ = 300 * 10;
+
+		for (int i = 0; i < img.getHeight(); i++) {
+
+			for (int j = 0; j < img.getWidth(); j++) {
+				if (((facePosX <= i) && (facePosTopX > i))
+						&& ((facePosY <= j) && (facePosTopY > j))) {
+
+					rgb = getPixelData(imgD, j - facePosY, i - facePosX);
+					int picxlZ = rgb[0];
+					
+					if (picxlZ > 0) {
+						picxlZ = picxlZ * scaleSize;
+
+						if (minZ > picxlZ) {
+							minZ = picxlZ;
+						}
+						
+						list.add(picxlZ);
+					}
+					
+					pixelData[i * img.getWidth() + j] = picxlZ;
+					
+
+				} else {
+					pixelData[i * img.getWidth() + j] = 0;
+				}
+
+			}
+			
+
+		}
+		
+		
+		int median = median(list);
+
+		System.out.println("median " + median);
+		System.out.println("minz " + minZ);
+
+		for (int j = 0; j < pixelData.length; j++) {
+			if (pixelData[j] > 0) {
+				pixelData[j] = pixelData[j] - median + minZ*10 ;//median ;//+ minZ;//((avg + minZ) * 4 + 30);
+			}
+		}
+		return pixelData;
+	}
+	
 	private int[] getImageRgb(BufferedImage img) {
+
+		int counter = 0;
+
+		int[] pixelData = null;
+
+		try {
+
+			pixelData = new int[img.getHeight() * img.getWidth() * 4 + 1];
+			int[] rgb;
+
+			for (int i = 0; i < img.getHeight(); i++) {
+				for (int j = 0; j < img.getWidth(); j++) {
+					rgb = getPixelData(img, j, i);
+					pixelData[counter + 0] = rgb[0];
+					pixelData[counter + 1] = rgb[1];
+					pixelData[counter + 2] = rgb[2];
+					pixelData[counter + 4] = 0;
+
+					counter += 4;
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println(counter);
+			e.printStackTrace();
+		}
+
+		return pixelData;
+	}
+// http://localhost:8080/ThreeDaFace/myFaceShow.html?imgeName=a1.jpg	
+	private int[] createSingleColorImage(BufferedImage img) {
+
+		int counter = 0;
+
+		int[] pixelData = null;
+
+		try {
+
+			pixelData = new int[img.getHeight() * img.getWidth() * 4 + 1];
+			int[] rgb;
+
+			for (int i = 0; i < img.getHeight(); i++) {
+				for (int j = 0; j < img.getWidth(); j++) {
+					rgb = getPixelData(img, j, i);
+					
+					if(rgb[0] > 0) {
+						pixelData[counter + 0] = 255;
+						pixelData[counter + 1] = 150;
+						pixelData[counter + 2] = 54;
+						pixelData[counter + 4] = 0;
+					}
+
+					counter += 4;
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println(counter);
+			e.printStackTrace();
+		}
+
+		return pixelData;
+	}
+	
+	private int[] createSingleToningImage(BufferedImage img) {
+
+		int counter = 0;
+
+		int[] pixelData = null;
+
+		try {
+
+			pixelData = new int[img.getHeight() * img.getWidth() * 4 + 1];
+			int[] rgb;
+
+			for (int i = 0; i < img.getHeight(); i++) {
+				for (int j = 0; j < img.getWidth(); j++) {
+					rgb = getPixelData(img, j, i);
+					
+					if(rgb[0] > 0) {
+						pixelData[counter + 0] = 255;
+						pixelData[counter + 1] = rgb[0];
+						pixelData[counter + 2] = 255;
+						pixelData[counter + 4] = 0;
+					}
+
+					counter += 4;
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println(counter);
+			e.printStackTrace();
+		}
+
+		return pixelData;
+	}
+	
+	private int[] createGrayImage(BufferedImage img) {
 
 		int counter = 0;
 
@@ -74,139 +363,6 @@ public class ImageRGBServlet extends HttpServlet {
 		// System.out.println("rgb: " + rgb[0] + " " + rgb[1] + " " + rgb[2]);
 		return rgb;
 
-	}
-
-	/**
-	 * Default constructor.
-	 */
-	public ImageRGBServlet() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		System.out.println("ImageRGBServlet start doGet");
-		String fileName = request.getParameter("fileName");
-		
-		String scaleSizeParameter = request.getParameter("scaleSize");
-		
-		
-		int scaleSize = 5;
-
-		if(scaleSizeParameter != null) {
-			scaleSize = Integer.parseInt(scaleSizeParameter);
-		}
-		
-		System.out.println(fileName);
-		BufferedImage img;
-
-		long currentTimeMillis = System.currentTimeMillis();
-		
-		System.out.println("ImageRGBServlet start to FaceDataManager init");
-		if (!FaceDataManager.isInit()) {
-			FaceDataManager.init(getServletContext().getRealPath("images"));
-		}
-		
-		System.out.println("ImageRGBServlet start to getFaceData for file " + fileName);
-		FaceData fileNameD = FaceDataManager.getFaceData(fileName);
-
-		fileName = getServletContext().getRealPath("images/textures/" + fileName);
-		System.out.println(fileName);
-		img = ImageIO.read(new File(fileName));
-
-		int[] texture = getImageRgb(img);
-		
-		int[] depth = getImageD(img, fileNameD,scaleSize);
-		
-		FaceImage faceImage = new FaceImage(texture, depth, img.getHeight(),
-				img.getWidth());
-
-		long tolal = System.currentTimeMillis() - currentTimeMillis;
-		System.out.println("Total time " + tolal);
-
-		JSONObject jsonObject = new JSONObject(faceImage);
-		response.getWriter().print(jsonObject);
-
-	}
-
-	private int[] getImageD(BufferedImage img, FaceData fileNameD, int scaleSize) {
-
-		BufferedImage imgD = null;
-		int[] pixelData = null;
-
-		try {
-			String fullFileNameD = getServletContext().getRealPath(fileNameD.getdImageName());
-			System.out.println(fullFileNameD);
-			imgD = ImageIO.read(new File(fullFileNameD));
-
-			int facePosY = fileNameD.getFacePosY();
-			int facePosTopY = facePosY + imgD.getWidth(); // 385
-			int facePosX = fileNameD.getFacePosX();
-			int facePosTopX = facePosX + imgD.getHeight(); // 189;
-
-			int[] rgb;
-			pixelData = new int[img.getHeight() * img.getWidth()];
-			
-			List<Integer> list = new ArrayList<Integer>();
-			
-			
-			int minZ = 300 * 10;
-
-			for (int i = 0; i < img.getHeight(); i++) {
-
-				for (int j = 0; j < img.getWidth(); j++) {
-					if (((facePosX <= i) && (facePosTopX > i))
-							&& ((facePosY <= j) && (facePosTopY > j))) {
-
-						rgb = getPixelData(imgD, j - facePosY, i - facePosX);
-						int picxlZ = rgb[0];
-						
-						if (picxlZ > 0) {
-							picxlZ = picxlZ * scaleSize;
-
-							if (minZ > picxlZ) {
-								minZ = picxlZ;
-							}
-							
-							list.add(picxlZ);
-						}
-						
-						pixelData[i * img.getWidth() + j] = picxlZ;
-						
-
-					} else {
-						pixelData[i * img.getWidth() + j] = 0;
-					}
-
-				}
-				
-
-			}
-			
-			
-			int median = median(list);
-
-			System.out.println("median " + median);
-			System.out.println("minz " + minZ);
-
-			for (int j = 0; j < pixelData.length; j++) {
-				if (pixelData[j] > 0) {
-					pixelData[j] = pixelData[j] - median + minZ*10 ;//median ;//+ minZ;//((avg + minZ) * 4 + 30);
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return pixelData;
 	}
 
 	public static int median(List<Integer> values) {

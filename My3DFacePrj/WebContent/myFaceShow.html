@@ -27,10 +27,26 @@ body {
 a {
 	color: #a06851;
 }
+
+#scaleSizeSubmit {
+	background-image: url('images/Sign-Add-icon.png');
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+}
+
+.zipLink {
+	top: 0px;
+	left: 20px;
+	position: absolute;
+}
+
+
 </style>
 
 </head>
-<body>
+<body oncontextmenu="return false;">
 	<script src="js/jquery.js"></script>
 	<script src="js/build/Three.js"></script>
 	<script src="js/ImprovedNoise.js"></script>
@@ -43,16 +59,16 @@ a {
 		<div id="y">y</div>
 		<div id="z">z</div>
 	</div>
-	<div style="display: none;">
-		<canvas id="D" width="200" height="200">
-			This text is displayed if your browser does not support HTML5 Canvas.
-		</canvas>
-	</div>
-	<div style="display: none;">
-		<canvas id="Q" width="600" height="300">
-			This text is displayed if your browser does not support HTML5 Canvas.
-		</canvas>
-	</div>
+	
+	<select id="modeSelect" name="modeSelect">
+  		<option selected value="rgb">rgb</option>
+  		<option value="gray">gray</option>
+  		<option value="singleColor">singleColor</option>
+  		<option value="SingleToning">SingleToning</option>
+	</select>
+	
+	<input id="scaleSize" type="text" value="5" />
+	<div id="scaleSizeSubmit"></div>
 	<div id="container">
 	</div>
 
