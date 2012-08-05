@@ -137,11 +137,11 @@ public class ImageRGBServlet extends HttpServlet {
 			System.out.println(fullFileNameD);
 			imgD = ImageIO.read(new File(fullFileNameD));
 
-			int facePosY = fileNameD.getFacePosY();
 			int facePosX = fileNameD.getFacePosX();
+			int facePosY = fileNameD.getFacePosY();
 			
 			
-			pixelData = createImageDepth(img, scaleSize, imgD, facePosY,facePosX);
+			pixelData = createImageDepth(img, scaleSize, imgD, facePosX,facePosY);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -153,10 +153,12 @@ public class ImageRGBServlet extends HttpServlet {
 	}
 
 	private int[] createImageDepth(BufferedImage img, int scaleSize,
-			BufferedImage imgD, int facePosY, int facePosX) {
+			BufferedImage imgD, int facePosX, int facePosY) {
 		int[] pixelData;
-		int facePosTopX = facePosX + imgD.getHeight(); // 189;
-		int facePosTopY = facePosY + imgD.getWidth(); // 385
+		
+		
+		int facePosTopY = facePosY + imgD.getHeight(); // 189;
+		int facePosTopX = facePosX + imgD.getWidth(); // 385
 
 		int[] rgb;
 		pixelData = new int[img.getHeight() * img.getWidth()];
@@ -169,10 +171,10 @@ public class ImageRGBServlet extends HttpServlet {
 		for (int i = 0; i < img.getHeight(); i++) {
 
 			for (int j = 0; j < img.getWidth(); j++) {
-				if (((facePosX <= i) && (facePosTopX > i))
-						&& ((facePosY <= j) && (facePosTopY > j))) {
+				if (((facePosY <= i) && (facePosTopY > i))
+						&& ((facePosX <= j) && (facePosTopX > j))) {
 
-					rgb = getPixelData(imgD, j - facePosY, i - facePosX);
+					rgb = getPixelData(imgD, j - facePosX, i - facePosY);
 					int picxlZ = rgb[0];
 					
 					if (picxlZ > 0) {

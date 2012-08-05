@@ -6,18 +6,18 @@ public class FaceData {
 	private String dImageName = null;
 	private String thumName = null;
 	
-	private int facePosY = 0;
 	private int facePosX = 0;
+	private int facePosY = 0;
 	private int pos = 0;
 	
 	public FaceData() {
 	}
 	
-	public FaceData(String imageName,String dImageName, int facePosY, int facePosX,String thumName, int pos) {
+	public FaceData(String imageName,String dImageName, int facePosX, int facePosY,String thumName, int pos) {
 		super();
 		this.dImageName = dImageName;
-		this.facePosY = facePosY;
 		this.facePosX = facePosX;
+		this.facePosY = facePosY;
 		this.thumName = thumName;
 		this.imageName = imageName;
 		this.setPos(pos);
@@ -29,17 +29,17 @@ public class FaceData {
 	public void setdImageName(String dImageName) {
 		this.dImageName = dImageName;
 	}
-	public int getFacePosY() {
-		return facePosY;
-	}
-	public void setFacePosY(int facePosY) {
-		this.facePosY = facePosY;
-	}
 	public int getFacePosX() {
 		return facePosX;
 	}
 	public void setFacePosX(int facePosX) {
 		this.facePosX = facePosX;
+	}
+	public int getFacePosY() {
+		return facePosY;
+	}
+	public void setFacePosY(int facePosY) {
+		this.facePosY = facePosY;
 	}
 
 	public String getThumName() {
@@ -53,7 +53,7 @@ public class FaceData {
 	@Override
 	public String toString() {
 		return "FaceData [dImageName=" + dImageName + ", thumName=" + thumName
-				+ ", facePosY=" + facePosY + ", facePosX=" + facePosX + "]";
+				+ ", facePosY=" + facePosX + ", facePosX=" + facePosY + "]";
 	}
 
 	public String getImageName() {

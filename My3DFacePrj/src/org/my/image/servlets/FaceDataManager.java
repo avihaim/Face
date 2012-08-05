@@ -2,8 +2,10 @@ package org.my.image.servlets;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +56,7 @@ public class FaceDataManager {
 					
 					int x = Integer.valueOf(split[0].trim());
 					int y = Integer.valueOf(split[1].trim());
-					FaceData faceData = new FaceData(filesName,"/images/depths/D" + filesName, y, x, "thumbnails/t_" + filesName,i);
+					FaceData faceData = new FaceData(filesName,"/images/depths/D_" + filesName, y, x, "thumbnails/t_" + filesName,i);
 					imageMap.put(filesName,faceData);
 					imageList.add(faceData);
 					i++;
@@ -109,19 +111,10 @@ public class FaceDataManager {
 				
 				System.out.println("is " + makeDepthMap);
 				
-				int IndexOf = imageName.indexOf(".");
-				String domainName = imageName.substring(IndexOf);
+				String[] split = extractFacePosFile(IMAGES_PATH,imageName);
 				
-				File posFile = new File(IMAGES_PATH + "/facePos/" +  imageName.replaceAll(domainName, ".pos"));
-				
-				FileWriter writer = new FileWriter(posFile);
-				writer.append(makeDepthMap);
-				writer.flush();
-				writer.close();
-				
-				String[] split = makeDepthMap.split(",");
-				int x =  Integer.valueOf(split[0]);
-				int y =  Integer.valueOf(split[1]);
+				int x =  Integer.valueOf(split[0].trim());
+				int y =  Integer.valueOf(split[1].trim());
 				System.out.println("y="+y);
 				System.out.println("x="+x);
 	//			
@@ -131,7 +124,7 @@ public class FaceDataManager {
 	//			System.out.println(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName);
 	//			ImageIO.write(resizeImage, domainName, new File(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName)); 
 				
-				faceData = new FaceData(imageName,"/images/depths/D" + imageName, y, x, "thumbnails/t_" + imageName,imageList.size());
+				faceData = new FaceData(imageName,"/images/depths/D_" + imageName, x, y, "thumbnails/t_" + imageName,imageList.size());
 				FaceDataManager.addFaceData(imageName, faceData );
 				
 			
