@@ -2,10 +2,7 @@ package org.my.image.app;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,25 +16,6 @@ public class FaceDataManager {
 	private static Map<String, FaceData> imageMap = null;
 	private static List<FaceData> imageList;
 
-	static {
-
-//		try {
-//				init(IMAGES_PATH);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-	}
-		//
-//		
-//		imageMap.put("/textures/I4.jpg", new FaceData("/images/depths/DI4.png",
-//				215, 18, "thumbnails/t_I4.jpg")); // x-10
-//		imageMap.put("/textures/I2.jpg", new FaceData("/images/depths/DI2.png",
-//				64, 73, "thumbnails/t_I2.jpg"));
-//		imageMap.put("/textures/I3.jpg", new FaceData("/images/depths/DI3.png",
-//				223, 83, "thumbnails/t_I3.jpg")); //
-//		imageMap.put("/textures/I1.jpg", new FaceData("/images/depths/DI1.png",
-//				94, 72, "thumbnails/t_I1.jpg")); // x-10
-
 	public static void init(String path) throws IOException {
 
 		IMAGES_PATH = path;
@@ -46,40 +24,51 @@ public class FaceDataManager {
 		
 		File folder = new File(path+"/textures");
 		File[] listOfFiles = folder.listFiles();
-		int i = 0;
 
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
-				String filesName = "";
+				String imageName = "";
 				try {
-					filesName = file.getName();
-					System.out.println(filesName);
-					String[] split = extractFacePosFile(path, filesName);
+					imageName = file.getName();
+					System.out.println(imageName);
 					
-					int x = Integer.valueOf(split[0].trim());
-					int y = Integer.valueOf(split[1].trim());
-					FaceData faceData = new FaceData(filesName,"/images/depths/D_" + filesName, y, x, "thumbnails/t_" + filesName,i);
-					imageMap.put(filesName,faceData);
+					int[] extractFacePosFile = extractFacePosFile(imageName);
+					
+					int x = extractFacePosFile[0];
+					int y = extractFacePosFile[1];
+					
+					FaceData faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "thumbnails/t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
+					imageMap.put(imageName,faceData);
 					imageList.add(faceData);
-					i++;
 				} catch (Exception e) {
-					System.out.println(filesName);
+					System.out.println(imageName);
 					e.printStackTrace();
 				}
 			}
 		}
 	}
+	
+	public static int[] extractFacePosFile(String filesName) {
+		
+		int[] is = new int[2];
+		String[] extractFacePosFile = extractFacePosFile(IMAGES_PATH, filesName);
+		
+		is[0] =  Integer.valueOf(extractFacePosFile[0].trim());
+		is[1] =  Integer.valueOf(extractFacePosFile[1].trim());
+		
+		return is;
+	}
 
-	private static String[] extractFacePosFile(String path, String filesName) {
+	public static String[] extractFacePosFile(String path, String imageName) {
 		
 		String[] split = new String[2];
 		
 		try {
 			
-			int IndexOf = filesName.indexOf(".");
-			String domainName = filesName.substring(IndexOf);
+			int IndexOf = imageName.indexOf(".");
+			String domainName = imageName.substring(IndexOf);
 			
-			File posFile = new File(path + "/facePos/" + filesName.replaceAll(domainName, ".pos"));
+			File posFile = new File(path + "/facePos/" + imageName.replaceAll(domainName, ".pos"));
 
 			
 			FileInputStream fileInputStream = new FileInputStream(posFile);
@@ -113,10 +102,10 @@ public class FaceDataManager {
 				
 				System.out.println("is " + makeDepthMap);
 				
-				String[] split = extractFacePosFile(IMAGES_PATH,imageName);
+				int[] extractFacePosFile = extractFacePosFile(imageName);
 				
-				int x =  Integer.valueOf(split[0].trim());
-				int y =  Integer.valueOf(split[1].trim());
+				int x = extractFacePosFile[0];
+				int y = extractFacePosFile[1];
 				System.out.println("y="+y);
 				System.out.println("x="+x);
 	//			
@@ -126,9 +115,8 @@ public class FaceDataManager {
 	//			System.out.println(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName);
 	//			ImageIO.write(resizeImage, domainName, new File(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName)); 
 				
-				faceData = new FaceData(imageName,"/images/depths/D_" + imageName, x, y, "thumbnails/t_" + imageName,imageList.size());
+				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "thumbnails/t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
 				FaceDataManager.addFaceData(imageName, faceData );
-				
 			
 			} catch (Exception e) {
 				System.out.println("FaceDataManager Exception " + e.getMessage());
