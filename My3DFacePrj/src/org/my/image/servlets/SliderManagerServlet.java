@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
+import org.my.image.app.FaceDataManager;
+import org.my.image.obj.FaceData;
+import org.my.image.obj.SilderData;
 
 /**
  * Servlet implementation class SliderManagerServlet

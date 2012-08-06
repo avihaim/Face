@@ -1,4 +1,4 @@
-package org.my.image.servlets;
+package org.my.image.app;
 
 public class MakeDepthMapWrapper {
 	

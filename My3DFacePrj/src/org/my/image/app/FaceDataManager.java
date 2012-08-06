@@ -1,4 +1,4 @@
-package org.my.image.servlets;
+package org.my.image.app;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.my.image.obj.FaceData;
 
 public class FaceDataManager {
 

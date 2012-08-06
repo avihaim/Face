@@ -1,6 +1,7 @@
-package org.my.image.servlets;
+package org.my.image.obj;
 
 import java.util.List;
+
 
 public class SilderData {
 	
