@@ -1,23 +1,23 @@
-$(document).ready(function() {
-	// com test
-	/* This is basic - uses default settings */
 
-	$("a#single_image").fancybox();
-	$("div#largephoto").fancybox();
 
-	/* Using custom settings */
 
-	$("a#uploadImage").fancybox({
-		'hideOnContentClick' : false,
-		'transitionIn' : 'elastic',
-		'transitionOut' : 'elastic',
-		'speedIn' : 200,
-		'speedOut' : 200,
-		'model' : true
-	});
+function fancyboxHrefUploud(href) {
 	
-	//fancyboxHref('myFaceShow.html?fileName=I1.jpg');
-});
+	$("div#funcyUploadImageDiv").fancybox({
+		'padding'		: 0,
+		'autoScale'		: false,
+		'speedIn' 		: 200,
+		'speedOut' 		: 200,
+		'transitionIn'	: 'elastic',
+		'transitionOut'	: 'elastic',
+		'title'			: this.title,
+		'width'		    : 1000,
+		'height'		: 650,
+		'href'			: href,
+		'type'			: 'iframe'
+	});
+
+}
 
 function fancyboxHref(href) {
 	
@@ -252,8 +252,42 @@ $(document)
 				function() {
 					
 					getData(0,'next');
-					 
-					$('#largephoto').click(onImageSelected);
+					
 
+					$("a#single_image").fancybox();
+					$("div#largephoto").fancybox();
+
+					/* Using custom settings */
+
+					$("a#uploadImage").fancybox({
+						'padding'		: 0,
+						'autoScale'		: false,
+						'speedIn' 		: 200,
+						'speedOut' 		: 200,
+						'transitionIn'	: 'elastic',
+						'transitionOut'	: 'elastic',
+						'title'			: this.title,
+						'width'		    : 1000,
+						'height'		: 650,
+						'href'			: 'uploadImageFrame.html',
+						'type'			: 'iframe'
+					});
+					
+					$("a#webcambox").fancybox({
+						'padding'		: 0,
+						'autoScale'		: false,
+						'speedIn' 		: 200,
+						'speedOut' 		: 200,
+						'transitionIn'	: 'elastic',
+						'transitionOut'	: 'elastic',
+						'title'			: this.title,
+						'width'		    : 1000,
+						'height'		: 650,
+						'href'			: 'webcam.html',
+						'type'			: 'iframe'
+					});
+					
+					$('#largephoto').click(onImageSelected);
+					
 
 				});

@@ -1,14 +1,20 @@
 package org.my.image.servlets;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +26,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.my.image.app.FaceDataManager;
 
+import sun.misc.BASE64Decoder;
+
 /**
  * Servlet implementation class UploadImage
  */
@@ -29,46 +37,7 @@ public class UploadImage extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private final static char[] ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
-
-    private static int[]  toInt   = new int[128];
-
-    static {
-        for(int i=0; i< ALPHABET.length; i++){
-            toInt[ALPHABET[i]]= i;
-        }
-    }
-
     
-	/**
-     * Translates the specified Base64 string into a byte array.
-     *
-     * @param s the Base64 string (not null)
-     * @return the byte array (not null)
-     */
-    public static byte[] decode(String s){
-        int delta = s.endsWith( "==" ) ? 2 : s.endsWith( "=" ) ? 1 : 0;
-        byte[] buffer = new byte[s.length()*3/4 - delta];
-        int mask = 0xFF;
-        int index = 0;
-        for(int i=0; i< s.length(); i+=4){
-            int c0 = toInt[s.charAt( i )];
-            int c1 = toInt[s.charAt( i + 1)];
-            buffer[index++]= (byte)(((c0 << 2) | (c1 >> 4)) & mask);
-            if(index >= buffer.length){
-                return buffer;
-            }
-            int c2 = toInt[s.charAt( i + 2)];
-            buffer[index++]= (byte)(((c1 << 4) | (c2 >> 2)) & mask);
-            if(index >= buffer.length){
-                return buffer;
-            }
-            int c3 = toInt[s.charAt( i + 3 )];
-            buffer[index++]= (byte)(((c2 << 6) | c3) & mask);
-        }
-        return buffer;
-    } 
-	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
@@ -77,26 +46,29 @@ public class UploadImage extends HttpServlet {
 		System.out.println("request: ");
 		
 		
-		
 		if (!isMultipart) {
+		//	handleNotMultipart(request);
 			
 			String imageBase64 = request.getParameter("image2");
 			
-			System.out.println(imageBase64);
-			imageBase64 = imageBase64.replace("data:image/png;base64,", "");
+			imageBase64 = imageBase64.replaceFirst("data:image/png;base64,", "");
 			
-			byte[] btDataFile = decode(imageBase64);  
-			File of = new File("yourFile2.png");  
-			FileOutputStream osf = new FileOutputStream(of);  
-//			System.out.println(of.getAbsolutePath());
-			System.out.println(imageBase64);
-			for (int i = 0; i < btDataFile.length; i++) {
-				System.out.print(btDataFile[i]);
-			}
-
-			osf.write(btDataFile);  
-			osf.flush();  
-			osf.close();
+	        BASE64Decoder decoder = new BASE64Decoder();
+	        byte[] decodedBytes = decoder.decodeBuffer(imageBase64);
+	        System.out.println("Decoded upload data : " + decodedBytes.length);
+	 
+	 
+	         BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+	         if (image == null) {
+	        	 System.out.println("Buffered Image is null");
+	          }
+	         File f = cerateNewFile("webCam.png");
+	 
+	         // write the image
+	          ImageIO.write(image, "png", f);
+	          
+	          System.out.println(f.getName());
+	          response.getWriter().print(f.getName());
 			
 		} else {
 			FileItemFactory factory = new DiskFileItemFactory();
@@ -121,45 +93,13 @@ public class UploadImage extends HttpServlet {
 				} else {
 					try {
 						String itemName = item.getName();
-						Random generator = new Random();
-						int r = Math.abs(generator.nextInt());
-
-						String reg = "[.*]";
-						String replacingtext = "";
-						System.out.println("Text before replacing is:-"
-								+ itemName);
-						Pattern pattern = Pattern.compile(reg);
-						Matcher matcher = pattern.matcher(itemName);
-						StringBuffer buffer = new StringBuffer();
-
-						while (matcher.find()) {
-							matcher.appendReplacement(buffer, replacingtext);
-						}
-						int IndexOf = itemName.indexOf(".");
-						String domainName = itemName.substring(IndexOf);
-						System.out.println("domainName: " + domainName);
-
-						String finalimage = buffer.toString() + "_" + r
-								+ domainName;
-						System.out.println("Final Image===" + finalimage);
-						String realPath = getServletContext().getRealPath("images");
-						response.getWriter().print("File uploaded successfully, New file name is " + finalimage);
 						
 						
-						System.out.println(realPath + File.separator + "textures" + File.separator + finalimage);
-						File savedFile = new File(realPath + File.separator + "textures" + File.separator + finalimage);
+						File savedFile = cerateNewFile(itemName);
+						
 						item.write(savedFile);
 						
-						if(!FaceDataManager.isInit()) {
-							FaceDataManager.init(realPath);
-						}
-						
-						FaceDataManager.addFaceData(finalimage, null );
-
-//						RequestDispatcher dispatcher = request.getRequestDispatcher("webgl_geometry_terrain.html");
-//						dispatcher.forward(request, response);
-
-						response.sendRedirect("myFaceShow.html?fileName=" + finalimage);
+						response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
 					} catch (Exception e) {
 						e.printStackTrace();
 					} catch (Throwable e) {
@@ -168,5 +108,79 @@ public class UploadImage extends HttpServlet {
 				}
 			}
 		}
+		
 	}
+	
+	private File cerateNewFile(String itemName) throws IOException {
+		
+		Random generator = new Random();
+		int r = Math.abs(generator.nextInt());
+
+		String reg = "[.*]";
+		String replacingtext = "";
+		System.out.println("Text before replacing is:-"
+				+ itemName);
+		Pattern pattern = Pattern.compile(reg);
+		Matcher matcher = pattern.matcher(itemName);
+		StringBuffer buffer = new StringBuffer();
+
+		while (matcher.find()) {
+			matcher.appendReplacement(buffer, replacingtext);
+		}
+		int IndexOf = itemName.indexOf(".");
+		String domainName = itemName.substring(IndexOf);
+		System.out.println("domainName: " + domainName);
+
+		String finalimage = buffer.toString() + "_" + r
+				+ domainName;
+		System.out.println("Final Image===" + finalimage);
+		
+		
+		String realPath = getServletContext().getRealPath("images");
+		
+		if(!FaceDataManager.isInit()) {
+			FaceDataManager.init(realPath);
+		}
+		
+		String fileFullName =  realPath + File.separator + "textures" + File.separator + finalimage;
+		System.out.println(fileFullName);
+		
+		return new File(fileFullName);
+	}
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String imageurl = request.getParameter("imageurl");
+		
+		System.out.println("imageurl " + imageurl); 
+		
+		if(imageurl != null) {
+			
+			
+			File savedFile = saveImage(imageurl, "chrome.png");
+			
+			response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
+		}
+	
+	}
+	
+	public File saveImage(String imageUrl, String destinationFile) throws IOException {
+		
+		File newFile = cerateNewFile(destinationFile);
+		URL url = new URL(imageUrl);
+		InputStream is = url.openStream();
+		OutputStream os = new FileOutputStream(newFile);
+
+		byte[] b = new byte[2048];
+		int length;
+
+		while ((length = is.read(b)) != -1) {
+			os.write(b, 0, length);
+		}
+
+		is.close();
+		os.close();
+		
+		return newFile;
+	}
+	
 }

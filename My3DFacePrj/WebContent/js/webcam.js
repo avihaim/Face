@@ -1,59 +1,11 @@
-function imageSelected() {
-	var imgeSrc = $(".photoslider_main").children().attr('src');
-	var start = imgeSrc.indexOf("textures") + "textures".length + 1;
-	imgeSrc = imgeSrc.substring(start)
-	window.location = 'myFaceShow.html?imgeName=' + imgeSrc;
-}
-
-$(document).ready(
-		function() {
-			// change the 'baseURL' to reflect the host and or path to your
-			// images
-			FOTO.Slider.baseURL = 'images/';
-
-			$.ajax({
-				url : "SliderManagerServlet",
-				data : "",
-				dataType : "json",
-				contentType : "application/json",
-				success : function(data) {
-
-					var bucket = {};
-					bucket['default'] = {};
-					var i = 0;
-
-					for (imageName in data) {
-						bucket['default'][i] = {
-							'thumb' : data[imageName].thumName,
-							'main' : '/textures/' + imageName
-						};
-						i++;
-					}
-
-					FOTO.Slider.bucket = bucket;
-					FOTO.Slider.reload('default');
-					FOTO.Slider.preloadImages('default');
-					FOTO.Slider.enableSlideshow('default');
-					FOTO.Slider.play('default');
-
-					$(".photoslider_main").children().css('cursor', 'pointer');
-					$(".photoslider_main").children().attr('onclick',
-							'imageSelected()');
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-
-				}
-			});
-
-		});
 
 $(function() {
 
 	var pos = 0, ctx = null, saveCB, image = [];
 
-	var canvas = document.createElement("canvas");
-	canvas.setAttribute('width', 320);
-	canvas.setAttribute('height', 240);
+	var canvas = document.getElementById("canvas");
+//	canvas.setAttribute('width', 320);
+//	canvas.setAttribute('height', 240);
 
 	if (canvas.toDataURL) {
 
@@ -62,7 +14,7 @@ $(function() {
 		image = ctx.getImageData(0, 0, 320, 240);
 
 		saveCB = function(data) {
-
+			
 			var col = data.split(";");
 			var img = image;
 
@@ -79,14 +31,18 @@ $(function() {
 				
 				ctx.putImageData(img, 0, 0);
 				
-				var dataUrl = canvas.toDataURL();
-				document.getElementById("textArea").value = img.data;
+				var dataUrl =  canvas.toDataURL("image/png");
 				
 				$.post("UploadImage", {
 					type : "data",
-					image2 : canvas.toDataURL("image/png")
+					data : "",
+					image2 : dataUrl,
+					success : function(data) {
+						alert(data);
+					}
 				});
-				pos = 0;
+				
+				pos=0;
 			}
 		};
 

@@ -2,6 +2,13 @@ $(document)
 		.ready(
 				function() {
 
+					
+					var SCREEN_WIDTH = window.innerWidth;
+					var SCREEN_HEIGHT = window.innerHeight;
+
+					var windowHalfX = window.innerWidth / 2;
+					var windowHalfY =  window.innerHeight / 2;
+
 					var mouseX = 0, mouseY = 0;
 					var mouseRightX = 0, mouseRightY = 0;
 					var startX = 0;
@@ -13,13 +20,44 @@ $(document)
 					var sceneData;
 					var uniforms;
 					var scaleSize = 5;
+					var width, height;
+					var imageMoveX = 0;
+				    var imageMoveY = 0;
+				    var geometry;
+				    var material;
+				    var x = 0;
+				    
+//				    =============================================
+				    var delta_x_rotate = 0;
+					var delta_y_rotate = 0;
+					var delta_x = 0;
+					var delta_y = 0;
+
+					var scale_factor = 1.0;
+					
+					var left_mouse_is_down = false;
+					var right_mouse_is_down = false;
+					
+					var oldx = 0;
+					var oldy = 0;
+
+					var rotate_matrix;
+
+					
+//					==============================================
+					
+					
 				
+//					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
+//						 
+//					if (document.attachEvent) //if IE (and Opera depending on user setting)
+//					    document.attachEvent("on"+mousewheelevt,onMousewheel);
+//					else if (document.addEventListener) //WC3 browsers
+//					    document.addEventListener(mousewheelevt,onMousewheel, false);
+					
 					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
 						 
-					if (document.attachEvent) //if IE (and Opera depending on user setting)
-					    document.attachEvent("on"+mousewheelevt,onMousewheel);
-					else if (document.addEventListener) //WC3 browsers
-					    document.addEventListener(mousewheelevt,onMousewheel, false);
+					document.addEventListener(mousewheelevt, onMousewheel, false);
 					
 					document.addEventListener('mousedown',
 							onDocumentMouseDown); 
@@ -58,12 +96,7 @@ $(document)
 				        });
 
 
-					var SCREEN_WIDTH = window.innerWidth;
-					var SCREEN_HEIGHT = window.innerHeight;
-
-					var windowHalfX = window.innerWidth / 2;
-					var windowHalfY =  window.innerHeight / 2;
-
+					
 					if (!Detector.webgl) {
 
 						Detector.addGetWebGLMessage();
@@ -109,9 +142,14 @@ $(document)
 						scene = new THREE.Scene();
 						
 //						 camera = new THREE.PerspectiveCamera( 0, 0, 0, 0 );
-						camera = new THREE.PerspectiveCamera(63,
-								window.innerWidth / window.innerHeight, 1,
-								20000);
+						camera = new THREE.PerspectiveCamera(1,
+								window.innerWidth / window.innerHeight, 0.1,
+								400000);
+						
+						camera.position.y = 260000;
+   					    camera.position.x = 0;
+   					    camera.position.z = scale_factor ;
+						
 						scene.add(camera);
 						
 						// LIGHTS
@@ -132,7 +170,7 @@ $(document)
 						
 						
 						
-						controls = new THREE.PathControls(camera);
+						//controls = new THREE.PathControls(camera);
 						
 						
 						
@@ -171,8 +209,8 @@ $(document)
 						context.fillStyle = '#000';
 						context.fillRect(0, 0, width, height);
 
-						image = context.getImageData(0, 0, canvas.width,
-								canvas.height);
+						image = context.getImageData(0, 0, width,
+								height);
 						imageData = image.data;
 
 						for ( var i = 0; i < texturedata.length; i += 4) {
@@ -188,81 +226,6 @@ $(document)
 					}
 
 					//
-					function onDocumentMouseDown(event) {
-
-						if(event.which == 1){
-							isClick = true;
-						} else if(event.which == 3){
-							isRightClick = true;
-						}
-
-					}
-					
-					function onDocumentMouseUp(event) {
-
-						if(event.which == 1){
-							isClick = false;
-						} else if(event.which == 3){
-							isRightClick = false;
-						}
-
-					}
-
-					function onDocumentMouseMove(event) {
-
-						if(isClick){
-							mouseX = (event.clientX - windowHalfX);
-							mouseY = (event.clientY - windowHalfY);
-							
-							mouseRightX = 0;
-							mouseRightY = 0;
-							
-						} else if(isRightClick){
-							
-							mouseRightX = (event.clientX - windowHalfX);
-							mouseRightY = (event.clientY - windowHalfY);
-							
-							mouseX = 0;
-							mouseY = 0;
-						}
-
-					}
-					
-					function onMousewheel(event) {
-						if (event.detail) { /** Mozilla case. */
-			                /** In Mozilla, sign of delta is different than in IE.
-			                 * Also, delta is multiple of 3.
-			                 */
-							mouseDelta = -event.detail/3;
-			        }
-				 }
-					
-					function onContextMenuEvet(event) {
-						alert("onContextMenuEvet");
-					//	event.preventDefault();
-						return false;
-					}
-					
-					function scaleSizeOninput() {
-						scaleSize = $("#scaleSize").val();
-						
-//						var urlQuery = location.search;
-//						urlQuery = urlQuery.replace('?', '');
-//						var split = urlQuery.split('=');
-//
-//						var fileName = split[1];
-//						
-						updateData(sceneData,parseInt(scaleSize));
-					}
-					
-					function animate() {
-
-						requestAnimationFrame(animate);
-
-						render();
-						stats.update();
-
-					}
 					
 					function updateSceneData(fileName,scaleSize,mode) {
 						
@@ -299,26 +262,30 @@ $(document)
 						worldDepth = faceData.height;
 						worldHalfWidth = worldWidth / 2;
 						worldHalfDepth = worldDepth / 2;
+						width = faceData.width;
+						height = faceData.height;
 						// =====================
 						
 						
 
-
-						camera.position.y = values[worldHalfDepth
-								+ worldHalfWidth * worldDepth] + 5000;
-						 camera.position.x = camera.position.x + 40;
-						// - 180;
-						// camera.position.y = camera.position.y
-						// + 180;
-						camera.position.z = 1500;
+						
+						//camera.position.y = 0;
+//						camera.position.y = values[worldHalfDepth + worldHalfWidth * worldDepth] + 5000;
+//						 //camera.position.x = 0;
+//						 camera.position.x = 40;
+//						// - 180;
+//						// + 180;
+//						camera.position.z = 1500;
+						//camera.position.z = 3000;
+						
 						startX = camera.position.x;
 						startY = camera.position.y;
 						startZ = camera.position.Z;
 						
 						
-						var geometry = new THREE.PlaneGeometry(
-								4000, 4000, worldWidth - 1,
-								worldDepth - 1);// 7500
+						geometry = new THREE.PlaneGeometry(
+								4000, 4000, worldWidth - 1,worldDepth - 1);
+					//	4000, 4000,0,0);
 						
 
 						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
@@ -330,7 +297,7 @@ $(document)
 							}
 
 						}
-
+						
 						texture = new THREE.Texture(
 								generateTexture(
 										faceData.texture,
@@ -345,17 +312,23 @@ $(document)
 						var ambient = 0x111111, diffuse = 0xbbbbbb, specular = 0x060606, shininess = 35;
 
 						// , shading: THREE.FlatShading
-						var material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
+//						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
+						material = new THREE.MeshBasicMaterial({map : texture});
 						//MeshLambertMaterial
 						//MeshBasicMaterial
 						
 						mesh = new THREE.Mesh(geometry,material);
 						
-						
+						mesh.rotation.x = 90 * (Math.PI/180);
+						camera.lookAt( mesh.position );
 						scene.add(mesh);
+						
 
 						renderer = new THREE.WebGLRenderer();
-						renderer.setSize(window.innerWidth,window.innerHeight);
+						//renderer.setSize(window.innerWidth,window.innerHeight);
+						renderer.setSize(window.innerWidth , window.innerHeight -30);
+						//renderer.setViewport(0,0, width*2, height*2);
+//						renderer.setViewport(-window.innerWidth,-window.innerHeight, width, height);
 						
 						container.innerHTML = "";
 
@@ -377,7 +350,7 @@ $(document)
 
 						 $('#x').html('<p>x=' + camera.position.x + ' mx ='+mouseRightX+'</p>');
 						 $('#y').html('<p>y=' + camera.position.y + ' my ='+mouseRightY+'</p>');
-						 $('#z').html('<p>z='+camera.position.z+'</p>');
+						 $('#z').html('<p>z=' + camera.position.z + '</p>');
 						//						
 
 						// camera.lookAt( scene.position );
@@ -386,33 +359,241 @@ $(document)
 						// renderer.clear();
 						// renderer.enableScissorTest( true );
 						 
-						 var imageMoveX = 0;
-						 var imageMoveY = 0;
 						 
-						 if (mouseRightX > mouseRightY) {
-							 camera.position.z = camera.position.z + 5; 
-							// imageMoveY = -mouseRightX; 
-						 } else {
-							 imageMoveY = mouseRightY; 
-						 }
+						 
+//						imageMoveX  = mouseRightX;
+//						imageMoveY = -mouseRightY; 
+//						
+//						camera.position.x = startX - mouseX * 7;
+//						camera.position.Y = startY - mouseY * 7;
 						
-							
-						camera.position.x = startX - mouseX * 7 + imageMoveX;
-						camera.position.y = startY - mouseY * 7 + imageMoveY;
+						
 						
 						//if ((camera.position.z - mouseDelta * 70 <= 3000) && (camera.position.z - mouseDelta * 70 >= 1500)) {
-							camera.position.z = camera.position.z - mouseDelta * 70;
+//							camera.position.Y = startY - mouseDelta * 7;
 						//}
+//						mouseDelta = 0;
 						
-						mouseDelta = 0;
-
-						controls.update(0);
+//						renderer.setViewport(0, 0, width, height);
+//						renderer.setViewport(imageMoveX, imageMoveY, width, height);
+						
+//						camera.updateProjectionMatrix();
+						
+//						if (( left_mouse_is_down ) || (right_mouse_is_down)) {
+					//	camera.position.z = scale_factor ;
+						var tempMat = new THREE.Matrix4();
+						mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
+						tempMat.makeRotationAxis(new THREE.Vector3(0,0,1), -delta_x_rotate);
+						tempMat.multiplySelf(mesh.matrix);
+						mesh.matrix = tempMat;
+						tempMat = new THREE.Matrix4();
+						tempMat.makeRotationAxis(new THREE.Vector3(1,0,0), delta_y_rotate);
+						tempMat.multiplySelf(mesh.matrix);
+						mesh.matrix = tempMat;
+						mesh.rotation.getRotationFromMatrix(mesh.matrix,new THREE.Vector3(1,1,1));
+						
+						
+						camera.position.x -= delta_x*14;
+						camera.position.z -= delta_y*14;
+						delta_x_rotate = 0;
+						delta_y_rotate = 0;
+						delta_x = 0;
+						delta_y = 0;
+//						}
+						 
+						//controls.update(0);
 						// controls.update(clock.getDelta());
+					//	
 
 						renderer.render(scene, camera);
 						
 						
 					}
+					
+					
+					
+					function onDocumentMouseDown(event) {
+
+//						if(event.which == 1){
+//							isClick = true;
+//						} else if(event.which == 3){
+//							isRightClick = true;
+//						}
+						
+						var evt=window.event || event;
+						
+						if (evt.button == 0)
+						{
+							left_mouse_is_down = true;
+							oldx = evt.clientX;
+							oldy = evt.clientY;
+						}
+						else if (evt.button == 2)
+						{
+							right_mouse_is_down = true;
+							oldx = evt.clientX;
+							oldy = evt.clientY;
+						}
+						evt.returnValue = false;
+						if (evt.stopPropagation)
+		            		evt.stopPropagation();
+						if (evt.preventDefault) //disable default wheel action of scrolling page
+		        			evt.preventDefault();
+		    			else
+		        			return false
+
+					}
+					
+					function onDocumentMouseUp(event) {
+
+//						if(event.which == 1){
+//							isClick = false;
+//						} else if(event.which == 3){
+//							isRightClick = false;
+//						}
+						
+						var evt=window.event || event;
+						if (evt.button == 0)
+						{
+							left_mouse_is_down = false;
+						}
+						else if (evt.button == 2)
+						{
+							right_mouse_is_down = false;
+							delta_x = 0;
+						 	delta_y = 0;
+						}
+						evt.returnValue = false;
+						if (evt.stopPropagation)
+		            		evt.stopPropagation();
+						if (evt.preventDefault) //disable default wheel action of scrolling page
+		        			evt.preventDefault();
+		    			else
+		        			return false
+
+					}
+
+					function onDocumentMouseMove(event) {
+
+//						if(isClick){
+//							mouseX = (event.clientX - windowHalfX);
+//							mouseY = (event.clientY - windowHalfY);
+//						} else if(isRightClick){
+//							
+//							mouseRightX = (event.clientX - windowHalfX);
+//							mouseRightY =  (event.clientY - windowHalfY);
+//						}
+						
+						var evt=window.event || event;
+						var newx,newy;
+						var rotate_factor = 100;
+						delta_x_rotate = 0;
+						delta_y_rotate = 0;
+						delta_x = 0;
+						delta_y = 0;
+						if (left_mouse_is_down)
+						{
+							newx = event.clientX;
+							newy = event.clientY;
+							
+							delta_x_rotate = (newx - oldx)/rotate_factor;
+							delta_y_rotate = (newy - oldy)/rotate_factor;
+							
+							oldx = newx;
+							oldy = newy;
+						}
+						else if (right_mouse_is_down)
+						{
+							newx = event.clientX;
+							newy = event.clientY;
+							
+							delta_x = (newx - oldx);
+							delta_y = (newy - oldy);
+							
+							oldx = newx;
+							oldy = newy;
+						
+						}
+						
+						evt.returnValue = false;
+						if (evt.stopPropagation)
+		            		evt.stopPropagation();
+						if (evt.preventDefault) //disable default wheel action of scrolling page
+		        			evt.preventDefault();
+		    			else
+		        			return false
+
+					}
+					
+					function onMousewheel(e) {
+//						if (event.detail) { /** Mozilla case. */
+//			                /** In Mozilla, sign of delta is different than in IE.
+//			                 * Also, delta is multiple of 3.
+//			                 */
+//							mouseDelta = -event.detail/3;
+						
+						
+						var evt=window.event || e ;
+						
+						var step_size = 0.01;
+						var upper_limit = 1.0;
+						var lower_limit = 0.05;
+		    			var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta; 
+		    			var delta_steps = delta / 120;
+		    			var new_scale_factor;
+		    			
+		    			new_scale_factor = scale_factor + (delta_steps * step_size);
+		    			
+		    			if (new_scale_factor < lower_limit)
+		    				new_scale_factor  = lower_limit;
+		    			else if (new_scale_factor > upper_limit)
+		    				new_scale_factor = upper_limit;
+		    			scale_factor = new_scale_factor;
+		    			
+		    			if (evt.preventDefault) //disable default wheel action of scrolling page
+		        			evt.preventDefault();
+		    			else
+		        			return false;
+				 }
+					
+					function onContextMenuEvet(event) {
+						alert("onContextMenuEvet");
+					//	event.preventDefault();
+						return false;
+					}
+					
+					function scaleSizeOninput() {
+						scaleSize = $("#scaleSize").val();
+						
+						updateData(sceneData,parseInt(scaleSize));
+						
+//						// set the geometry to dynamic
+//						// so that it allow updates
+//						mesh.geometry.dynamic = true;
+//						
+//						scaleSize = parseInt(scaleSize) * 2;
+//						
+//						for ( var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
+//
+//							if (values[i] > 0) {
+//								mesh.geometry.vertices[i].y = values[i]*scaleSize;
+//							} else {
+//								mesh.geometry.vertices[i].y = 1;
+//							}
+//
+//						}
+						
+					}
+					
+					function animate() {
+
+						requestAnimationFrame(animate);
+
+						render();
+						stats.update();
+
+					}
+					
 				});
 
 
@@ -477,6 +658,8 @@ $(document)
 //		simulateMouseEvent(event, 'mousemove');
 //		// Simulate the mousedown event
 //		simulateMouseEvent(event, 'mousedown');
+//		
+//		simulateMouseEvent(event, 'mouseup');
 //	};
 //
 //	mouseProto._touchMove = function(event) {

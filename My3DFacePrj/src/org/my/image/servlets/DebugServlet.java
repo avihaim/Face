@@ -27,19 +27,53 @@ public class DebugServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		response.getWriter().println("doGet");
 		
-		try {
-		String realPath = getServletContext().getRealPath("images");
-		response.getWriter().println(realPath);
+		String newPath = request.getParameter("newpath");
 		
-		FaceDataManager.init(realPath);
 		
-		response.getWriter().println(FaceDataManager.getAllFaceData());
 		
-		} catch (Exception e) {
-			e.printStackTrace(response.getWriter());
+		String javaPath = System.getProperty("java.library.path");
+		
+		String[] split = javaPath.split(";");
+		
+		
+		response.getWriter().println("javaPath : ");
+		for (String string : split) {
+			response.getWriter().println(string);
 		}
+		
+		response.getWriter().println("==========================================");
+		
+		
+		if(newPath != null) {
+			
+			javaPath = javaPath.trim() + ";" + newPath;
+			
+			System.setProperty("java.library.path", javaPath);
+			
+			javaPath = System.getProperty("java.library.path");
+			
+			split = javaPath.split(";");
+			
+			response.getWriter().println("javaPath : ");
+			for (String string : split) {
+				response.getWriter().println(string);
+			}
+		}
+		
+		
+//		
+//		try {
+//		String realPath = getServletContext().getRealPath("images");
+//		response.getWriter().println(realPath);
+//		
+//		FaceDataManager.init(realPath);
+//		
+//		response.getWriter().println(FaceDataManager.getAllFaceData());
+//		
+//		} catch (Exception e) {
+//			e.printStackTrace(response.getWriter());
+//		}
 	}
 
 	/**

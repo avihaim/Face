@@ -38,14 +38,15 @@ public class FaceDataManager {
 					int y = extractFacePosFile[1];
 					
 					FaceData faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "thumbnails/t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
-					imageMap.put(imageName,faceData);
-					imageList.add(faceData);
+					
+					addFaceData(imageName, faceData);
 				} catch (Exception e) {
 					System.out.println(imageName);
 					e.printStackTrace();
 				}
 			}
 		}
+		
 	}
 	
 	public static int[] extractFacePosFile(String filesName) {
@@ -92,15 +93,17 @@ public class FaceDataManager {
 		
 		FaceData faceData = imageMap.get(imageName);
 		
-		System.out.println("FaceDataManager faceData is " + faceData);
+		
 		
 		if(faceData == null) { 
+			
+			System.out.println("FaceDataManager - start to create new faceData for " + imageName);
+			
 			try {
-				System.out.println("FaceDataManager start to run makeDepthMap"); 
 				
 				String makeDepthMap = MakeDepthMapWrapper.makeDepthMap(imageName,IMAGES_PATH + File.separator);
 				
-				System.out.println("is " + makeDepthMap);
+				System.out.println("FaceDataManager - makeDepthMap response is " + makeDepthMap);
 				
 				int[] extractFacePosFile = extractFacePosFile(imageName);
 				
@@ -117,11 +120,13 @@ public class FaceDataManager {
 				
 				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "thumbnails/t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
 				FaceDataManager.addFaceData(imageName, faceData );
-			
 			} catch (Exception e) {
 				System.out.println("FaceDataManager Exception " + e.getMessage());
 				e.printStackTrace();
 			}
+		} else {
+			System.out.println("FaceDataManager - The faceData for " + imageName + " is " + faceData);
+			
 		}
 		return faceData;
 	}
@@ -161,8 +166,11 @@ public class FaceDataManager {
 	}
 	
 	public static void addFaceData(String imageName, FaceData faceData) {
-		imageMap.put(imageName, faceData);
-		imageList.add(faceData);
+		
+		if(faceData != null) {
+			imageMap.put(imageName, faceData);
+			imageList.add(faceData);
+		}
 	}
 	
 	public static boolean isInit() {

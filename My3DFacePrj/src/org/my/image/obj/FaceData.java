@@ -1,6 +1,6 @@
 package org.my.image.obj;
 
-public class FaceData {
+public class FaceData implements Comparable<FaceData> {
 
 	
 	private String imageName = null;
@@ -128,6 +128,11 @@ public class FaceData {
 
 	public void setRealPath(String realPath) {
 		this.realPath = realPath;
+	}
+
+	@Override
+	public int compareTo(FaceData o) {
+		return this.imageName.compareTo(o.getImageName());
 	}
 
 }
