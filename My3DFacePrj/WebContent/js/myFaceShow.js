@@ -143,7 +143,7 @@ $(document)
 						
 //						 camera = new THREE.PerspectiveCamera( 0, 0, 0, 0 );
 						camera = new THREE.PerspectiveCamera(1,
-								window.innerWidth / window.innerHeight, 0.1,
+								window.innerWidth / window.innerHeight, 1,
 								400000);
 						
 						camera.position.y = 260000;
@@ -195,6 +195,13 @@ $(document)
 						$('body')
 						.append(
 								'<div class="zipLink"><a href="ZipServlet?fileName='+fileName+'">download</a></div>');
+						
+						$('body')
+						.append(
+								'<iframe class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
+								'" "scrolling="no" frameborder="0" style="border:none; width:450px; height:80px"></iframe>');
+						
+						
 
 					}
 
@@ -311,11 +318,18 @@ $(document)
 						
 						var ambient = 0x111111, diffuse = 0xbbbbbb, specular = 0x060606, shininess = 35;
 
+						var r = "textures/cube/SwedishRoyalCastle/";
+						var urls = [ r + "px.jpg", r + "nx.jpg",
+									 r + "py.jpg", r + "ny.jpg",
+									 r + "pz.jpg", r + "nz.jpg" ];
+
+						var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+						
 						// , shading: THREE.FlatShading
 //						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
-						material = new THREE.MeshBasicMaterial({map : texture});
+						material = new THREE.MeshBasicMaterial( { map : texture } );
 						//MeshLambertMaterial
-						//MeshBasicMaterial
+						//MeshBasicMaterial CC33FF
 						
 						mesh = new THREE.Mesh(geometry,material);
 						
@@ -324,6 +338,7 @@ $(document)
 						scene.add(mesh);
 						
 
+//						renderer = new THREE.CanvasRenderer();
 						renderer = new THREE.WebGLRenderer();
 						//renderer.setSize(window.innerWidth,window.innerHeight);
 						renderer.setSize(window.innerWidth , window.innerHeight -30);
