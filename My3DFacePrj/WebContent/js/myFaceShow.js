@@ -1,5 +1,6 @@
 $(document)
 		.ready(
+				
 				function() {
 
 					
@@ -42,6 +43,9 @@ $(document)
 					var oldy = 0;
 
 					var rotate_matrix;
+					
+					
+					var touchAction = 0; // 0 = left mouse;  2 = right mouse
 
 					
 //					==============================================
@@ -55,20 +59,22 @@ $(document)
 //					else if (document.addEventListener) //WC3 browsers
 //					    document.addEventListener(mousewheelevt,onMousewheel, false);
 					
+					var container = document.getElementById('container');
+					
 					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
 						 
-					document.addEventListener(mousewheelevt, onMousewheel, false);
+					container.addEventListener(mousewheelevt, onMousewheel, false);
 					
-					document.addEventListener('mousedown',
+					container.addEventListener('mousedown',
 							onDocumentMouseDown); 
 					
-					document.addEventListener('mouseup',
+					container.addEventListener('mouseup',
 							onDocumentMouseUp);
 					
-					document.addEventListener('mousemove',
+					container.addEventListener('mousemove',
 							onDocumentMouseMove, false);
 					
-					document.addEventListener('onContextMenu',
+					container.addEventListener('onContextMenu',
 							onContextMenuEvet, false); 
 					
 					$('#scaleSizeSubmit').click(scaleSizeOninput);
@@ -104,7 +110,7 @@ $(document)
 
 					}
 
-					var container, stats;
+					var stats;
 
 					var camera, controls, scene, renderer;
 
@@ -113,10 +119,35 @@ $(document)
 					var worldWidth = 6000, worldDepth = 6000, worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
 
 					var clock = new THREE.Clock();
+					
+					$.support.touch = 'ontouchend' in document;
+					
+					// Ignore browsers without touch support
+					if ($.support.touch) {
+						touchInit();
+						
+						// Add button to change touch behavior
+						$('body')
+						.append('<div id="touchAction" class="transform-move"></div>');
+						$('#touchAction').bind('mousedown',changeTouchAction);
+						
+						// Add button to zoom-in in touch
+						$('body')
+						.append('<div id="zoom-in" </div>');
+						$('#zoom-in').bind('mousedown',onZoomIn);
+						
+						// Add button to zoom-in in touch
+						$('body')
+						.append('<div id="zoom-out" </div>');
+						$('#zoom-out').bind('mousedown',onZoomOut);
+					}
+					
+					
 
 					init();
 					animate();
-
+					
+					
 					function init() {
 						// touch();
 						// Setup the ajax indicator
@@ -273,18 +304,6 @@ $(document)
 						height = faceData.height;
 						// =====================
 						
-						
-
-						
-						//camera.position.y = 0;
-//						camera.position.y = values[worldHalfDepth + worldHalfWidth * worldDepth] + 5000;
-//						 //camera.position.x = 0;
-//						 camera.position.x = 40;
-//						// - 180;
-//						// + 180;
-//						camera.position.z = 1500;
-						//camera.position.z = 3000;
-						
 						startX = camera.position.x;
 						startY = camera.position.y;
 						startZ = camera.position.Z;
@@ -318,18 +337,11 @@ $(document)
 						
 						var ambient = 0x111111, diffuse = 0xbbbbbb, specular = 0x060606, shininess = 35;
 
-						var r = "textures/cube/SwedishRoyalCastle/";
-						var urls = [ r + "px.jpg", r + "nx.jpg",
-									 r + "py.jpg", r + "ny.jpg",
-									 r + "pz.jpg", r + "nz.jpg" ];
-
-						var textureCube = THREE.ImageUtils.loadTextureCube( urls );
-						
 						// , shading: THREE.FlatShading
 //						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
-						material = new THREE.MeshBasicMaterial( { map : texture } );
+						material = new THREE.MeshBasicMaterial({map : texture});
 						//MeshLambertMaterial
-						//MeshBasicMaterial CC33FF
+						//MeshBasicMaterial
 						
 						mesh = new THREE.Mesh(geometry,material);
 						
@@ -341,7 +353,7 @@ $(document)
 //						renderer = new THREE.CanvasRenderer();
 						renderer = new THREE.WebGLRenderer();
 						//renderer.setSize(window.innerWidth,window.innerHeight);
-						renderer.setSize(window.innerWidth , window.innerHeight -30);
+						renderer.setSize(window.innerWidth , window.innerHeight -80);
 						//renderer.setViewport(0,0, width*2, height*2);
 //						renderer.setViewport(-window.innerWidth,-window.innerHeight, width, height);
 						
@@ -549,11 +561,22 @@ $(document)
 						
 						
 						var evt=window.event || e ;
+						var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
+						
+						zoom(delta);
+		    			
+		    			if (evt.preventDefault) //disable default wheel action of scrolling page
+		        			evt.preventDefault();
+		    			else
+		        			return false;
+				    }
+					
+					function zoom(delta) {
 						
 						var step_size = 0.01;
 						var upper_limit = 1.0;
 						var lower_limit = 0.05;
-		    			var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta; 
+		    			 
 		    			var delta_steps = delta / 120;
 		    			var new_scale_factor;
 		    			
@@ -564,15 +587,18 @@ $(document)
 		    			else if (new_scale_factor > upper_limit)
 		    				new_scale_factor = upper_limit;
 		    			scale_factor = new_scale_factor;
-		    			
-		    			if (evt.preventDefault) //disable default wheel action of scrolling page
-		        			evt.preventDefault();
-		    			else
-		        			return false;
-				 }
+					}
+					
+					function onZoomOut(){
+						zoom(-360);
+					}
+					
+					function onZoomIn(){
+						zoom(360);
+					}
 					
 					function onContextMenuEvet(event) {
-						alert("onContextMenuEvet");
+//						alert("onContextMenuEvet");
 					//	event.preventDefault();
 						return false;
 					}
@@ -607,6 +633,56 @@ $(document)
 						render();
 						stats.update();
 
+					}
+					
+					function changeTouchAction() {
+						if(touchAction == 0) {
+							touchAction = 2;
+							$('#touchAction').removeClass('transform-move');
+							$('#touchAction').addClass('transform-rotate');
+						} else {
+							touchAction = 0;
+							$('#touchAction').removeClass('transform-rotate');
+							$('#touchAction').addClass('transform-move');
+						}
+					}
+					
+					function touchHandler(event)
+					{
+						
+						
+						//alert(event.type);
+					    var touches = event.changedTouches,
+					        point = touches[0],
+					        type = "";
+					    
+					    switch(event.type) {
+					        case "touchstart": type = "mousedown"; break;
+					        case "touchmove":  type="mousemove"; break;        
+					        case "touchend":   type="mouseup"; break;
+					        default: return;
+					    }
+
+					             //initMouseEvent(type, canBubble, cancelable, view, clickCount,
+					    //           screenX, screenY, clientX, clientY, ctrlKey,
+					    //           altKey, shiftKey, metaKey, button, relatedTarget);
+					    
+					    var simulatedEvent = document.createEvent("MouseEvent");
+					    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+					    							point.screenX, point.screenY,
+					    							point.clientX, point.clientY, false,
+					                              false, false, false, touchAction/*left*/, null);
+
+					    point.target.dispatchEvent(simulatedEvent);
+					    event.preventDefault();
+					}
+
+					function touchInit()
+					{
+					    document.addEventListener("touchstart", touchHandler, true);
+					    document.addEventListener("touchmove", touchHandler, true);
+					    document.addEventListener("touchend", touchHandler, true);
+					    document.addEventListener("touchcancel", touchHandler, true);    
 					}
 					
 				});

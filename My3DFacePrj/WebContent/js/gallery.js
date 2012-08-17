@@ -83,6 +83,7 @@ function back() {
 
 function getData(from, direction) {
 	
+	
 	$('.thumbnailimage').remove();
 	
 	$.ajax({
@@ -91,6 +92,8 @@ function getData(from, direction) {
 		dataType : "json",
 		contentType : "application/json",
 		success : function(sildeData) {
+			
+			$.support.touch = 'ontouchend' in document;
 			
 			var data = sildeData.allFaceData;
 
@@ -109,9 +112,11 @@ function getData(from, direction) {
 
 				$('#thumbnailsId').append(divData);
 				
-				$('.thumbClass'+ data[i].pos).bind('click', {imageName: data[i].imageName}, function(event) {
+				if (!$.support.touch) {
+					$('.thumbClass'+ data[i].pos).bind('click', {imageName: data[i].imageName}, function(event) {
 					  fancyboxHref('myFaceShow.html?fileName=' + event.data.imageName);
-				});
+					});
+				}
 			}
 //			onclick="thumbSelected('+ data[i].imageName + ')"
 			
@@ -122,7 +127,13 @@ function getData(from, direction) {
 			/* Your ShineTime Welcome Image */
 			var default_image = $('#thumbimage' + data[0].pos).attr("src");
 			
-			fancyboxHref('myFaceShow.html?fileName=' + data[0].imageName);
+			if ($.support.touch) {
+				$("div#largephoto").bind('click', imageSelected);
+				
+			} else {
+				fancyboxHref('myFaceShow.html?fileName=' + data[0].imageName);
+			}
+			
 			
 			var default_caption = 'Welcome to ShineTime';
 
@@ -253,9 +264,13 @@ $(document)
 					
 					getData(0,'next');
 					
-
 					$("a#single_image").fancybox();
-					$("div#largephoto").fancybox();
+					
+					$.support.touch = 'ontouchend' in document;
+					
+					if (!$.support.touch) {
+						$("div#largephoto").fancybox();
+					}
 
 					/* Using custom settings */
 
