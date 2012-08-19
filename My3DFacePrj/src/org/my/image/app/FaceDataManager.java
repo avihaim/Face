@@ -78,6 +78,7 @@ public class FaceDataManager {
 			fileInputStream.read(b );
 			String string = new String(b);
 			split = string.split(",");
+			fileInputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 			split[0] = "1";
