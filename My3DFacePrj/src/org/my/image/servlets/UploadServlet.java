@@ -42,7 +42,7 @@ public class UploadServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		System.out.println("UploadServlet doGet");
+		//System.out.println("UploadServlet doGet");
 		
 		
 		if (request.getParameter("getfile") != null
@@ -50,7 +50,7 @@ public class UploadServlet extends HttpServlet {
 			File file = new File(fileUploadPath ,"\\textures\\" +
 					request.getParameter("getfile"));
 			
-			System.out.println(file.getAbsolutePath());
+			//System.out.println(file.getAbsolutePath());
 			if (file.exists()) {
 				int bytes = 0;
 				ServletOutputStream op = response.getOutputStream();
@@ -119,7 +119,7 @@ public class UploadServlet extends HttpServlet {
 			File file = new File(fileUploadPath ,
 					"\\thumbnails\\" + request.getParameter("getoldthumb"));
 			
-			System.out.println(file.getAbsolutePath());
+			//System.out.println(file.getAbsolutePath());
 			if (file.exists()) {
 				int bytes = 0;
 				ServletOutputStream op = response.getOutputStream();
@@ -167,7 +167,7 @@ public class UploadServlet extends HttpServlet {
 				mimetype = mtMap.getContentType(file);
 			}
 		}
-		System.out.println("mimetype: " + mimetype);
+		//System.out.println("mimetype: " + mimetype);
 		return mimetype;
 	}
 
@@ -177,7 +177,7 @@ public class UploadServlet extends HttpServlet {
 		if (pos > 0 && pos < filename.length() - 1) {
 			suffix = filename.substring(pos + 1);
 		}
-		System.out.println("suffix: " + suffix);
+		//System.out.println("suffix: " + suffix);
 		return suffix;
 	}
 }

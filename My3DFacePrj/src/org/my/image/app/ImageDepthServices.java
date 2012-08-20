@@ -73,10 +73,10 @@ public class ImageDepthServices {
 		System.out.println("minz " + minZ);
 
 		// Subtract the median from all pixels more the zero
-		// and add the the min pixel value*10
+		// and add the the min pixel value*40
 		for (int j = 0; j < pixelData.length; j++) {
 			if (pixelData[j] > 0) {
-				pixelData[j] = pixelData[j] - median + minZ*10 ;//median ;//+ minZ;//((avg + minZ) * 4 + 30);
+				pixelData[j] = pixelData[j] - median + minZ*40 ;//median ;//+ minZ;//((avg + minZ) * 4 + 30);
 			}
 		}
 		return pixelData;

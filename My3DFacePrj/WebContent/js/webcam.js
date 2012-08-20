@@ -1,41 +1,79 @@
 function fancyboxHrefItem(href,item) {
 	
-	$(item).fancybox({
+	 window.parent.$(item).fancybox({
 		'padding'		: 0,
 		'autoScale'		: false,
 		'speedIn' 		: 200,
 		'speedOut' 		: 200,
 		'transitionIn'	: 'elastic',
 		'transitionOut'	: 'elastic',
-		'title'			: this.title,
+//		'title'			: this.title,
 		'width'		    : 1000,
 		'height'		: 650,
 		'href'			: href,
 		'type'			: 'iframe'
+		
 	});
 
 }
 
 $(function() {
+	
+	var width = 320, height = 240;
+	
+	$('#shootButton').click(function(){
+		togglePanel();
+	});
+	
+	$('#cancelButton').click(function(){
+		togglePanel();
+	});
+	
+	$('#uploadButton').click(function(){
 
+		var dataUrl =  canvas.toDataURL("image/png");
+		
+//		fancyboxHrefItem('myFaceShow.html?fileName=a1.jpg','a#webCamImage');
+//		window.parent.$("a#webCamImage").trigger('click');
+		
+		
+		$.ajax({
+			type: "post",
+			url : "UploadImage",
+			dataType :'text',
+			async : false,
+			data : dataUrl,
+			success : opennew,
+			error : function(jqXHR, textStatus,
+					errorThrown) {
+				alert(textStatus);
+			}
+			});
+		
+		
+	});
+	
+	 function opennew( data ) {
+			fancyboxHrefItem('myFaceShow.html?fileName=' +  data,'a#webCamImage');
+			window.parent.$("a#webCamImage").trigger('click');
+	 }
+	 
 	var pos = 0, ctx = null, saveCB, image = [];
 
 	var canvas = document.getElementById("canvas");
-//	canvas.setAttribute('width', 320);
-//	canvas.setAttribute('height', 240);
 
 	if (canvas.toDataURL) {
 
 		ctx = canvas.getContext("2d");
 
-		image = ctx.getImageData(0, 0, 320, 240);
+		image = ctx.getImageData(0, 0, width, height);
 
 		saveCB = function(data) {
 			
 			var col = data.split(";");
 			var img = image;
 
-			for ( var i = 0; i < 320; i++) {
+			for ( var i = 0; i < width; i++) {
 				var tmp = parseInt(col[i]);
 				img.data[pos + 0] = (tmp >> 16) & 0xff;
 				img.data[pos + 1] = (tmp >> 8) & 0xff;
@@ -44,40 +82,43 @@ $(function() {
 				pos += 4;
 			}
 
-			if (pos >= 4 * 320 * 240) {
+			if (pos >= 4 * width * height) {
 				
 				ctx.putImageData(img, 0, 0);
 				
-				var dataUrl =  canvas.toDataURL("image/png");
-				
-				
-				$
-				.ajax({
-					type: "POST",
-					url : "UploadImage",
-					dataType :'text',
-					data : dataUrl}
-					).done(function( imageName ) {
-						fancyboxHrefItem('myFaceShow.html?fileName=' +  imageName,"canvas");
-					});
 				
 				pos=0;
 			}
 		};
 
-	} 
+	} else {
+
+		saveCB = function(data) {
+			image.push(data);
+
+			pos += 4 * width;
+
+			if (pos >= 4 * width * height) {
+				$.post("UploadImage", {
+					type : "pixel",
+					image : image.join('|')
+				});
+				pos = 0;
+			}
+		};
+	}
 
 	$("#webcam").webcam({
 
-		width : 320,
-		height : 240,
+		width : width,
+		height : height,
 		mode : "callback",
 		swffile : "js/infusion-jQuery-webcam/jscam_canvas_only.swf",
 
 		onSave : saveCB,
 
 		onCapture : function() {
-			webcam.save();
+		//	webcam.save();
 		},
 
 		debug : function(type, string) {
@@ -120,7 +161,7 @@ $(function() {
 			yScroll = document.body.offsetHeight;
 		}
 
-		var windowWidth, windowHeight;
+		var windowWidth =0 , windowHeight =0;
 
 		if (self.innerHeight) { // all except Explorer
 			if(document.documentElement.clientWidth){
@@ -161,9 +202,9 @@ $(function() {
 
 		if (canvas.getContext) {
 			ctx = document.getElementById("canvas").getContext("2d");
-			ctx.clearRect(0, 0, 320, 240);
+			ctx.clearRect(0, 0, width, height);
 
-			image = ctx.getImageData(0, 0, 320, 240);
+			image = ctx.getImageData(0, 0, width, height);
 		}
 		
 		var pageSize = getPageSize();
@@ -181,4 +222,19 @@ $(function() {
 
 });
 
-
+function togglePanel(){
+	var visible = $('.visible');
+	var hidden = $('.hidden');
+	
+	visible.fadeOut('fast',function(){
+		hidden.show();
+	});
+	
+	visible.removeClass('visible');
+	hidden.removeClass('hidden');
+	
+	visible.addClass('hidden');
+	hidden.addClass('visible');
+	
+	
+}

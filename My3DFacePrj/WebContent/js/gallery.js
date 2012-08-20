@@ -1,11 +1,10 @@
 
-function openWebGlPopup(imageName) {
+function openWebGlPopup(imageName,imageId) {
 	fancyboxHrefItem('myFaceShow.html?fileName=' +  imageName,"a#upimage");
-	 //.fancybox()
 	$("a#upimage").trigger('click');
+	$('.image' + imageId).remove();
 }
-
-
+  
 function fancyboxHrefUploud(href) {
 	
 	$("div#funcyUploadImageDiv").fancybox({
@@ -264,7 +263,7 @@ $(document)
 					
 					getData(0,'next');
 					
-					$("body").append('<a href="#webCamImage" id="webCamImage"  style="display: none;"></a>');
+//					$("body").append('<a href="#webCamImage" id="webCamImage"  style="display: none;"></a>');
 //					$("body").append('<a href="#upimage" id="upimage"  style="display: none;"></a>');
 					
 					$("a#webCamImage").fancybox();
@@ -314,9 +313,9 @@ $(document)
 						'speedOut' 		: 200,
 						'transitionIn'	: 'elastic',
 						'transitionOut'	: 'elastic',
-						'title'			: this.title,
-						'width'		    : 1000,
-						'height'		: 650,
+						'title'			: 'webcam',
+						'width'		    : 500,
+						'height'		: 420,
 						'href'			: 'webcam.html',
 						'type'			: 'iframe'
 					});

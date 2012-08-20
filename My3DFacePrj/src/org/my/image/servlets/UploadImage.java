@@ -41,8 +41,15 @@ public class UploadImage extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+	private static Random generator = new Random();
     
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		
+		doPost(req, resp);
+	}
+	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
@@ -76,8 +83,14 @@ public class UploadImage extends HttpServlet {
 	          ImageIO.write(image, "png", f);
 	          
 	          System.out.println(f.getName());
-	          response.sendRedirect("myFaceShow.html?fileName=" + f.getName());
-			
+	          
+	          PrintWriter writer1 = response.getWriter();
+			  
+			  writer1.write(f.getName());
+			  writer1.close();
+//				response.setStatus(HttpServletResponse.SC_OK);
+//	          response.sendRedirect("myFaceShow.html?fileName=" + f.getName());
+			  
 		} else {
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -113,6 +126,7 @@ public class UploadImage extends HttpServlet {
 						
 						JSONObject jsono = new JSONObject();
 						jsono.put("name", savedFile.getName());
+						jsono.put("id", generator.nextLong());
 						jsono.put("size", item.getSize());
 						jsono.put("url", "upload?getfile=" + savedFile.getName());
 						jsono.put("thumbnail_url",
@@ -138,7 +152,7 @@ public class UploadImage extends HttpServlet {
 	
 	private File cerateNewFile(String itemName) throws IOException {
 		
-		Random generator = new Random();
+		
 		int r = Math.abs(generator.nextInt());
 
 		String reg = "[.*]";
@@ -159,13 +173,6 @@ public class UploadImage extends HttpServlet {
 		String finalimage = buffer.toString() + "_" + r
 				+ domainName;
 		System.out.println("Final Image===" + finalimage);
-		
-		
-//		String realPath = getServletContext().getRealPath("images");
-//		
-//		if(!FaceDataManager.isInit()) {
-//			FaceDataManager.init(realPath);
-//		}
 		
 		String fileFullName =  FaceDataManager.IMAGES_PATH + File.separator + "textures" + File.separator + finalimage;
 		System.out.println(fileFullName);

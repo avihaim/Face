@@ -16,14 +16,15 @@
 
 	extern: null, // external select token to support jQuery dialogs
 	append: true, // append object instead of overwriting
-
-	width: 320,
+ 
+	width: 420,
 	height: 240,
-
+ 
 	mode: "callback", // callback | save | stream
 
 	swffile: "jscam.swf",
-	quality: 85,
+//	swffile: "webcam.swf",
+	quality: 100,
 
 	debug:	    function () {},
 	onCapture:  function () {},

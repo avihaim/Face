@@ -19,11 +19,16 @@ $(document)
 					
 					var left_mouse_is_down = false;
 					var right_mouse_is_down = false;
+					var modelIsReady = false;
 					
 					var oldx = 0;
 					var oldy = 0;
 
 					var touchAction = 0; // 0 = left mouse;  2 = right mouse
+					
+					var camera, scene, renderer;
+
+					var mesh, texture;
 
 					
 //					==============================================
@@ -81,11 +86,7 @@ $(document)
 						document.getElementById('container').innerHTML = "";
 					}
 
-					var stats;
-
-					var camera, scene, renderer;
-
-					var mesh, texture;
+					
 
 					var worldWidth = 6000, worldDepth = 6000;
 					
@@ -184,7 +185,7 @@ $(document)
 						
 						// FIX: Zoom out so the use can zoom in
 						zoom(-360*15);
-
+						
 					}
 
 					
@@ -256,6 +257,7 @@ $(document)
 					
 					function updateData(data,scaleSize) {
 						
+						modelIsReady = false;
 						faceData = data;
 						values = faceData.depth;
 						worldWidth = faceData.width;
@@ -322,37 +324,40 @@ $(document)
 						// Hide the ajaxBusy image
 						$('#ajaxBusy').hide();
 						
+						modelIsReady = true;
+						
 					}
 
 					function render() {
 
-						// For Debug only
-						 $('#x').html('<p>x=' + camera.position.x + ' mx ='+mouseRightX+'</p>');
-						 $('#y').html('<p>y=' + camera.position.y + ' my ='+mouseRightY+'</p>');
-						 $('#z').html('<p>z=' + camera.position.z + '</p>');
-
-						 
-						var tempMat = new THREE.Matrix4();
-						mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
-						tempMat.makeRotationAxis(new THREE.Vector3(0,0,1), -delta_x_rotate);
-						tempMat.multiplySelf(mesh.matrix);
-						mesh.matrix = tempMat;
-						tempMat = new THREE.Matrix4();
-						tempMat.makeRotationAxis(new THREE.Vector3(1,0,0), delta_y_rotate);
-						tempMat.multiplySelf(mesh.matrix);
-						mesh.matrix = tempMat;
-						mesh.rotation.getRotationFromMatrix(mesh.matrix,new THREE.Vector3(1,1,1));
-						
-						
-						camera.position.x -= delta_x*14;
-						camera.position.z -= delta_y*14;
-						delta_x_rotate = 0;
-						delta_y_rotate = 0;
-						delta_x = 0;
-						delta_y = 0;
-
-						renderer.render(scene, camera);
-						
+						if (modelIsReady == true) {
+							// For Debug only
+//							 $('#x').html('<p>x=' + camera.position.x + ' mx ='+mouseRightX+'</p>');
+//							 $('#y').html('<p>y=' + camera.position.y + ' my ='+mouseRightY+'</p>');
+//							 $('#z').html('<p>z=' + camera.position.z + '</p>');
+	
+							 
+							var tempMat = new THREE.Matrix4();
+							mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
+							tempMat.makeRotationAxis(new THREE.Vector3(0,0,1), -delta_x_rotate);
+							tempMat.multiplySelf(mesh.matrix);
+							mesh.matrix = tempMat;
+							tempMat = new THREE.Matrix4();
+							tempMat.makeRotationAxis(new THREE.Vector3(1,0,0), delta_y_rotate);
+							tempMat.multiplySelf(mesh.matrix);
+							mesh.matrix = tempMat;
+							mesh.rotation.getRotationFromMatrix(mesh.matrix,new THREE.Vector3(1,1,1));
+							
+							
+							camera.position.x -= delta_x*14;
+							camera.position.z -= delta_y*14;
+							delta_x_rotate = 0;
+							delta_y_rotate = 0;
+							delta_x = 0;
+							delta_y = 0;
+	
+							renderer.render(scene, camera);
+						}
 						
 					}
 					
@@ -380,7 +385,7 @@ $(document)
 						if (evt.preventDefault) //disable default wheel action of scrolling page
 		        			evt.preventDefault();
 		    			else
-		        			return false
+		        			return false;
 
 					}
 					
@@ -403,7 +408,7 @@ $(document)
 						if (evt.preventDefault) //disable default wheel action of scrolling page
 		        			evt.preventDefault();
 		    			else
-		        			return false
+		        			return false;
 
 					}
 
@@ -446,7 +451,7 @@ $(document)
 						if (evt.preventDefault) //disable default wheel action of scrolling page
 		        			evt.preventDefault();
 		    			else
-		        			return false
+		        			return false;
 
 					}
 					
@@ -496,8 +501,6 @@ $(document)
 						requestAnimationFrame(animate);
 
 						render();
-						stats.update();
-
 					}
 					
 					
