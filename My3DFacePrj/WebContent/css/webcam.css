@@ -1,0 +1,170 @@
+@CHARSET "windows-1255";
+body {
+/* 	background-color: #333; */
+	margin: 0 auto;
+	background-image: url('../images/interface/bgnoise.png');
+}
+
+#webcam, #canvas {
+	width: 320px;
+	border:20px solid #333;
+	background:#eee;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	left: 15%;
+	
+	border:5px solid #333;
+	position:absolute;
+	right:-90px;
+	padding:5px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	cursor:pointer;
+	
+	margin-top:50px;
+	margin-bottom:20px;
+}
+
+#webcam {
+	
+/* 	position:relative; */
+/* 	margin-top:50px; */
+/* 	margin-bottom:50px; */
+	
+}
+
+#webcam > span {
+	z-index:2;
+	position:absolute;
+	color:#eee;
+	font-size:10px;
+	bottom: -16px;
+	left:152px;
+}
+
+#webcam > img {
+	z-index:1;
+	position:absolute;
+	border:0px none;
+	padding:0px;
+	bottom:-40px;
+	left:89px;
+}
+
+#webcam > div {
+/* 	border:5px solid #333; */
+/* 	position:absolute; */
+/* 	right:-90px; */
+/* 	padding:5px; */
+/* 	-webkit-border-radius: 8px; */
+/* 	-moz-border-radius: 8px; */
+/* 	border-radius: 8px; */
+/* 	cursor:pointer; */
+}
+
+#webcam a {
+	background:#fff;
+	font-weight:bold;
+}
+
+#webcam a > img {
+	border:0px none;
+}
+
+#canvas {
+/* 	border:20px solid #ccc; */
+/* 	background:#eee; */
+}
+
+#flash {
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index:5000;
+	width:100%;
+	height:500px;
+	background-color:#c00;
+	display:none;
+}
+
+object {
+	display:block; /* HTML5 fix */
+	position:relative;
+	z-index:1000;
+}
+
+/*-------------------------
+	new
+--------------------------*/
+
+
+.settings:hover{
+	background-position:left bottom;
+}
+
+
+.buttonPane{
+	text-align: center;
+}
+
+
+.blueButton,
+.greenButton{
+	background:url('../img/buttons.png') no-repeat;
+	text-shadow:1px 1px 1px #277c9b;
+	color:#fff !important;
+	width:99px;
+	height:38px;
+	border:none;
+	text-decoration:none;
+	display:inline-block;
+	font-size: 16px;
+	line-height: 32px;
+	text-align: center;
+	margin: 0 4px;
+	
+	top: 340px;
+	position:relative;
+}
+
+.greenButton {
+	background:url('../img/buttons.png') no-repeat right top;
+	text-shadow:1px 1px 1px #498917;
+}
+
+.blueButton:hover,
+.greenButton:hover{
+	background-position:left bottom;
+	text-decoration:none !important;
+}
+
+.greenButton:hover{
+	background-position:right bottom;
+}
+
+.blueButton:active,
+.greenButton:active{
+	position:relative;
+	bottom:-1px;
+}
+
+.hidden{
+	display:none;
+}
+
+/*-------------------------
+	Generic styles
+--------------------------*/
+
+
+a, a:visited {
+	text-decoration:none;
+	outline:none;
+	color:#54a6de;
+}
+
+a:hover{
+	text-decoration:underline;
+}
