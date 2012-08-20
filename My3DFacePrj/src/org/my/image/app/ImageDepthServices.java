@@ -15,13 +15,13 @@ import org.my.image.obj.FaceImage;
 
 public class ImageDepthServices {
 	
-	public static int[] createImageDepth(BufferedImage img, int scaleSize,
-			BufferedImage imgD, int facePosX, int facePosY) {
+	public static int[] createImageDepth(BufferedImage img, BufferedImage imgD,
+			int facePosX, int facePosY) {
 		int[] pixelData;
 		
 		
-		int facePosTopY = facePosY + imgD.getHeight(); // 189;
-		int facePosTopX = facePosX + imgD.getWidth(); // 385
+		int facePosTopY = facePosY + imgD.getHeight(); 
+		int facePosTopX = facePosX + imgD.getWidth();
 
 		int[] rgb;
 		pixelData = new int[img.getHeight() * img.getWidth()];
@@ -34,19 +34,23 @@ public class ImageDepthServices {
 		for (int i = 0; i < img.getWidth() ; i++) {
 
 			for (int j = 0; j < img.getHeight(); j++) {
+				
+				// If we in the face rectangle
 				if (((facePosY <= j) && (facePosTopY > j))
 						&& ((facePosX <= i) && (facePosTopX > i))) {
 
+					// Get the Depth data for the pixel
 					rgb = getPixelData(imgD, i - facePosX, j - facePosY);
 					int picxlZ = rgb[0];
 					
 					if (picxlZ > 0) {
-						picxlZ = picxlZ * scaleSize;
 
 						if (minZ > picxlZ) {
 							minZ = picxlZ;
 						}
 						
+						// add to list all pixel data That are more the zero
+						// we need it for the Median
 						list.add(picxlZ);
 					}
 					
@@ -68,6 +72,8 @@ public class ImageDepthServices {
 		System.out.println("median " + median);
 		System.out.println("minz " + minZ);
 
+		// Subtract the median from all pixels more the zero
+		// and add the the min pixel value*10
 		for (int j = 0; j < pixelData.length; j++) {
 			if (pixelData[j] > 0) {
 				pixelData[j] = pixelData[j] - median + minZ*10 ;//median ;//+ minZ;//((avg + minZ) * 4 + 30);
@@ -149,7 +155,7 @@ public class ImageDepthServices {
 
 		return pixelData;
 	}
-// http://localhost:8080/ThreeDaFace/myFaceShow.html?imgeName=a1.jpg	
+
 	public static int[] createSingleColorImage(BufferedImage img) {
 
 		int counter = 0;
@@ -287,80 +293,86 @@ public class ImageDepthServices {
 		}
 	}
 	
-	public static FaceImage handleSingleToning(int scaleSize, FaceData fileNameD)
+	public static FaceImage handleSingleToning(FaceData fileNameD)
 			throws IOException {
 		FaceImage faceImage;
 		String fullFileNameD = fileNameD.getdImageNameRealPath();//getServletContext().getRealPath(fileNameD.getdImageName());
 		
 		BufferedImage imgD = ImageIO.read(new File(fullFileNameD));
 		int[] texture = ImageDepthServices.createSingleToningImage(imgD);
-		int[] depth = ImageDepthServices.createImageDepth(imgD, scaleSize, imgD, 0,0);
+		int[] depth = ImageDepthServices.createImageDepth(imgD, imgD, 0, 0);
 		
 		faceImage = new FaceImage(texture, depth, imgD.getHeight(),
 				imgD.getWidth());
 		return faceImage;
 	}
 
-	public static FaceImage handleSingleColor(int scaleSize, FaceData fileNameD)
+	public static FaceImage handleSingleColor(FaceData fileNameD)
 			throws IOException {
 		FaceImage faceImage;
 		String fullFileNameD = fileNameD.getdImageNameRealPath();//getServletContext().getRealPath(fileNameD.getdImageName());
 		
 		BufferedImage imgD = ImageIO.read(new File(fullFileNameD));
 		int[] texture = ImageDepthServices.createSingleColorImage(imgD);
-		int[] depth = ImageDepthServices.createImageDepth(imgD, scaleSize, imgD, 0,0);
+		int[] depth = ImageDepthServices.createImageDepth(imgD, imgD, 0, 0);
 		
 		faceImage = new FaceImage(texture, depth, imgD.getHeight(),
 				imgD.getWidth());
 		return faceImage;
 	}
 
-	public static FaceImage handleGray(int scaleSize, FaceData fileNameD)
+	public static FaceImage handleGray(FaceData fileNameD)
 			throws IOException {
 		FaceImage faceImage;
 		String fullFileNameD = fileNameD.getdImageNameRealPath();//getServletContext().getRealPath(fileNameD.getdImageName());
 		
 		BufferedImage imgD = ImageIO.read(new File(fullFileNameD));
 		int[] texture = ImageDepthServices.createGrayImage(imgD);
-		int[] depth = ImageDepthServices.createImageDepth(imgD, scaleSize, imgD, 0,0);
+		int[] depth = ImageDepthServices.createImageDepth(imgD, imgD, 0, 0);
 		
 		faceImage = new FaceImage(texture, depth, imgD.getHeight(),
 				imgD.getWidth());
 		return faceImage;
 	}
 
-	public static FaceImage handleRGB(int scaleSize,
-			FaceData fileNameD) throws IOException {
+	public static FaceImage handleRGB(FaceData fileNameD) throws IOException {
 		BufferedImage img;
 		
-		String fileName = fileNameD.getImageNameRealPath();// getServletContext().getRealPath("images/textures/" + fileName);
+		// Get the image (texture) full path
+		String fileName = fileNameD.getImageNameRealPath();
 		System.out.println(fileName);
+		
+		// Read the image
 		img = ImageIO.read(new File(fileName));
 
+		// Convert the texture to array
 		int[] texture = ImageDepthServices.getImageRgb(img);
 		
-		int[] depth = getImageDepthForTexture(img, fileNameD,scaleSize);
+		// Convert the Depth to array by matching to texture
+		int[] depth = getImageDepthForTexture(img, fileNameD);
 		
-		FaceImage faceImage = new FaceImage(texture, depth, img.getHeight(),
-				img.getWidth());
-		return faceImage;
+		return new FaceImage(texture, depth, img.getHeight(),img.getWidth());
 	}
 
-	public static int[] getImageDepthForTexture(BufferedImage img, FaceData fileNameD, int scaleSize) {
+	public static int[] getImageDepthForTexture(BufferedImage img, FaceData fileNameD) {
 
 		BufferedImage imgD = null;
 		int[] pixelData = null;
 
 		try {
+			
+			// Get the image (Depth) full path
 			String fullFileNameD = fileNameD.getdImageNameRealPath();//getServletContext().getRealPath(fileNameD.getdImageName());
 			System.out.println(fullFileNameD);
+			
+			// Read the image
 			imgD = ImageIO.read(new File(fullFileNameD));
 
 			int facePosX = fileNameD.getFacePosX();
 			int facePosY = fileNameD.getFacePosY();
 			
-			
-			pixelData = ImageDepthServices.createImageDepth(img, scaleSize, imgD, facePosX,facePosY);
+			// Convert the Depth to array by matching to texture
+			pixelData = ImageDepthServices.createImageDepth(img, imgD, facePosX, facePosY);
 
 		} catch (IOException e) {
 			e.printStackTrace();

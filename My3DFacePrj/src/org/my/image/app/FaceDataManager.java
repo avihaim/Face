@@ -95,7 +95,7 @@ public class FaceDataManager {
 		return split;
 	}
 
-	public static FaceData getFaceData(String imageName) throws IOException {
+	public static FaceData getOrCreateFaceData(String imageName) throws IOException {
 		
 		System.out.println("FaceDataManager start");
 		
@@ -126,7 +126,7 @@ public class FaceDataManager {
 	//			System.out.println(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName);
 	//			ImageIO.write(resizeImage, domainName, new File(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName)); 
 				
-				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "thumbnails/t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
+				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
 				FaceDataManager.addFaceData(imageName, faceData );
 			} catch (Exception e) {
 				System.out.println("FaceDataManager Exception " + e.getMessage());

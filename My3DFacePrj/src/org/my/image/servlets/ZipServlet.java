@@ -46,7 +46,7 @@ public class ZipServlet extends HttpServlet {
 //			FaceDataManager.init(getServletContext().getRealPath("images"));
 //		}
 		
-		FaceData fileNameD = FaceDataManager.getFaceData(fileName);
+		FaceData fileNameD = FaceDataManager.getOrCreateFaceData(fileName);
 		
 		String fileNameTexture = fileNameD.getImageNameRealPath();//getServletContext().getRealPath("images/textures/" + fileName);
 		

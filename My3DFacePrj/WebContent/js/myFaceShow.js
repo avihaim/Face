@@ -3,30 +3,11 @@ $(document)
 				
 				function() {
 
-					
-					var SCREEN_WIDTH = window.innerWidth;
-					var SCREEN_HEIGHT = window.innerHeight;
-
-					var windowHalfX = window.innerWidth / 2;
-					var windowHalfY =  window.innerHeight / 2;
-
-					var mouseX = 0, mouseY = 0;
 					var mouseRightX = 0, mouseRightY = 0;
-					var startX = 0;
-					var startY = 0;
-					var startZ = 0;
-					var mouseDelta = 0;
-					var isClick = false;
-					var isRightClick = false;
 					var sceneData;
-					var uniforms;
 					var scaleSize = 5;
-					var width, height;
-					var imageMoveX = 0;
-				    var imageMoveY = 0;
 				    var geometry;
 				    var material;
-				    var x = 0;
 				    
 //				    =============================================
 				    var delta_x_rotate = 0;
@@ -42,46 +23,39 @@ $(document)
 					var oldx = 0;
 					var oldy = 0;
 
-					var rotate_matrix;
-					
-					
 					var touchAction = 0; // 0 = left mouse;  2 = right mouse
 
 					
 //					==============================================
 					
-					
-				
-//					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
-//						 
-//					if (document.attachEvent) //if IE (and Opera depending on user setting)
-//					    document.attachEvent("on"+mousewheelevt,onMousewheel);
-//					else if (document.addEventListener) //WC3 browsers
-//					    document.addEventListener(mousewheelevt,onMousewheel, false);
-					
+					//Start add all the mouse event
 					var container = document.getElementById('container');
 					
 					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
-						 
+					
+					// Event for mouse wheel - zoom in/out
 					container.addEventListener(mousewheelevt, onMousewheel, false);
 					
+					// Event for mouse down
 					container.addEventListener('mousedown',
 							onDocumentMouseDown); 
 					
+					// Event for mouse up
 					container.addEventListener('mouseup',
 							onDocumentMouseUp);
 					
+					// Event for mouse move
 					container.addEventListener('mousemove',
 							onDocumentMouseMove, false);
 					
+					// Event for cancel Context Menu
 					container.addEventListener('onContextMenu',
 							onContextMenuEvet, false); 
 					
+					// Event for Change scale size
 					$('#scaleSizeSubmit').click(scaleSizeOninput);
 					
-//					$('#modeSelect').addEventListener('onchange',
-//							selectModeEvent, false);
-					
+					// Event for Change model mode
 					 $("select").change(function () {
 				          var mode = "";
 				          $("select option:selected").each(function () {
@@ -98,27 +72,22 @@ $(document)
 							
 							updateSceneData(fileName,scaleSize,mode);
 							
-							
 				        });
 
-
+					//End add all the mouse event
 					
 					if (!Detector.webgl) {
-
 						Detector.addGetWebGLMessage();
 						document.getElementById('container').innerHTML = "";
-
 					}
 
 					var stats;
 
-					var camera, controls, scene, renderer;
+					var camera, scene, renderer;
 
 					var mesh, texture;
 
-					var worldWidth = 6000, worldDepth = 6000, worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
-
-					var clock = new THREE.Clock();
+					var worldWidth = 6000, worldDepth = 6000;
 					
 					$.support.touch = 'ontouchend' in document;
 					
@@ -148,10 +117,7 @@ $(document)
 					animate();
 					
 					
-					
-					
 					function init() {
-						// touch();
 						// Setup the ajax indicator
 						$('body')
 								.append(
@@ -170,11 +136,12 @@ $(document)
 							width : "auto"
 						});
 
+						// Start ajaxBusy
 						$('#ajaxBusy').show();
 
 						scene = new THREE.Scene();
 						
-//						 camera = new THREE.PerspectiveCamera( 0, 0, 0, 0 );
+						// CAMERA
 						camera = new THREE.PerspectiveCamera(1,
 								window.innerWidth / window.innerHeight, 1,
 								400000);
@@ -186,36 +153,15 @@ $(document)
 						scene.add(camera);
 						
 						// LIGHTS
-
 						ambientLight = new THREE.AmbientLight( 0xFFFFFF );
 						scene.add( ambientLight );
-//
-//						pointLight = new THREE.PointLight( 0xffffff, 1.25, 1000 );
-//						pointLight.position.set( 0, 0, 600 );
-//
-//						scene.add( pointLight );
-//
-//						directionalLight = new THREE.DirectionalLight( 0xffffff );
-//						directionalLight.position.set( 1, -0.5, -1 );
-//						scene.add( directionalLight );
-						
-						
-						
-						
-						
-						//controls = new THREE.PathControls(camera);
-						
-						
-						
-//						controls.movementSpeed = 1000;
-//						controls.lookSpeed = 0.1;
 
 						var faceData;
 
+						// Get the file model name
 						var urlQuery = location.search;
 						urlQuery = urlQuery.replace('?', '');
 						var split = urlQuery.split('=');
-
 						var fileName = split[1];
 						
 						var mode = "";
@@ -225,22 +171,28 @@ $(document)
 						
 						updateSceneData(fileName,scaleSize,mode);
 						
+						// Add link to download a ZIP with the model images
 						$('body')
 						.append(
 								'<div class="zipLink"><a href="ZipServlet?fileName='+fileName+'">download</a></div>');
 						
+						// Add link to facebok like
 						$('body')
 						.append(
 								'<iframe  style="display: none;" class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
 								'" "scrolling="no" frameborder="0" style="border:none; width:450px; height:80px"></iframe>');
 						
+						// FIX: Zoom out so the use can zoom in
 						zoom(-360*15);
 
 					}
 
+					
+					// Copy the texture data to canvas
 					function generateTexture(texturedata, width, height) {
-						var canvas, canvasScaled, context, image, imageData, counter, level, diff, vector3, sun, shade;
+						var canvas, context, image, imageData;
 
+						// Create new canvas
 						canvas = document.createElement('canvas');
 						canvas.width = width;
 						canvas.height = height;
@@ -249,16 +201,19 @@ $(document)
 						context.fillStyle = '#000';
 						context.fillRect(0, 0, width, height);
 
-						image = context.getImageData(0, 0, width,
-								height);
+						// Get a "reference" to canvas
+						image = context.getImageData(0, 0, width,height);
+						
 						imageData = image.data;
 
+						// Copy the data
 						for ( var i = 0; i < texturedata.length; i += 4) {
 							imageData[i] = texturedata[i];
 							imageData[i + 1] = texturedata[i + 1];
 							imageData[i + 2] = texturedata[i + 2];
 						}
 
+						// Put the canvas in the page
 						context.putImageData(image, 0, 0);
 
 						return canvas;
@@ -272,9 +227,14 @@ $(document)
 						container = document.getElementById('container');
 
 						var dataString = new Object();
+						
+						// The mode name
 						dataString["fileName"] = fileName;
+						
+						// The mode wo whant the mode (full rgb, single color..)
 						dataString["mode"] = mode;
 
+						// Ajax call to server side to get the model data 
 						$
 								.ajax({
 									url : "ImageRGBServlet",
@@ -300,22 +260,16 @@ $(document)
 						values = faceData.depth;
 						worldWidth = faceData.width;
 						worldDepth = faceData.height;
-						worldHalfWidth = worldWidth / 2;
-						worldHalfDepth = worldDepth / 2;
 						width = faceData.width;
 						height = faceData.height;
 						// =====================
 						
-						startX = camera.position.x;
-						startY = camera.position.y;
-						startZ = camera.position.Z;
 						
-						
+						// Create new geometry object 
 						geometry = new THREE.PlaneGeometry(
 								4000, 4000, worldWidth - 1,worldDepth - 1);
-					//	4000, 4000,0,0);
-						
 
+						// Copy the heights map to the geometry
 						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
 
 							if (values[i] > 0) {
@@ -326,90 +280,58 @@ $(document)
 
 						}
 						
+						// Create the texture for the mash
 						texture = new THREE.Texture(
-								generateTexture(
-										faceData.texture,
-										worldWidth, worldDepth),
-								new THREE.UVMapping(),
-								THREE.ClampToEdgeWrapping,
-								THREE.ClampToEdgeWrapping);
+								generateTexture(faceData.texture,worldWidth, worldDepth),
+								new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping);
 						
 						
 						texture.needsUpdate = true;
-						
-						var ambient = 0x111111, diffuse = 0xbbbbbb, specular = 0x060606, shininess = 35;
 
-						// , shading: THREE.FlatShading
+						// For the single color model we probably need to use the MeshLambertMaterial
 //						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
 						material = new THREE.MeshBasicMaterial({map : texture});
-						//MeshLambertMaterial
-						//MeshBasicMaterial
 						
 						mesh = new THREE.Mesh(geometry,material);
 						
+						
+						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
+						
+						// We like that the camera lookAt the model, 
+						// we don't use it at the render function because we 
+						// want the user can be free to move the model   
 						camera.lookAt( mesh.position );
+						
+						// Add the model to the scene
 						scene.add(mesh);
 						
 
-//						renderer = new THREE.CanvasRenderer();
 						renderer = new THREE.WebGLRenderer();
-						//renderer.setSize(window.innerWidth,window.innerHeight);
+						
+						// Set the renderer size to window wide and height - 80 
+						// to save same place to control icons
 						renderer.setSize(window.innerWidth , window.innerHeight -80);
-						//renderer.setViewport(0,0, width*2, height*2);
-//						renderer.setViewport(-window.innerWidth,-window.innerHeight, width, height);
 						
 						container.innerHTML = "";
 
 						container
 								.appendChild(renderer.domElement);
-
-						stats = new Stats();
-						stats.domElement.style.position = 'absolute';
-						stats.domElement.style.top = '0px';
-						container.appendChild(stats.domElement);
 						
+						
+						// Hide the ajaxBusy image
 						$('#ajaxBusy').hide();
-						$("#container div:not(#canvas)")
-								.children().remove();
 						
 					}
 
 					function render() {
 
+						// For Debug only
 						 $('#x').html('<p>x=' + camera.position.x + ' mx ='+mouseRightX+'</p>');
 						 $('#y').html('<p>y=' + camera.position.y + ' my ='+mouseRightY+'</p>');
 						 $('#z').html('<p>z=' + camera.position.z + '</p>');
-						//						
 
-						// camera.lookAt( scene.position );
-
-						// renderer.enableScissorTest( false );
-						// renderer.clear();
-						// renderer.enableScissorTest( true );
 						 
-						 
-						 
-//						imageMoveX  = mouseRightX;
-//						imageMoveY = -mouseRightY; 
-//						
-//						camera.position.x = startX - mouseX * 7;
-//						camera.position.Y = startY - mouseY * 7;
-						
-						
-						
-						//if ((camera.position.z - mouseDelta * 70 <= 3000) && (camera.position.z - mouseDelta * 70 >= 1500)) {
-//							camera.position.Y = startY - mouseDelta * 7;
-						//}
-//						mouseDelta = 0;
-						
-//						renderer.setViewport(0, 0, width, height);
-//						renderer.setViewport(imageMoveX, imageMoveY, width, height);
-						
-//						camera.updateProjectionMatrix();
-						
-//						if (( left_mouse_is_down ) || (right_mouse_is_down)) {
-					//	camera.position.z = scale_factor ;
 						var tempMat = new THREE.Matrix4();
 						mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
 						tempMat.makeRotationAxis(new THREE.Vector3(0,0,1), -delta_x_rotate);
@@ -428,11 +350,6 @@ $(document)
 						delta_y_rotate = 0;
 						delta_x = 0;
 						delta_y = 0;
-//						}
-						 
-						//controls.update(0);
-						// controls.update(clock.getDelta());
-					//	
 
 						renderer.render(scene, camera);
 						
@@ -442,12 +359,6 @@ $(document)
 					
 					
 					function onDocumentMouseDown(event) {
-
-//						if(event.which == 1){
-//							isClick = true;
-//						} else if(event.which == 3){
-//							isRightClick = true;
-//						}
 						
 						var evt=window.event || event;
 						
@@ -475,12 +386,6 @@ $(document)
 					
 					function onDocumentMouseUp(event) {
 
-//						if(event.which == 1){
-//							isClick = false;
-//						} else if(event.which == 3){
-//							isRightClick = false;
-//						}
-						
 						var evt=window.event || event;
 						if (evt.button == 0)
 						{
@@ -504,15 +409,6 @@ $(document)
 
 					function onDocumentMouseMove(event) {
 
-//						if(isClick){
-//							mouseX = (event.clientX - windowHalfX);
-//							mouseY = (event.clientY - windowHalfY);
-//						} else if(isRightClick){
-//							
-//							mouseRightX = (event.clientX - windowHalfX);
-//							mouseRightY =  (event.clientY - windowHalfY);
-//						}
-						
 						var evt=window.event || event;
 						var newx,newy;
 						var rotate_factor = 100;
@@ -555,12 +451,6 @@ $(document)
 					}
 					
 					function onMousewheel(e) {
-//						if (event.detail) { /** Mozilla case. */
-//			                /** In Mozilla, sign of delta is different than in IE.
-//			                 * Also, delta is multiple of 3.
-//			                 */
-//							mouseDelta = -event.detail/3;
-						
 						
 						var evt=window.event || e ;
 						var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
@@ -591,14 +481,6 @@ $(document)
 		    			scale_factor = new_scale_factor;
 					}
 					
-					function onZoomOut(){
-						zoom(-360);
-					}
-					
-					function onZoomIn(){
-						zoom(360);
-					}
-					
 					function onContextMenuEvet(event) {
 						return false;
 					}
@@ -607,23 +489,6 @@ $(document)
 						scaleSize = $("#scaleSize").val();
 						
 						updateData(sceneData,parseInt(scaleSize));
-						
-//						// set the geometry to dynamic
-//						// so that it allow updates
-//						mesh.geometry.dynamic = true;
-//						
-//						scaleSize = parseInt(scaleSize) * 2;
-//						
-//						for ( var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
-//
-//							if (values[i] > 0) {
-//								mesh.geometry.vertices[i].y = values[i]*scaleSize;
-//							} else {
-//								mesh.geometry.vertices[i].y = 1;
-//							}
-//
-//						}
-						
 					}
 					
 					function animate() {
@@ -635,23 +500,33 @@ $(document)
 
 					}
 					
+					
+					// Touch functions
+					
+					// Zoom out one wheel tic
+					function onZoomOut(){
+						zoom(-360);
+					}
+					
+					// Zoom in one wheel tic
+					function onZoomIn(){
+						zoom(360);
+					}
+					
+					// Change between Right click to left click Simulation 
 					function changeTouchAction() {
-						if(touchAction == 0) {
-							touchAction = 2;
+						if(touchAction == 0) { // was left 
+							touchAction = 2; // change to right
 							$('#touchAction').removeClass('transform-move');
 							$('#touchAction').addClass('transform-rotate');
-						} else {
-							touchAction = 0;
+						} else { // was right 
+							touchAction = 0; // change to left 
 							$('#touchAction').removeClass('transform-rotate');
 							$('#touchAction').addClass('transform-move');
 						}
 					}
 					
-					function touchHandler(event)
-					{
-						
-						
-						//alert(event.type);
+					function touchHandler(event) {
 					    var touches = event.changedTouches,
 					        point = touches[0],
 					        type = "";
@@ -663,7 +538,7 @@ $(document)
 					        default: return;
 					    }
 
-					             //initMouseEvent(type, canBubble, cancelable, view, clickCount,
+					    // initMouseEvent(type, canBubble, cancelable, view, clickCount,
 					    //           screenX, screenY, clientX, clientY, ctrlKey,
 					    //           altKey, shiftKey, metaKey, button, relatedTarget);
 					    

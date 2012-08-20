@@ -41,43 +41,31 @@ public class ImageRGBServlet extends HttpServlet {
 		String mode = request.getParameter("mode");
 		System.out.println("mode : " + mode);
 		
-		
-		
-		int scaleSize = 1;
-
-//		String scaleSizeParameter = request.getParameter("scaleSize");
-//		
-//		if(scaleSizeParameter != null) {
-//			scaleSize = Integer.parseInt(scaleSizeParameter);
-//			System.out.println("scaleSize : " + scaleSize);
-//		}
-		
 		System.out.println(fileName);
 
 		long currentTimeMillis = System.currentTimeMillis();
 		
 		System.out.println("ImageRGBServlet start to FaceDataManager init");
-//		if (!FaceDataManager.isInit()) {
-//			FaceDataManager.init(getServletContext().getRealPath("images"));
-//		}
 		
 		System.out.println("ImageRGBServlet start to getFaceData for file " + fileName);
-		FaceData fileNameD = FaceDataManager.getFaceData(fileName);
+		
+		// Get the model data
+		FaceData fileNameD = FaceDataManager.getOrCreateFaceData(fileName);
 
 		FaceImage faceImage = null;
 				
 		switch (mode) {
-		case "rgb":
-			faceImage = ImageDepthServices.handleRGB(scaleSize, fileNameD);
+		case "rgb": // Normal mode
+			faceImage = ImageDepthServices.handleRGB(fileNameD);
 			break;
 		case "gray":
-			faceImage = ImageDepthServices.handleGray(scaleSize, fileNameD);
+			faceImage = ImageDepthServices.handleGray(fileNameD);
 			break;
 		case "singleColor":
-			faceImage = ImageDepthServices.handleSingleColor(scaleSize, fileNameD);
+			faceImage = ImageDepthServices.handleSingleColor(fileNameD);
 			break;
 		case "SingleToning":
-			faceImage = ImageDepthServices.handleSingleToning(scaleSize, fileNameD);
+			faceImage = ImageDepthServices.handleSingleToning(fileNameD);
 			break;
 		default:
 			break;
