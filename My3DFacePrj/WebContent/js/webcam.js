@@ -1,3 +1,20 @@
+function fancyboxHrefItem(href,item) {
+	
+	$(item).fancybox({
+		'padding'		: 0,
+		'autoScale'		: false,
+		'speedIn' 		: 200,
+		'speedOut' 		: 200,
+		'transitionIn'	: 'elastic',
+		'transitionOut'	: 'elastic',
+		'title'			: this.title,
+		'width'		    : 1000,
+		'height'		: 650,
+		'href'			: href,
+		'type'			: 'iframe'
+	});
+
+}
 
 $(function() {
 
@@ -33,35 +50,22 @@ $(function() {
 				
 				var dataUrl =  canvas.toDataURL("image/png");
 				
-				$.post("UploadImage", {
-					type : "data",
-					data : "",
-					image2 : dataUrl,
-					success : function(data) {
-						alert(data);
-					}
-				});
+				
+				$
+				.ajax({
+					type: "POST",
+					url : "UploadImage",
+					dataType :'text',
+					data : dataUrl}
+					).done(function( imageName ) {
+						fancyboxHrefItem('myFaceShow.html?fileName=' +  imageName,"canvas");
+					});
 				
 				pos=0;
 			}
 		};
 
-	} else {
-
-		saveCB = function(data) {
-			image.push(data);
-
-			pos += 4 * 320;
-
-			if (pos >= 4 * 320 * 240) {
-				$.post("UploadImage", {
-					type : "pixel",
-					image : image.join('|')
-				});
-				pos = 0;
-			}
-		};
-	}
+	} 
 
 	$("#webcam").webcam({
 

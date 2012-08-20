@@ -44,11 +44,11 @@ public class SliderManagerServlet extends HttpServlet {
 //		Map<String,FaceData> allFaceData = FaceDataManager.getAllFaceData();
 		List<FaceData> allFaceData = null;
 		
-		if(!FaceDataManager.isInit()) {
-			String realPath = getServletContext().getRealPath("images");
-		
-			FaceDataManager.init(realPath);
-		}
+//		if(!FaceDataManager.isInit()) {
+//			String realPath = getServletContext().getRealPath("images");
+//		
+//			FaceDataManager.init(realPath);
+//		}
 		
 		if("back".equals(direction)) {
 			from -=15;

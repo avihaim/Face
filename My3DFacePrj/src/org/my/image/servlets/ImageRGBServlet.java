@@ -57,9 +57,9 @@ public class ImageRGBServlet extends HttpServlet {
 		long currentTimeMillis = System.currentTimeMillis();
 		
 		System.out.println("ImageRGBServlet start to FaceDataManager init");
-		if (!FaceDataManager.isInit()) {
-			FaceDataManager.init(getServletContext().getRealPath("images"));
-		}
+//		if (!FaceDataManager.isInit()) {
+//			FaceDataManager.init(getServletContext().getRealPath("images"));
+//		}
 		
 		System.out.println("ImageRGBServlet start to getFaceData for file " + fileName);
 		FaceData fileNameD = FaceDataManager.getFaceData(fileName);

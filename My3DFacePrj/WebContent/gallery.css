@@ -1,32 +1,33 @@
 body {
-	background-color: #333;
+/* 	background-color: #333; */
 	margin: 0 auto;
 	background-image: url('images/interface/bgnoise.png');
 }
 
-#container {
+#containerSite {
 	width: 793px;
 	height: 498px;
 	margin: 0 auto;
-	background-image: url('images/interface/back_noise.png');
-	background-color: #111;
-	margin-top: 40px;
+	background-image: url('images/interface/back_noise2.png');
+	background-repeat: no-repeat;
+/* 	background-color: #111; */
+/* 	margin-top: 40px; */
 	position: relative;
 }
 
-#container .mainframe {
+#containerSite .mainframe {
 	width: 500px;
 	height: 498px;
 	float: left
 }
 
-#container .thumbnails {
+#containerSite .thumbnails {
 	float: left;
 	width: 293px;
 	height: 498px;
 	background-repeat: no-repeat;
 	background-image: url('images/interface/total_grid.png');
-	background-position: 9px 70px;
+	background-position: 9px 57px;
 }
 
 .thumbnailimage {
@@ -85,7 +86,7 @@ img.large_thumb_image {
 	background-color: #333333;
 	background-size: 100% 100%;
 	
-	margin-top: 68px;
+	margin-top: 55px;
 	margin-left: 40px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
@@ -161,8 +162,8 @@ img.large_thumb_image {
 }
 
 .panelItem {
-	width: 16px;
-	height: 16px;
+	width: 32px;
+	height: 32px;
 	top : 0px;
 	left: 20px;
 	position: absolute;
@@ -171,13 +172,13 @@ img.large_thumb_image {
 }
 
 
-#uploadImage {
+.uploadImage {
 	cursor : pointer;
-	width: 16px;
-	height: 16px;
-	top : 445px;
-	left: 480px;
-	background-image: url('images/Button-Upload-icon.png');
+/* 	width: 32px; */
+/* 	height: 32px; */
+	top : 880px;
+	left: 400px;
+/* 	background-image: url('images/Button-Upload-icon.png'); */
 	background-repeat: no-repeat;
 	position: absolute;
 	
@@ -185,23 +186,23 @@ img.large_thumb_image {
 
 #next {
 	background-image: url('images/navigate-right-icon.png');
-	left: 65px;
-	top : -32px;
+	left: 80px;
+	top : -16px;
 }
 
 #back {
 	background-image: url('images/navigate-left-icon.png');
 	left: 45px;
-	top : -16px;
+	top : 16px;
 }
 
 #webcambox {
 	cursor : pointer;
 	background-image: url('images/blue-camera-icon.png');
-	width: 16px;
-	height: 16px;
-	top : 445px;
-	left: 460px;
+	width: 32px;
+	height: 32px;
+	top : 455px;
+	left: 450px;
 	background-repeat: no-repeat;
 	position: absolute;
 }

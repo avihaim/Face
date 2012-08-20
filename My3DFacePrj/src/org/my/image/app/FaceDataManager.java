@@ -12,17 +12,24 @@ import org.my.image.obj.FaceData;
 
 public class FaceDataManager {
 
-	public static String IMAGES_PATH = "D:\\java\\workspaces\\opencv\\MyProj\\WebContent\\images";
+	public static String IMAGES_PATH = System.getProperty("catalina.base") + File.separator + "work_dir";
 	private static Map<String, FaceData> imageMap = null;
 	private static List<FaceData> imageList;
+	
+	static {
+		try {
+			init();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-	public static void init(String path) throws IOException {
+	private static void init() throws IOException {
 
-		IMAGES_PATH = path;
 		imageMap = new HashMap<String, FaceData>();
 		imageList = new ArrayList<FaceData>();
 		
-		File folder = new File(path+"/textures");
+		File folder = new File(IMAGES_PATH+"/textures");
 		File[] listOfFiles = folder.listFiles();
 
 		for (File file : listOfFiles) {
@@ -37,7 +44,7 @@ public class FaceDataManager {
 					int x = extractFacePosFile[0];
 					int y = extractFacePosFile[1];
 					
-					FaceData faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "thumbnails/t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
+					FaceData faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
 					
 					addFaceData(imageName, faceData);
 				} catch (Exception e) {
@@ -60,7 +67,7 @@ public class FaceDataManager {
 		return is;
 	}
 
-	public static String[] extractFacePosFile(String path, String imageName) {
+	private static String[] extractFacePosFile(String path, String imageName) {
 		
 		String[] split = new String[2];
 		

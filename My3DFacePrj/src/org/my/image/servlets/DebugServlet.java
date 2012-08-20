@@ -26,38 +26,34 @@ public class DebugServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		
-		String newPath = request.getParameter("newpath");
+		String javaPath = System.getProperty("catalina.base");
+		response.getWriter().println(javaPath);
+	//	String[] split = javaPath.split(";");
 		
 		
+//		response.getWriter().println("javaPath : ");
+//		for (String string : split) {
+//			response.getWriter().println(string);
+//		}
+//		
+//		response.getWriter().println("==========================================");
 		
-		String javaPath = System.getProperty("java.library.path");
-		
-		String[] split = javaPath.split(";");
-		
-		
-		response.getWriter().println("javaPath : ");
-		for (String string : split) {
-			response.getWriter().println(string);
-		}
-		
-		response.getWriter().println("==========================================");
-		
-		
-		if(newPath != null) {
-			
-			javaPath = javaPath.trim() + ";" + newPath;
-			
-			System.setProperty("java.library.path", javaPath);
-			
-			javaPath = System.getProperty("java.library.path");
-			
-			split = javaPath.split(";");
-			
-			response.getWriter().println("javaPath : ");
-			for (String string : split) {
-				response.getWriter().println(string);
-			}
-		}
+//		
+//		if(newPath != null) {
+//			
+//			javaPath = javaPath.trim() + ";" + newPath;
+//			
+//			System.setProperty("java.library.path", javaPath);
+//			
+//			javaPath = System.getProperty("java.library.path");
+//			
+//			split = javaPath.split(";");
+//			
+//			response.getWriter().println("javaPath : ");
+//			for (String string : split) {
+//				response.getWriter().println(string);
+//			}
+//		}
 		
 		
 //		

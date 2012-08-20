@@ -1,4 +1,9 @@
 
+function openWebGlPopup(imageName) {
+	fancyboxHrefItem('myFaceShow.html?fileName=' +  imageName,"a#upimage");
+	 //.fancybox()
+	$("a#upimage").trigger('click');
+}
 
 
 function fancyboxHrefUploud(href) {
@@ -20,8 +25,13 @@ function fancyboxHrefUploud(href) {
 }
 
 function fancyboxHref(href) {
+	fancyboxHrefItem(href,"div#largephoto");
+
+}
+
+function fancyboxHrefItem(href,item) {
 	
-	$("div#largephoto").fancybox({
+	$(item).fancybox({
 		'padding'		: 0,
 		'autoScale'		: false,
 		'speedIn' 		: 200,
@@ -100,10 +110,10 @@ function getData(from, direction) {
 			for ( var i = 0; i < data.length; i++) {
 
 				var divData = '<div class="thumbnailimage" "><div class="thumb_container thumbClass'+ data[i].pos + '"> <div class="large_thumb">'
-						+ '<img src="images/'
+						+ '<img src="upload?getoldthumb='
 						+ data[i].thumName
 						+ '" class="large_thumb_image stretch" alt="thumb" /> '
-						+ '<img id="thumbimage'+ data[i].pos + '" src="images/textures/'
+						+ '<img id="thumbimage'+ data[i].pos + '" src="upload?getfile='
 						+ data[i].imageName
 						+ '" class="large_image" rel="" />'
 						+ '<div class="large_thumb_border" ></div>'
@@ -199,29 +209,19 @@ function getData(from, direction) {
 			$('.thumb_container')
 					.hover(
 							function() {
-								$(this)
-										.find(
-												".large_thumb")
-										.stop()
-										.animate(
+								$(this).find(".large_thumb").stop().animate(
 												{
 													marginLeft : -7,
 													marginTop : -7
 												}, 200);
-								$(this)
-										.find(
-												".large_thumb_shine")
-										.stop();
-								$(this)
-										.find(
-												".large_thumb_shine")
-										.css(
+								
+								$(this).find(".large_thumb_shine").stop();
+								
+								$(this).find(".large_thumb_shine").css(
 												"background-position",
 												"-99px 0");
-								$(this)
-										.find(
-												".large_thumb_shine")
-										.animate(
+								
+								$(this).find(".large_thumb_shine").animate(
 												{
 													backgroundPosition : '99px 0'
 												}, 700);
@@ -264,7 +264,26 @@ $(document)
 					
 					getData(0,'next');
 					
+					$("body").append('<a href="#webCamImage" id="webCamImage"  style="display: none;"></a>');
+//					$("body").append('<a href="#upimage" id="upimage"  style="display: none;"></a>');
+					
+					$("a#webCamImage").fancybox();
 					$("a#single_image").fancybox();
+					
+					$("a#upimage").fancybox({
+						'padding'		: 0,
+						'autoScale'		: false,
+						'speedIn' 		: 200,
+						'speedOut' 		: 200,
+						'transitionIn'	: 'elastic',
+						'transitionOut'	: 'elastic',
+						'title'			: this.title,
+						'width'		    : 1000,
+						'height'		: 650,
+						'href'			: 'myFaceShow.html?fileName=a1.jpg',
+						'type'			: 'iframe'
+					});
+					
 					
 					$.support.touch = 'ontouchend' in document;
 					
@@ -284,7 +303,7 @@ $(document)
 						'title'			: this.title,
 						'width'		    : 1000,
 						'height'		: 650,
-						'href'			: 'uploadImageFrame.html',
+						'href'			: 'fileUpload.html',
 						'type'			: 'iframe'
 					});
 					

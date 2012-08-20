@@ -57,7 +57,18 @@
 		<servlet-name>ZipServlet</servlet-name>
 		<url-pattern>/ZipServlet</url-pattern>
 	</servlet-mapping>
-	<listener>
-		<listener-class>org.my.image.servlets.FileUploadListener</listener-class>
-	</listener>
+	<!-- <listener> -->
+	<!-- <listener-class>org.my.image.servlets.FileUploadListener</listener-class> -->
+	<!-- </listener> -->
+
+	<servlet>
+		<description />
+		<display-name>UploadServlet</display-name>
+		<servlet-name>UploadServlet</servlet-name>
+		<servlet-class>org.my.image.servlets.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UploadServlet</servlet-name>
+		<url-pattern>/upload</url-pattern>
+	</servlet-mapping>
 </web-app>

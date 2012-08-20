@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +26,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.my.image.app.FaceDataManager;
 
 import sun.misc.BASE64Decoder;
@@ -49,8 +54,11 @@ public class UploadImage extends HttpServlet {
 		if (!isMultipart) {
 		//	handleNotMultipart(request);
 			
-			String imageBase64 = request.getParameter("image2");
 			
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(request.getInputStream(), writer);
+			String imageBase64 = writer.toString();
+
 			imageBase64 = imageBase64.replaceFirst("data:image/png;base64,", "");
 			
 	        BASE64Decoder decoder = new BASE64Decoder();
@@ -68,7 +76,7 @@ public class UploadImage extends HttpServlet {
 	          ImageIO.write(image, "png", f);
 	          
 	          System.out.println(f.getName());
-	          response.getWriter().print(f.getName());
+	          response.sendRedirect("myFaceShow.html?fileName=" + f.getName());
 			
 		} else {
 			FileItemFactory factory = new DiskFileItemFactory();
@@ -81,6 +89,10 @@ public class UploadImage extends HttpServlet {
 			} catch (org.apache.commons.fileupload.FileUploadException e) {
 				e.printStackTrace();
 			}
+			
+			PrintWriter writer = response.getWriter();
+			response.setContentType("application/json");
+			JSONArray json = new JSONArray();
 			
 			Iterator<?> itr = items.iterator();
 			while (itr.hasNext()) {
@@ -99,11 +111,24 @@ public class UploadImage extends HttpServlet {
 						
 						item.write(savedFile);
 						
-						response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
+						JSONObject jsono = new JSONObject();
+						jsono.put("name", savedFile.getName());
+						jsono.put("size", item.getSize());
+						jsono.put("url", "upload?getfile=" + savedFile.getName());
+						jsono.put("thumbnail_url",
+								"upload?getthumb=" + savedFile.getName());
+						jsono.put("delete_url", "upload?delfile=" + savedFile.getName());
+						jsono.put("delete_type", "GET");
+						json.put(jsono);
+						
+//						response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
 					} catch (Exception e) {
 						e.printStackTrace();
 					} catch (Throwable e) {
 						e.printStackTrace();
+					} finally {
+						writer.write(json.toString());
+						writer.close();
 					}
 				}
 			}
@@ -136,13 +161,13 @@ public class UploadImage extends HttpServlet {
 		System.out.println("Final Image===" + finalimage);
 		
 		
-		String realPath = getServletContext().getRealPath("images");
+//		String realPath = getServletContext().getRealPath("images");
+//		
+//		if(!FaceDataManager.isInit()) {
+//			FaceDataManager.init(realPath);
+//		}
 		
-		if(!FaceDataManager.isInit()) {
-			FaceDataManager.init(realPath);
-		}
-		
-		String fileFullName =  realPath + File.separator + "textures" + File.separator + finalimage;
+		String fileFullName =  FaceDataManager.IMAGES_PATH + File.separator + "textures" + File.separator + finalimage;
 		System.out.println(fileFullName);
 		
 		return new File(fileFullName);

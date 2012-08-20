@@ -42,9 +42,9 @@ public class ZipServlet extends HttpServlet {
 	private void zipImageData(HttpServletResponse response, String fileName)
 			throws IOException {
 		
-		if (!FaceDataManager.isInit()) {
-			FaceDataManager.init(getServletContext().getRealPath("images"));
-		}
+//		if (!FaceDataManager.isInit()) {
+//			FaceDataManager.init(getServletContext().getRealPath("images"));
+//		}
 		
 		FaceData fileNameD = FaceDataManager.getFaceData(fileName);
 		
