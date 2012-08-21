@@ -3,7 +3,7 @@ $(document)
 				
 				function() {
 
-			//		var sceneData;
+					var sceneData;
 					var scaleSize = 5;
 				   
 //				    =============================================
@@ -54,9 +54,6 @@ $(document)
 					// Event for cancel Context Menu
 					container.addEventListener('onContextMenu',
 							onContextMenuEvet, false); 
-					
-					// Event for Change scale size
-					$('#scaleSizeSubmit').click(scaleSizeOninput);
 					
 					// Event for Change model mode
 					 $("select").change(function () {
@@ -171,7 +168,7 @@ $(document)
 						// Add link to download a ZIP with the model images
 						$('body')
 						.append(
-								'<div class="zipLink"><a href="ZipServlet?fileName='+fileName+'">download</a></div>');
+								'<div><a class="zipLink" href="ZipServlet?fileName='+fileName+'"></a></div>');
 						
 						// Add link to facebok like
 						$('body')
@@ -179,6 +176,8 @@ $(document)
 								'<iframe  style="display: none;" class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
 								'" "scrolling="no" frameborder="0" style="border:none; width:450px; height:80px"></iframe>');
 						
+						$(":range").rangeinput();
+						 
 						// FIX: Zoom out so the use can zoom in
 						zoom(-360*15);
 						
@@ -245,8 +244,9 @@ $(document)
 									}
 								});
 					}
+					
 					function successUpdateData(data) {
-					//	sceneData = data;
+						sceneData = data;
 						var scaleSize = $("#scaleSize").val();
 						updateData(data,parseInt(scaleSize));
 					}
@@ -256,8 +256,6 @@ $(document)
 						modelIsReady = false;
 						worldWidth = faceData.width;
 						worldDepth = faceData.height;
-//						width = faceData.width;
-//						height = faceData.height;
 						// =====================
 						
 						
@@ -271,7 +269,7 @@ $(document)
 							if (faceData.depth[i] > 0) {
 								geometry.vertices[i].y = faceData.depth[i]*scaleSize;
 							} else {
-								geometry.vertices[i].y = 1;
+								geometry.vertices[i].y = 0;
 							}
 
 						}
@@ -288,8 +286,11 @@ $(document)
 //						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
 						var material = new THREE.MeshBasicMaterial({map : texture});
 						
+						// Create the mash
 						mesh = new THREE.Mesh(geometry,material);
 						
+						//Flag geometry can update dynamic
+						mesh.geometry.dynamic = true;
 						
 						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
@@ -320,11 +321,10 @@ $(document)
 						
 						modelIsReady = true;
 						
-						isMadeAMove = true;
 						animate();
-						isMadeAMove = false;
 						
 					}
+					
 
 					function render() {
 
@@ -357,6 +357,25 @@ $(document)
 							delta_y_rotate = 0;
 							delta_x = 0;
 							delta_y = 0;
+							
+							var newScaleSize = $("#scaleSize").val();
+							
+							// Update the scale only if there is a change in the scaleSize
+							if(newScaleSize != scaleSize) {
+								
+								scaleSize = newScaleSize;
+								
+								// Copy the heights map to the geometry * scaleSize 
+								for ( var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
+	
+									if (mesh.geometry.vertices[i].y > 0 ) {
+										mesh.geometry.vertices[i].y = sceneData.depth[i]*scaleSize;
+									} 
+								}
+								
+								//Flag vertices need to update in the scene
+								mesh.geometry.verticesNeedUpdate = true;
+							}
 	
 							renderer.render(scene, camera);
 						}
@@ -501,17 +520,16 @@ $(document)
 						return false;
 					}
 					
-					function scaleSizeOninput() {
-						scaleSize = $("#scaleSize").val();
-						
-					//	updateData(sceneData,parseInt(scaleSize));
-					}
+					
 					
 					function animate() {
-
+						isMadeAMove = true;
+						
 						requestAnimationFrame(animate);
 
 						render();
+						
+						isMadeAMove = false;
 					}
 					
 					

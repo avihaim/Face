@@ -6,109 +6,16 @@
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<style>
-body {
-	color: #61443e;
-	font-family: Monospace;
-	font-size: 13px;
-	text-align: center;
-	background-color: #bfd1e5;
-	margin: 0px;
-	overflow: hidden;
-}
-
-#info {
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	padding: 5px;
-}
-
-a {
-	color: #a06851;
-}
-
-#scaleSizeSubmit {
-	background-image: url('images/Sign-Add-icon.png');
-	background-repeat: no-repeat;
-	width: 24px;
-	height: 24px;
-	position: absolute;
-}
-
-.transform-rotate {
-	background-image: url('images/Actions-transform-rotate-icon.png');
-	background-repeat: no-repeat;
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	top: 50px;
-	left: 0px;
-	cursor : pointer;
-}
-
-.transform-move {
-	background-image: url('images/Actions-transform-move-icon.png');
-	background-repeat: no-repeat;
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	top: 50px;
-	left: 0px;
-	cursor : pointer;
-}
-
-#zoom-in {
-	background-image: url('images/Zoom-In-icon.png');
-	background-repeat: no-repeat;
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	top: 50px;
-	left: 30px;
-	cursor : pointer;
-}
-
-#zoom-out {
-	background-image: url('images/Zoom-Out-icon.png');
-	background-repeat: no-repeat;
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	top: 50px;
-	left: 60px;
-	cursor : pointer;
-}
-
-
-.zipLink {
-	top: 0px;
-	left: 20px;
-	position: absolute;
-}
-
-.faceboklike {
-	top: 0px;
-	left: 650px;
-	position: absolute;
-}
-
-
-#container {
-	top: 80px;
-	position: absolute;
-}
-
-</style>
-
+	<link rel="stylesheet" type="text/css" href="css/myFaceShow.css"></link>
 </head>
 <body oncontextmenu="return false;">
 	<script src="js/jquery-1.7.2.min.js"></script>
 	<script src="js/build/Three.js"></script>
 	<script src="js/ImprovedNoise.js"></script>
 	<script src="js/Detector.js"></script>
-	<script src="js/Stats.js"></script>
+	<script src="js/jquery.tools.min.js"></script>
 	<script src="js/myFaceShow.js"></script>
+	
 <!-- 	style="display: none;" -->
 	<div style="display: none;" >
 		<div id="x">x</div>
@@ -123,8 +30,7 @@ a {
   		<option value="SingleToning">SingleToning</option>
 	</select>
 	
-	<input id="scaleSize" type="text" value="5" />
-	<div id="scaleSizeSubmit"></div>
+	<input id="scaleSize" type="range" value="5"  min="1" max="20"/>
 	<div id="container"></div>
 
 </body>

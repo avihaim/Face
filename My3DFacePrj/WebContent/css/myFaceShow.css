@@ -1,0 +1,152 @@
+@CHARSET "windows-1255";
+
+body {
+	color: #61443e;
+	font-family: Monospace;
+	font-size: 13px;
+	text-align: center;
+	background-color: #bfd1e5;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#info {
+	position: absolute;
+	top: 0px;
+	width: 100%;
+	padding: 5px;
+}
+
+a {
+	color: #a06851;
+}
+
+.transform-rotate {
+	background-image: url('../images/Actions-transform-rotate-icon.png');
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: 50px;
+	left: 0px;
+	cursor : pointer;
+}
+
+.transform-move {
+	background-image: url('../images/Actions-transform-move-icon.png');
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: 50px;
+	left: 0px;
+	cursor : pointer;
+}
+
+#zoom-in {
+	background-image: url('../images/Zoom-In-icon.png');
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: 50px;
+	left: 30px;
+	cursor : pointer;
+}
+
+#zoom-out {
+	background-image: url('../images/Zoom-Out-icon.png');
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+	top: 50px;
+	left: 60px;
+	cursor : pointer;
+}
+
+
+.zipLink {
+	top: 0px;
+	left: 20px;
+	position: absolute;
+	background-image: url('../images/Download-icon.png');
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	cursor : pointer;
+}
+
+.faceboklike {
+	top: 0px;
+	left: 650px;
+	position: absolute;
+}
+
+
+#container {
+	top: 80px;
+	position: absolute;
+}
+
+
+
+
+
+/* slider root element */
+.slider {
+    background:#3C72E6 url(../images/h30.png) repeat-x 0 0;
+    height:9px;
+    position:relative;
+    cursor:pointer;
+    border:1px solid #333;
+    width:200px;
+    left:275px;
+    float:left;
+    clear:right;
+    margin-top:10px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    -moz-box-shadow:inset 0 0 8px #000;
+}
+
+/* progress bar (enabled with progress: true) */
+.progress {
+    height:9px;
+    background-color:#C5FF00;
+    display:none;
+    opacity:0.6;
+}
+
+/* drag handle */
+.handle {
+    background:#fff url(../images/h30.png) repeat-x 0 0;
+    height:24px;
+    width:24px;
+    top:-10px;
+    position:absolute;
+    display:block;
+    margin-top:1px;
+    border:1px solid #000;
+    cursor:move;
+    -moz-box-shadow:0 0 6px #000;
+    -webkit-box-shadow:0 0 6px #000;
+    -moz-border-radius:14px;
+    -webkit-border-radius:14px;
+
+}
+
+/* the input field */
+.range {
+    border:1px inset #ddd;
+    float:left;
+    font-size:20px;
+    margin:0 0 0 15px;
+    padding:3px 0;
+    text-align:center;
+    width:50px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+}
+
+
