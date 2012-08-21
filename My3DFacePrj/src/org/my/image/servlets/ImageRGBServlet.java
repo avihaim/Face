@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.my.image.app.FaceDataManager;
 import org.my.image.app.ImageDepthServices;
 import org.my.image.obj.FaceData;
@@ -19,7 +19,7 @@ import org.my.image.obj.FaceImage;
 public class ImageRGBServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	
+	private static ObjectMapper mapper = new ObjectMapper();
 
 	/**
 	 * Default constructor.
@@ -45,8 +45,6 @@ public class ImageRGBServlet extends HttpServlet {
 
 		long currentTimeMillis = System.currentTimeMillis();
 		
-		System.out.println("ImageRGBServlet start to FaceDataManager init");
-		
 		System.out.println("ImageRGBServlet start to getFaceData for file " + fileName);
 		
 		// Get the model data
@@ -71,11 +69,10 @@ public class ImageRGBServlet extends HttpServlet {
 			break;
 		}
 		
+		mapper.writeValue(response.getWriter(),faceImage);
 		long tolal = System.currentTimeMillis() - currentTimeMillis;
+		
 		System.out.println("Total time " + tolal);
-
-		JSONObject jsonObject = new JSONObject(faceImage);
-		response.getWriter().print(jsonObject);
 
 	}
 

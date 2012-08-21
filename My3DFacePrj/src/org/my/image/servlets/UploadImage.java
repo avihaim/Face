@@ -27,8 +27,9 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.my.image.app.FaceDataManager;
 
 import sun.misc.BASE64Decoder;
@@ -42,6 +43,7 @@ public class UploadImage extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static Random generator = new Random();
+	private static ObjectMapper mapper = new ObjectMapper();
     
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
@@ -105,7 +107,10 @@ public class UploadImage extends HttpServlet {
 			
 			PrintWriter writer = response.getWriter();
 			response.setContentType("application/json");
-			JSONArray json = new JSONArray();
+			
+			
+//			JSONArray json = new JSONArray();
+			ArrayNode json = mapper.createArrayNode();
 			
 			Iterator<?> itr = items.iterator();
 			while (itr.hasNext()) {
@@ -123,8 +128,8 @@ public class UploadImage extends HttpServlet {
 						File savedFile = cerateNewFile(itemName);
 						
 						item.write(savedFile);
-						
-						JSONObject jsono = new JSONObject();
+						ObjectNode jsono = mapper.createObjectNode();
+//						JSONObject jsono = new JSONObject();
 						jsono.put("name", savedFile.getName());
 						jsono.put("id", generator.nextLong());
 						jsono.put("size", item.getSize());
@@ -133,7 +138,7 @@ public class UploadImage extends HttpServlet {
 								"upload?getthumb=" + savedFile.getName());
 						jsono.put("delete_url", "upload?delfile=" + savedFile.getName());
 						jsono.put("delete_type", "GET");
-						json.put(jsono);
+						json.add(jsono);
 						
 //						response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
 					} catch (Exception e) {
@@ -141,7 +146,8 @@ public class UploadImage extends HttpServlet {
 					} catch (Throwable e) {
 						e.printStackTrace();
 					} finally {
-						writer.write(json.toString());
+						
+						mapper.writeValue(response.getWriter(),json);
 						writer.close();
 					}
 				}

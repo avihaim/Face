@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.my.image.app.FaceDataManager;
 import org.my.image.obj.FaceData;
 import org.my.image.obj.SilderData;
@@ -18,7 +18,8 @@ import org.my.image.obj.SilderData;
  */
 public class SliderManagerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	private static ObjectMapper mapper = new ObjectMapper();
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -38,17 +39,7 @@ public class SliderManagerServlet extends HttpServlet {
 		
 		int from = Integer.parseInt(fromString);
 		
-		
-		
-		
-//		Map<String,FaceData> allFaceData = FaceDataManager.getAllFaceData();
 		List<FaceData> allFaceData = null;
-		
-//		if(!FaceDataManager.isInit()) {
-//			String realPath = getServletContext().getRealPath("images");
-//		
-//			FaceDataManager.init(realPath);
-//		}
 		
 		if("back".equals(direction)) {
 			from -=15;
@@ -64,15 +55,9 @@ public class SliderManagerServlet extends HttpServlet {
 		
 		allFaceData = FaceDataManager.getAllFaceData(from);
 		
-//		JSONArray array = new JSONArray(allFaceData);
 		
+		mapper.writeValue(response.getWriter(),new SilderData(allFaceData,isHaveMore) );
 		
-		
-		JSONObject jsonObject = new JSONObject(new SilderData(allFaceData,isHaveMore)   );
-		
-		System.out.println(jsonObject);
-		
-		response.getWriter().print(jsonObject);
 	}
 
 }

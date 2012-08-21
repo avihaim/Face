@@ -3,12 +3,9 @@ $(document)
 				
 				function() {
 
-					var mouseRightX = 0, mouseRightY = 0;
-					var sceneData;
+			//		var sceneData;
 					var scaleSize = 5;
-				    var geometry;
-				    var material;
-				    
+				   
 //				    =============================================
 				    var delta_x_rotate = 0;
 					var delta_y_rotate = 0;
@@ -20,6 +17,7 @@ $(document)
 					var left_mouse_is_down = false;
 					var right_mouse_is_down = false;
 					var modelIsReady = false;
+					var isMadeAMove = false;
 					
 					var oldx = 0;
 					var oldy = 0;
@@ -28,7 +26,7 @@ $(document)
 					
 					var camera, scene, renderer;
 
-					var mesh, texture;
+					var mesh;
 
 					
 //					==============================================
@@ -83,7 +81,7 @@ $(document)
 					
 					if (!Detector.webgl) {
 						Detector.addGetWebGLMessage();
-						document.getElementById('container').innerHTML = "";
+						container.innerHTML = "";
 					}
 
 					
@@ -115,7 +113,7 @@ $(document)
 					
 
 					init();
-					animate();
+					
 					
 					
 					function init() {
@@ -156,8 +154,6 @@ $(document)
 						// LIGHTS
 						ambientLight = new THREE.AmbientLight( 0xFFFFFF );
 						scene.add( ambientLight );
-
-						var faceData;
 
 						// Get the file model name
 						var urlQuery = location.search;
@@ -229,7 +225,7 @@ $(document)
 
 						var dataString = new Object();
 						
-						// The mode name
+						// The model name
 						dataString["fileName"] = fileName;
 						
 						// The mode wo whant the mode (full rgb, single color..)
@@ -250,32 +246,30 @@ $(document)
 								});
 					}
 					function successUpdateData(data) {
-						sceneData = data;
+					//	sceneData = data;
 						var scaleSize = $("#scaleSize").val();
 						updateData(data,parseInt(scaleSize));
 					}
 					
-					function updateData(data,scaleSize) {
+					function updateData(faceData,scaleSize) {
 						
 						modelIsReady = false;
-						faceData = data;
-						values = faceData.depth;
 						worldWidth = faceData.width;
 						worldDepth = faceData.height;
-						width = faceData.width;
-						height = faceData.height;
+//						width = faceData.width;
+//						height = faceData.height;
 						// =====================
 						
 						
 						// Create new geometry object 
-						geometry = new THREE.PlaneGeometry(
+						 var geometry = new THREE.PlaneGeometry(
 								4000, 4000, worldWidth - 1,worldDepth - 1);
 
 						// Copy the heights map to the geometry
 						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
 
-							if (values[i] > 0) {
-								geometry.vertices[i].y = values[i]*scaleSize;
+							if (faceData.depth[i] > 0) {
+								geometry.vertices[i].y = faceData.depth[i]*scaleSize;
 							} else {
 								geometry.vertices[i].y = 1;
 							}
@@ -283,7 +277,7 @@ $(document)
 						}
 						
 						// Create the texture for the mash
-						texture = new THREE.Texture(
+						var texture = new THREE.Texture(
 								generateTexture(faceData.texture,worldWidth, worldDepth),
 								new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping);
 						
@@ -292,7 +286,7 @@ $(document)
 
 						// For the single color model we probably need to use the MeshLambertMaterial
 //						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
-						material = new THREE.MeshBasicMaterial({map : texture});
+						var material = new THREE.MeshBasicMaterial({map : texture});
 						
 						mesh = new THREE.Mesh(geometry,material);
 						
@@ -326,16 +320,24 @@ $(document)
 						
 						modelIsReady = true;
 						
+						isMadeAMove = true;
+						animate();
+						isMadeAMove = false;
+						
 					}
 
 					function render() {
 
-						if (modelIsReady == true) {
+						// modelIsReady - we want to start the render operation
+						// only after the init function is finished and the model is ready to use
+						// isMadeAMove - try to save some memory and CPU by render only after
+						// the user asked to do some moves in the model
+						if ((modelIsReady == true) && (isMadeAMove == true)) {
 							// For Debug only
-//							 $('#x').html('<p>x=' + camera.position.x + ' mx ='+mouseRightX+'</p>');
-//							 $('#y').html('<p>y=' + camera.position.y + ' my ='+mouseRightY+'</p>');
+//							 $('#x').html('<p>x=' + camera.position.x + ' mx ='</p>');
+//							 $('#y').html('<p>y=' + camera.position.y + ' my ='</p>');
 //							 $('#z').html('<p>z=' + camera.position.z + '</p>');
-	
+						
 							 
 							var tempMat = new THREE.Matrix4();
 							mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
@@ -369,12 +371,14 @@ $(document)
 						
 						if (evt.button == 0)
 						{
+							isMadeAMove = true;
 							left_mouse_is_down = true;
 							oldx = evt.clientX;
 							oldy = evt.clientY;
 						}
 						else if (evt.button == 2)
 						{
+							isMadeAMove = true;
 							right_mouse_is_down = true;
 							oldx = evt.clientX;
 							oldy = evt.clientY;
@@ -390,7 +394,7 @@ $(document)
 					}
 					
 					function onDocumentMouseUp(event) {
-
+						
 						var evt=window.event || event;
 						if (evt.button == 0)
 						{
@@ -403,6 +407,9 @@ $(document)
 						 	delta_y = 0;
 						}
 						evt.returnValue = false;
+						
+						isMadeAMove = false;
+						
 						if (evt.stopPropagation)
 		            		evt.stopPropagation();
 						if (evt.preventDefault) //disable default wheel action of scrolling page
@@ -423,6 +430,8 @@ $(document)
 						delta_y = 0;
 						if (left_mouse_is_down)
 						{
+							isMadeAMove = true;
+							
 							newx = event.clientX;
 							newy = event.clientY;
 							
@@ -434,6 +443,8 @@ $(document)
 						}
 						else if (right_mouse_is_down)
 						{
+							isMadeAMove = true;
+							
 							newx = event.clientX;
 							newy = event.clientY;
 							
@@ -461,7 +472,7 @@ $(document)
 						var delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
 						
 						zoom(delta);
-		    			
+						isMadeAMove = true;
 		    			if (evt.preventDefault) //disable default wheel action of scrolling page
 		        			evt.preventDefault();
 		    			else
@@ -493,7 +504,7 @@ $(document)
 					function scaleSizeOninput() {
 						scaleSize = $("#scaleSize").val();
 						
-						updateData(sceneData,parseInt(scaleSize));
+					//	updateData(sceneData,parseInt(scaleSize));
 					}
 					
 					function animate() {
@@ -506,12 +517,12 @@ $(document)
 					
 					// Touch functions
 					
-					// Zoom out one wheel tic
+					// Zoom out one wheel tik
 					function onZoomOut(){
 						zoom(-360);
 					}
 					
-					// Zoom in one wheel tic
+					// Zoom in one wheel tik
 					function onZoomIn(){
 						zoom(360);
 					}
@@ -540,16 +551,18 @@ $(document)
 					        case "touchend":   type="mouseup"; break;
 					        default: return;
 					    }
-
+					   
+					    
+					    var simulatedEvent = document.createEvent("MouseEvent");
+					    
+					    
 					    // initMouseEvent(type, canBubble, cancelable, view, clickCount,
 					    //           screenX, screenY, clientX, clientY, ctrlKey,
 					    //           altKey, shiftKey, metaKey, button, relatedTarget);
-					    
-					    var simulatedEvent = document.createEvent("MouseEvent");
 					    simulatedEvent.initMouseEvent(type, true, true, window, 1,
 					    							point.screenX, point.screenY,
 					    							point.clientX, point.clientY, false,
-					                              false, false, false, touchAction/*left*/, null);
+					                              false, false, false, touchAction, null);
 
 					    point.target.dispatchEvent(simulatedEvent);
 					    event.preventDefault();
