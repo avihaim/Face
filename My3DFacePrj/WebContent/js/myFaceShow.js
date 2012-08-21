@@ -3,7 +3,7 @@ $(document)
 				
 				function() {
 
-					var sceneData;
+					var sceneDataDepth;
 					var scaleSize = 5;
 				   
 //				    =============================================
@@ -32,7 +32,7 @@ $(document)
 					
 //					==============================================
 					
-					//Start add all the mouse event
+					
 					var container = document.getElementById('container');
 					
 					
@@ -67,24 +67,6 @@ $(document)
 						// Start ajaxBusy
 						$('#ajaxBusy').show();
 
-						scene = new THREE.Scene();
-						
-						// CAMERA
-						camera = new THREE.PerspectiveCamera(1,
-								window.innerWidth / window.innerHeight, 1,
-								400000);
-						
-						camera.position.y = 160000;
-   					    camera.position.x = 0;
-   					    camera.position.z = scale_factor ;
-						
-   					    
-   					    // Removed unneded scene.add(camera);
-						//scene.add(camera);
-						
-   					    // LIGHTS
-						ambientLight = new THREE.AmbientLight( 0xFFFFFF );
-						scene.add( ambientLight );
 
 						// Get the file model name
 						var urlQuery = location.search;
@@ -181,23 +163,43 @@ $(document)
 					}
 					
 					function successUpdateData(data) {
-						sceneData = data;
-						var scaleSize = $("#scaleSize").val();
-						updateData(data,parseInt(scaleSize));
+						
+						// We save all depth data for the scale changes 
+						sceneDataDepth = data.depth;
+						updateData(data);
 					}
 					
-					function updateData(faceData,scaleSize) {
+					function updateData(faceData) {
 						
-						modelIsReady = false;
+//						modelIsReady = false;
 						worldWidth = faceData.width;
 						worldDepth = faceData.height;
 						// =====================
 						
-						
-						// Create new geometry object 
-						 var geometry = new THREE.PlaneGeometry(
-								4000, 4000, worldWidth - 1,worldDepth - 1);
+						scene = new THREE.Scene();
 
+						// LIGHTS
+						// Removed unneded scene.add(ambientLight);
+						// ambientLight = new THREE.AmbientLight( 0xFFFFFF
+						// );
+						// scene.add( ambientLight );
+
+						// CAMERA
+						camera = new THREE.PerspectiveCamera(1,
+								window.innerWidth / window.innerHeight, 1,
+								400000);
+
+						camera.position.y = 160000;
+						camera.position.x = 0;
+						camera.position.z = 1;
+
+						// Removed unneded scene.add(camera);
+						// scene.add(camera);
+						
+						// Create new geometry object
+						var geometry = new THREE.PlaneGeometry(
+								4000, 4000, worldWidth - 1,worldDepth - 1);
+						 
 						// Copy the heights map to the geometry
 						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
 
@@ -208,6 +210,7 @@ $(document)
 							}
 
 						}
+							
 						
 						// Create the texture for the mash
 						var texture = new THREE.Texture(
@@ -239,9 +242,9 @@ $(document)
 						// Add the model to the scene
 						scene.add(mesh);
 						
-
 						renderer = new THREE.WebGLRenderer();
 						
+
 						// Set the renderer size to window wide and height - 80 
 						// to save same place to control icons
 						renderer.setSize(window.innerWidth , window.innerHeight -80);
@@ -305,7 +308,7 @@ $(document)
 								for ( var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
 	
 									if (mesh.geometry.vertices[i].y > 0 ) {
-										mesh.geometry.vertices[i].y = sceneData.depth[i]*scaleSize;
+										mesh.geometry.vertices[i].y = sceneDataDepth[i]*scaleSize;
 									} 
 								}
 								
@@ -321,6 +324,7 @@ $(document)
 					
 					function initEvents() {
 						
+						//Start add all the mouse event
 						var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
 						
 						// Event for mouse wheel - zoom in/out
