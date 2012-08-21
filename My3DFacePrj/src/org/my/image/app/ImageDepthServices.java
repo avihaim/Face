@@ -142,7 +142,7 @@ public class ImageDepthServices {
 					pixelData[counter + 0] = rgb[0];
 					pixelData[counter + 1] = rgb[1];
 					pixelData[counter + 2] = rgb[2];
-					pixelData[counter + 3] = 256;
+					pixelData[counter + 3] = 255;
  
 					counter += 4;
 				}
@@ -175,7 +175,7 @@ public class ImageDepthServices {
 						pixelData[counter + 0] = 255;
 						pixelData[counter + 1] = 150;
 						pixelData[counter + 2] = 54;
-						pixelData[counter + 4] = 0;
+						pixelData[counter + 3] = 255;
 					}
 
 					counter += 4;
@@ -209,7 +209,7 @@ public class ImageDepthServices {
 						pixelData[counter + 0] = 255;
 						pixelData[counter + 1] = rgb[0];
 						pixelData[counter + 2] = 255;
-						pixelData[counter + 4] = 0;
+						pixelData[counter + 3] = 255;
 					}
 
 					counter += 4;
@@ -241,7 +241,7 @@ public class ImageDepthServices {
 					pixelData[counter + 0] = rgb[0];
 					pixelData[counter + 1] = rgb[1];
 					pixelData[counter + 2] = rgb[2];
-					pixelData[counter + 4] = 0;
+					pixelData[counter + 3] = 255;
 
 					counter += 4;
 				}
