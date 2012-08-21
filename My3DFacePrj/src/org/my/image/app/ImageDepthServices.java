@@ -142,7 +142,7 @@ public class ImageDepthServices {
 					pixelData[counter + 0] = rgb[0];
 					pixelData[counter + 1] = rgb[1];
 					pixelData[counter + 2] = rgb[2];
-					pixelData[counter + 3] = 0;
+					pixelData[counter + 3] = 256;
  
 					counter += 4;
 				}

@@ -27,90 +27,22 @@ $(document)
 					var camera, scene, renderer;
 
 					var mesh;
-
+					
+					var worldWidth = 6000, worldDepth = 6000;
 					
 //					==============================================
 					
 					//Start add all the mouse event
 					var container = document.getElementById('container');
 					
-					var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
-					
-					// Event for mouse wheel - zoom in/out
-					container.addEventListener(mousewheelevt, onMousewheel, false);
-					
-					// Event for mouse down
-					container.addEventListener('mousedown',
-							onDocumentMouseDown); 
-					
-					// Event for mouse up
-					container.addEventListener('mouseup',
-							onDocumentMouseUp);
-					
-					// Event for mouse move
-					container.addEventListener('mousemove',
-							onDocumentMouseMove, false);
-					
-					// Event for cancel Context Menu
-					container.addEventListener('onContextMenu',
-							onContextMenuEvet, false); 
-					
-					// Event for Change model mode
-					 $("select").change(function () {
-				          var mode = "";
-				          $("select option:selected").each(function () {
-				        	  mode += $(this).text();
-				              });
-				          
-				            $('#ajaxBusy').show();
-				          
-				          	var urlQuery = location.search;
-							urlQuery = urlQuery.replace('?', '');
-							var split = urlQuery.split('=');
-
-							var fileName = split[1];
-							
-							updateSceneData(fileName,scaleSize,mode);
-							
-				        });
-
-					//End add all the mouse event
 					
 					if (!Detector.webgl) {
 						Detector.addGetWebGLMessage();
 						container.innerHTML = "";
+					} else {
+						init();
+						initEvents();
 					}
-
-					
-
-					var worldWidth = 6000, worldDepth = 6000;
-					
-					$.support.touch = 'ontouchend' in document;
-					
-					// Ignore browsers without touch support
-					if ($.support.touch) {
-						touchInit();
-						
-						// Add button to change touch behavior
-						$('body')
-						.append('<div id="touchAction" class="transform-move"></div>');
-						$('#touchAction').bind('mousedown',changeTouchAction);
-						
-						// Add button to zoom-in in touch
-						$('body')
-						.append('<div id="zoom-in" </div>');
-						$('#zoom-in').bind('mousedown',onZoomIn);
-						
-						// Add button to zoom-in in touch
-						$('body')
-						.append('<div id="zoom-out" </div>');
-						$('#zoom-out').bind('mousedown',onZoomOut);
-					}
-					
-					
-
-					init();
-					
 					
 					
 					function init() {
@@ -146,9 +78,11 @@ $(document)
    					    camera.position.x = 0;
    					    camera.position.z = scale_factor ;
 						
-						scene.add(camera);
+   					    
+   					    // Removed unneded scene.add(camera);
+						//scene.add(camera);
 						
-						// LIGHTS
+   					    // LIGHTS
 						ambientLight = new THREE.AmbientLight( 0xFFFFFF );
 						scene.add( ambientLight );
 
@@ -207,6 +141,7 @@ $(document)
 							imageData[i] = texturedata[i];
 							imageData[i + 1] = texturedata[i + 1];
 							imageData[i + 2] = texturedata[i + 2];
+							imageData[i + 3] = texturedata[i + 3];
 						}
 
 						// Put the canvas in the page
@@ -292,6 +227,7 @@ $(document)
 						//Flag geometry can update dynamic
 						mesh.geometry.dynamic = true;
 						
+						
 						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
 						
@@ -376,13 +312,80 @@ $(document)
 								//Flag vertices need to update in the scene
 								mesh.geometry.verticesNeedUpdate = true;
 							}
+							
 	
 							renderer.render(scene, camera);
 						}
 						
 					}
 					
-					
+					function initEvents() {
+						
+						var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel"; //FF doesn't recognize mousewheel as of FF3.x
+						
+						// Event for mouse wheel - zoom in/out
+						container.addEventListener(mousewheelevt, onMousewheel, false);
+						
+						// Event for mouse down
+						container.addEventListener('mousedown',
+								onDocumentMouseDown); 
+						
+						// Event for mouse up
+						container.addEventListener('mouseup',
+								onDocumentMouseUp);
+						
+						// Event for mouse move
+						container.addEventListener('mousemove',
+								onDocumentMouseMove, false);
+						
+						// Event for cancel Context Menu
+						container.addEventListener('onContextMenu',
+								onContextMenuEvet, false); 
+						
+						// Event for Change model mode
+						 $("select").change(function () {
+					          var mode = "";
+					          $("select option:selected").each(function () {
+					        	  mode += $(this).text();
+					              });
+					          
+					            $('#ajaxBusy').show();
+					          
+					          	var urlQuery = location.search;
+								urlQuery = urlQuery.replace('?', '');
+								var split = urlQuery.split('=');
+
+								var fileName = split[1];
+								
+								updateSceneData(fileName,scaleSize,mode);
+								
+					        });
+						 
+						//End add all the mouse event
+						 
+						 $.support.touch = 'ontouchend' in document;
+							
+							// Ignore browsers without touch support
+							if ($.support.touch) {
+								touchInit();
+								
+								// Add button to change touch behavior
+								$('body')
+								.append('<div id="touchAction" class="transform-move"></div>');
+								$('#touchAction').bind('mousedown',changeTouchAction);
+								
+								// Add button to zoom-in in touch
+								$('body')
+								.append('<div id="zoom-in" </div>');
+								$('#zoom-in').bind('mousedown',onZoomIn);
+								
+								// Add button to zoom-in in touch
+								$('body')
+								.append('<div id="zoom-out" </div>');
+								$('#zoom-out').bind('mousedown',onZoomOut);
+							}
+
+					}
 					
 					function onDocumentMouseDown(event) {
 						
