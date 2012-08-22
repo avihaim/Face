@@ -176,7 +176,7 @@ img.large_thumb_image {
 	cursor : pointer;
 /* 	width: 32px; */
 /* 	height: 32px; */
-	top : 880px;
+	top : 1070px;
 	left: 400px;
 /* 	background-image: url('images/Button-Upload-icon.png'); */
 	background-repeat: no-repeat;
@@ -201,7 +201,7 @@ img.large_thumb_image {
 	background-image: url('images/blue-camera-icon.png');
 	width: 32px;
 	height: 32px;
-	top : 455px;
+	top : 460px;
 	left: 450px;
 	background-repeat: no-repeat;
 	position: absolute;
