@@ -170,6 +170,7 @@ $(document)
 						updateData(data);
 					}
 					
+					var controls;
 					function updateData(faceData) {
 						
 //						modelIsReady = false;
@@ -240,7 +241,7 @@ $(document)
 						
 						//Flag geometry can update dynamic
 						mesh.geometry.dynamic = true;
-						
+						mesh.doubleSided = true;
 						
 						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
@@ -275,7 +276,8 @@ $(document)
 						
 					}
 					
-
+					var newScaleSize = $("#scaleSize").val();
+					
 					function render() {
 
 						// modelIsReady - we want to start the render operation
@@ -308,7 +310,7 @@ $(document)
 							delta_x = 0;
 							delta_y = 0;
 							
-							var newScaleSize = $("#scaleSize").val();
+							newScaleSize = $("#scaleSize").val();
 							
 							// Update the scale only if there is a change in the scaleSize
 							if(newScaleSize != scaleSize) {

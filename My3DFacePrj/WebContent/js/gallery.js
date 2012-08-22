@@ -55,7 +55,7 @@ function imageSelected() {
 
 	var imgeSrc = $("#largephoto").css('background-image');
 	var patt = /\"|\'|\)/g;
-	var imageName = imgeSrc.split('/').pop().replace(patt, '');
+	var imageName = imgeSrc.split('=').pop().replace(patt, '');
 	
 	window.open('myFaceShow.html?imgeName=' + imageName,'_newtab');
 
