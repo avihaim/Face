@@ -170,7 +170,6 @@ $(document)
 						updateData(data);
 					}
 					
-					var controls;
 					function updateData(faceData) {
 						
 //						modelIsReady = false;
@@ -241,7 +240,8 @@ $(document)
 						
 						//Flag geometry can update dynamic
 						mesh.geometry.dynamic = true;
-						mesh.doubleSided = true;
+						
+						//mesh.doubleSided = true;
 						
 						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
@@ -278,6 +278,11 @@ $(document)
 					
 					var newScaleSize = $("#scaleSize").val();
 					
+					
+					var vctZ = new THREE.Vector3(0,0,1);
+					var vctX = new THREE.Vector3(1,0,0);
+					var vctXYZ = new THREE.Vector3(1,1,1);
+					
 					function render() {
 
 						// modelIsReady - we want to start the render operation
@@ -293,14 +298,14 @@ $(document)
 							 
 							var tempMat = new THREE.Matrix4();
 							mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
-							tempMat.makeRotationAxis(new THREE.Vector3(0,0,1), -delta_x_rotate);
+							tempMat.makeRotationAxis(vctZ, -delta_x_rotate);
 							tempMat.multiplySelf(mesh.matrix);
 							mesh.matrix = tempMat;
 							tempMat = new THREE.Matrix4();
-							tempMat.makeRotationAxis(new THREE.Vector3(1,0,0), delta_y_rotate);
+							tempMat.makeRotationAxis(vctX, delta_y_rotate);
 							tempMat.multiplySelf(mesh.matrix);
 							mesh.matrix = tempMat;
-							mesh.rotation.getRotationFromMatrix(mesh.matrix,new THREE.Vector3(1,1,1));
+							mesh.rotation.getRotationFromMatrix(mesh.matrix,vctXYZ);
 							
 							
 							camera.position.x -= delta_x*14;
