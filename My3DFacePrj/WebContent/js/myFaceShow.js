@@ -51,6 +51,7 @@ $(document)
 								.append(
 										'<div id="ajaxBusy"><p><img src="images/ajax-loader.gif"></p></div>');
 
+						// Loading indication animation css design.
 						$('#ajaxBusy').css({
 							display : "none",
 							margin : "0px",
@@ -86,7 +87,7 @@ $(document)
 						.append(
 								'<div><a class="zipLink" href="ZipServlet?fileName='+fileName+'"></a></div>');
 						
-						// Add link to facebok like
+						// Add link to facebook like
 						$('body')
 						.append(
 								'<iframe  style="display: none;" class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
@@ -97,7 +98,7 @@ $(document)
 						// FIX: Zoom out so the use can zoom in
 						zoom(-360*15);
 						
-					}
+					}//end init()
 
 					
 					// Copy the texture data to canvas
@@ -144,7 +145,7 @@ $(document)
 						// The model name
 						dataString["fileName"] = fileName;
 						
-						// The mode wo whant the mode (full rgb, single color..)
+						// The mode we want. the mode (full rgb, single color..)
 						dataString["mode"] = mode;
 
 						// Ajax call to server side to get the model data 
@@ -161,7 +162,7 @@ $(document)
 									}
 								});
 					}
-					
+					// Success callback when calling ImageRGBServlet. 
 					function successUpdateData(data) {
 						
 						// We save all depth data for the scale changes 
@@ -196,19 +197,29 @@ $(document)
 						// Removed unneded scene.add(camera);
 						// scene.add(camera);
 						
+						//var width_tiles_number = 80;
+						//var depth_tiles_number = 80;
+						
 						// Create new geometry object
 						var geometry = new THREE.PlaneGeometry(
+								//4000, 4000,width_tiles_number  ,depth_tiles_number);
 								4000, 4000, worldWidth - 1,worldDepth - 1);
-						 
+						//var width_ratio = worldWidth/width_tiles_number;
+						//var depth_ratio = worldDepth/depth_tiles_number;
+						
 						// Copy the heights map to the geometry
 						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
-
+							
+							//var curr_depth = i/width_tiles_number;
+							//var curr_width = i%width_tiles_number;
+							
+							//var real_pixel_pos =Math.floor((curr_depth*depth_ratio)*worldWidth + curr_width*width_ratio);
+							
 							if (faceData.depth[i] > 0) {
 								geometry.vertices[i].y = faceData.depth[i]*scaleSize;
 							} else {
 								geometry.vertices[i].y = 0;
 							}
-
 						}
 							
 						
@@ -389,7 +400,7 @@ $(document)
 								$('#zoom-out').bind('mousedown',onZoomOut);
 							}
 
-					}
+					}// end init_events()
 					
 					function onDocumentMouseDown(event) {
 						
@@ -503,7 +514,7 @@ $(document)
 		        			evt.preventDefault();
 		    			else
 		        			return false;
-				    }
+				    }// end: onMousewheel()
 					
 					function zoom(delta) {
 						
@@ -521,12 +532,11 @@ $(document)
 		    			else if (new_scale_factor > upper_limit)
 		    				new_scale_factor = upper_limit;
 		    			scale_factor = new_scale_factor;
-					}
+					} //end: zoom()
 					
 					function onContextMenuEvet(event) {
 						return false;
 					}
-					
 					
 					
 					function animate() {

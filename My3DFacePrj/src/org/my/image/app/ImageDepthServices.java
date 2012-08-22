@@ -66,7 +66,6 @@ public class ImageDepthServices {
 
 		}
 		
-		
 		int median = median(list);
 
 		System.out.println("median " + median);
