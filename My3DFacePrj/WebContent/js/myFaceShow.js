@@ -180,22 +180,22 @@ $(document)
 						scene = new THREE.Scene();
 
 						// LIGHTS
-						// Removed unneded scene.add(ambientLight);
-						// ambientLight = new THREE.AmbientLight( 0xFFFFFF
-						// );
-						// scene.add( ambientLight );
+//						 Removed unneded scene.add(ambientLight);
+						 ambientLight = new THREE.AmbientLight( 0xFFFFFF
+						 );
+						 scene.add( ambientLight );
 
 						// CAMERA
-						camera = new THREE.PerspectiveCamera(1,
+						camera = new THREE.PerspectiveCamera(60,
 								window.innerWidth / window.innerHeight, 1,
 								400000);
 
-						camera.position.y = 160000;
+						camera.position.y = 2000;
 						camera.position.x = 0;
 						camera.position.z = 1;
 
 						// Removed unneded scene.add(camera);
-						// scene.add(camera);
+						 scene.add(camera);
 						
 						//var width_tiles_number = 80;
 						//var depth_tiles_number = 80;
@@ -203,7 +203,7 @@ $(document)
 						// Create new geometry object
 						var geometry = new THREE.PlaneGeometry(
 								//4000, 4000,width_tiles_number  ,depth_tiles_number);
-								4000, 4000, worldWidth - 1,worldDepth - 1);
+								2000, 2000, worldWidth - 1,worldDepth - 1);
 						//var width_ratio = worldWidth/width_tiles_number;
 						//var depth_ratio = worldDepth/depth_tiles_number;
 						
@@ -221,13 +221,12 @@ $(document)
 								geometry.vertices[i].y = 0;
 							}
 						}
-							
+						
 						
 						// Create the texture for the mash
 						var texture = new THREE.Texture(
-								generateTexture(faceData.texture,worldWidth, worldDepth),
-								new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping);
-						
+								generateTexture(faceData.texture,worldWidth, worldDepth));
+//								new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping,THREE.RGBAFormat);
 						
 						texture.needsUpdate = true;
 
@@ -235,13 +234,13 @@ $(document)
 //						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
 						var material = new THREE.MeshBasicMaterial({map : texture});
 						
-						// Create the mash
+						// Create the mesh
 						mesh = new THREE.Mesh(geometry,material);
 						
 						//Flag geometry can update dynamic
 						mesh.geometry.dynamic = true;
 						
-						//mesh.doubleSided = true;
+						mesh.doubleSided = true;
 						
 						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
@@ -255,7 +254,6 @@ $(document)
 						scene.add(mesh);
 						
 						renderer = new THREE.WebGLRenderer();
-						
 
 						// Set the renderer size to window wide and height - 80 
 						// to save same place to control icons
@@ -265,7 +263,6 @@ $(document)
 
 						container
 								.appendChild(renderer.domElement);
-						
 						
 						// Hide the ajaxBusy image
 						$('#ajaxBusy').hide();
@@ -301,6 +298,7 @@ $(document)
 							tempMat.makeRotationAxis(vctZ, -delta_x_rotate);
 							tempMat.multiplySelf(mesh.matrix);
 							mesh.matrix = tempMat;
+							
 							tempMat = new THREE.Matrix4();
 							tempMat.makeRotationAxis(vctX, delta_y_rotate);
 							tempMat.multiplySelf(mesh.matrix);
