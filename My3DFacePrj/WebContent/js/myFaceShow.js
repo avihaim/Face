@@ -4,8 +4,8 @@ $(document)
 				function() {
 
 					var sceneDataDepth;
-					var scaleSize = 5;
-				   
+					var scaleSize = 3;
+					var textureMode = 'singleColor';
 //				    =============================================
 				    var delta_x_rotate = 0;
 					var delta_y_rotate = 0;
@@ -78,6 +78,7 @@ $(document)
 						var mode = "";
 				          $("select option:selected").each(function () {
 				        	  mode += $(this).text();
+				        	  textureMode= mode;
 				              });
 						
 						updateSceneData(fileName,scaleSize,mode);
@@ -158,7 +159,10 @@ $(document)
 									success : successUpdateData,
 									error : function(jqXHR, textStatus,
 											errorThrown) {
-										alert(errorThrown);
+										if(errorThrown != '') {
+											alert(errorThrown);
+										}
+										
 									}
 								});
 					}
@@ -181,16 +185,15 @@ $(document)
 
 						// LIGHTS
 //						 Removed unneded scene.add(ambientLight);
-						 ambientLight = new THREE.AmbientLight( 0xFFFFFF
-						 );
-						 scene.add( ambientLight );
+//						 ambientLight = new THREE.AmbientLight( 0xFFFFFF);
+//						 scene.add( ambientLight );
 
 						// CAMERA
-						camera = new THREE.PerspectiveCamera(60,
+						camera = new THREE.PerspectiveCamera(45,
 								window.innerWidth / window.innerHeight, 1,
 								400000);
 
-						camera.position.y = 2000;
+						camera.position.y = 4000;
 						camera.position.x = 0;
 						camera.position.z = 1;
 
@@ -228,11 +231,93 @@ $(document)
 								generateTexture(faceData.texture,worldWidth, worldDepth));
 //								new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping,THREE.RGBAFormat);
 						
+						
 						texture.needsUpdate = true;
+						
+						
+						
+						var material;
+						textureMode = 'rgb';
+						
+						if(textureMode == 'singleColor') {
+							
+							ambientLight = new THREE.AmbientLight( 0x444444 );
+							scene.add( ambientLight );
 
-						// For the single color model we probably need to use the MeshLambertMaterial
-//						material = new THREE.MeshLambertMaterial({map : texture, reflectivity: 0.95, refractionRatio: 0.50, shading: THREE.SmoothShading });
-						var material = new THREE.MeshBasicMaterial({map : texture});
+							//
+
+							pointLight = new THREE.PointLight( 0xffffff, 1.5, 1000 );
+							pointLight.color.setHSV( 0.05, 0.05, 1 );
+							pointLight.position.set( 0, 0, 600 );
+
+							scene.add( pointLight );
+
+							// shadow for PointLight
+
+							spotLight = new THREE.SpotLight( 0xffffff, 1.5 );
+							spotLight.position.set( 0.05, 0.05, 1 );
+							spotLight.color.setHSV( 0.6, 0.05, 1 );
+							scene.add( spotLight );
+
+							spotLight.position.multiplyScalar( 700 );
+
+							spotLight.castShadow = true;
+							spotLight.onlyShadow = true;
+							//spotLight.shadowCameraVisible = true;
+
+							spotLight.shadowMapWidth = 2048;
+							spotLight.shadowMapHeight = 2048;
+
+							spotLight.shadowCameraNear = 200;
+							spotLight.shadowCameraFar = 1500;
+
+							spotLight.shadowCameraFov = 40;
+
+							spotLight.shadowBias = -0.005;
+							spotLight.shadowDarkness = 0.35;
+
+							//
+
+							directionalLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
+							directionalLight.position.set( 1, -0.5, 1 );
+							directionalLight.color.setHSV( 0.6, 0.05, 1 );
+							scene.add( directionalLight );
+
+							directionalLight.position.multiplyScalar( 500 );
+
+							directionalLight.castShadow = true;
+							//directionalLight.shadowCameraVisible = true;
+
+							directionalLight.shadowMapWidth = 2048;
+							directionalLight.shadowMapHeight = 2048;
+
+							directionalLight.shadowCameraNear = 200;
+							directionalLight.shadowCameraFar = 1500;
+
+							directionalLight.shadowCameraLeft = -500;
+							directionalLight.shadowCameraRight = 500;
+							directionalLight.shadowCameraTop = 500;
+							directionalLight.shadowCameraBottom = -500;
+
+							directionalLight.shadowBias = -0.005;
+							directionalLight.shadowDarkness = 0.35;
+
+							//
+
+							directionalLight2 = new THREE.DirectionalLight( 0xffffff, 1.2 );
+							directionalLight2.position.set( 1, -0.5, -1 );
+							directionalLight2.color.setHSV( 0.08, 0.35, 1 );
+							scene.add( directionalLight2 );
+							material = new THREE.MeshPhongMaterial( { ambient: 0x552811, color: 0x552811, specular: 0x333333, shininess: 25, perPixel: true, bumpScale: 19, metal: false } );
+
+
+							// For the single color model we probably need to use the MeshLambertMaterial
+//						    material = new THREE.MeshLambertMaterial({color: 0xA361E5, reflectivity: 0.55, refractionRatio: 0.50, shading: THREE.SmoothShading });
+							 
+			
+						} else {
+							material = new THREE.MeshBasicMaterial({map : texture});
+						}
 						
 						// Create the mesh
 						mesh = new THREE.Mesh(geometry,material);
