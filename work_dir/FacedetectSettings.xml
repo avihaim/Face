@@ -1,5 +1,7 @@
 <Settings>
-    <FaceWidthRectScalingForQuery>0.965</FaceWidthRectScalingForQuery>
-	  <FaceHeightRectScalingForQuery>1.090</FaceHeightRectScalingForQuery>
-    <MaxQueryWidth>600</MaxQueryWidth> 
+  <FaceWidthRectScalingForQuery>0.965</FaceWidthRectScalingForQuery>
+  <FaceHeightRectScalingForQuery>1.090</FaceHeightRectScalingForQuery>
+  <MaxQueryWidth>600</MaxQueryWidth>
+  <MaxQueryHeight>550</MaxQueryHeight>
+  <IsWritingImagesOutput>false</IsWritingImagesOutput>
 </Settings>
