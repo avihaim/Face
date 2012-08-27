@@ -15,8 +15,11 @@ import org.my.image.obj.FaceImage;
 
 public class ImageDepthServices {
 	
-	public static int[] createImageDepth(BufferedImage img, BufferedImage imgD,
-			int facePosX, int facePosY) {
+	public static int[] createImageDepth(
+			BufferedImage img,
+			BufferedImage imgD,
+			int facePosX,
+			int facePosY) {
 		int[] pixelData;
 		
 		

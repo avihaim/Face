@@ -198,7 +198,7 @@ $(document)
 						camera.position.z = 1;
 
 						// Removed unneded scene.add(camera);
-						 scene.add(camera);
+						scene.add(camera);
 						
 						//var width_tiles_number = 80;
 						//var depth_tiles_number = 80;
