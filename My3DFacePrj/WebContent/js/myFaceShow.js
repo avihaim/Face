@@ -78,9 +78,9 @@ $(document)
 						var mode = "";
 				          $("select option:selected").each(function () {
 				        	  mode += $(this).text();
-				        	  textureMode= mode;
+				        	  
 				              });
-						
+				          textureMode= mode;
 						updateSceneData(fileName,scaleSize,mode);
 						
 						// Add link to download a ZIP with the model images
@@ -97,7 +97,7 @@ $(document)
 						$(":range").rangeinput();
 						 
 						// FIX: Zoom out so the use can zoom in
-						zoom(-360*15);
+						zoom(-360*20);
 						
 					}//end init()
 
@@ -185,15 +185,15 @@ $(document)
 
 						// LIGHTS
 //						 Removed unneded scene.add(ambientLight);
-//						 ambientLight = new THREE.AmbientLight( 0xFFFFFF);
-//						 scene.add( ambientLight );
+						 ambientLight = new THREE.AmbientLight( 0xFFFFFF);
+						 scene.add( ambientLight );
 
 						// CAMERA
-						camera = new THREE.PerspectiveCamera(45,
+						camera = new THREE.PerspectiveCamera(10,
 								window.innerWidth / window.innerHeight, 1,
 								400000);
-
-						camera.position.y = 4000;
+						
+						camera.position.y = 10000;
 						camera.position.x = 0;
 						camera.position.z = 1;
 
@@ -237,83 +237,31 @@ $(document)
 						
 						
 						var material;
-						textureMode = 'rgb';
+//						textureMode = 'singleColor';
 						
 						if(textureMode == 'singleColor') {
-							
-							ambientLight = new THREE.AmbientLight( 0x444444 );
-							scene.add( ambientLight );
 
-							//
+							var ambient = new THREE.AmbientLight( 0xffffff );
+							scene.add( ambient );
 
-							pointLight = new THREE.PointLight( 0xffffff, 1.5, 1000 );
-							pointLight.color.setHSV( 0.05, 0.05, 1 );
-							pointLight.position.set( 0, 0, 600 );
-
+//							directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
+//							directionalLight.position.set(1, 0, 0 ).normalize();
+//							scene.add( directionalLight );
+//
+//							directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+//							directionalLight.position.set( -1, 0, 0 ).normalize();
+//							scene.add( directionalLight );
+//
+							pointLight = new THREE.PointLight( 0xffaa00, 2 );
+							pointLight.position.set( 0, 260, 0 );
 							scene.add( pointLight );
-
-							// shadow for PointLight
-
-							spotLight = new THREE.SpotLight( 0xffffff, 1.5 );
-							spotLight.position.set( 0.05, 0.05, 1 );
-							spotLight.color.setHSV( 0.6, 0.05, 1 );
-							scene.add( spotLight );
-
-							spotLight.position.multiplyScalar( 700 );
-
-							spotLight.castShadow = true;
-							spotLight.onlyShadow = true;
-							//spotLight.shadowCameraVisible = true;
-
-							spotLight.shadowMapWidth = 2048;
-							spotLight.shadowMapHeight = 2048;
-
-							spotLight.shadowCameraNear = 200;
-							spotLight.shadowCameraFar = 1500;
-
-							spotLight.shadowCameraFov = 40;
-
-							spotLight.shadowBias = -0.005;
-							spotLight.shadowDarkness = 0.35;
-
-							//
-
-							directionalLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
-							directionalLight.position.set( 1, -0.5, 1 );
-							directionalLight.color.setHSV( 0.6, 0.05, 1 );
-							scene.add( directionalLight );
-
-							directionalLight.position.multiplyScalar( 500 );
-
-							directionalLight.castShadow = true;
-							//directionalLight.shadowCameraVisible = true;
-
-							directionalLight.shadowMapWidth = 2048;
-							directionalLight.shadowMapHeight = 2048;
-
-							directionalLight.shadowCameraNear = 200;
-							directionalLight.shadowCameraFar = 1500;
-
-							directionalLight.shadowCameraLeft = -500;
-							directionalLight.shadowCameraRight = 500;
-							directionalLight.shadowCameraTop = 500;
-							directionalLight.shadowCameraBottom = -500;
-
-							directionalLight.shadowBias = -0.005;
-							directionalLight.shadowDarkness = 0.35;
-
-							//
-
-							directionalLight2 = new THREE.DirectionalLight( 0xffffff, 1.2 );
-							directionalLight2.position.set( 1, -0.5, -1 );
-							directionalLight2.color.setHSV( 0.08, 0.35, 1 );
-							scene.add( directionalLight2 );
-							material = new THREE.MeshPhongMaterial( { ambient: 0x552811, color: 0x552811, specular: 0x333333, shininess: 25, perPixel: true, bumpScale: 19, metal: false } );
-
-
+							
+//							 
 							// For the single color model we probably need to use the MeshLambertMaterial
-//						    material = new THREE.MeshLambertMaterial({color: 0xA361E5, reflectivity: 0.55, refractionRatio: 0.50, shading: THREE.SmoothShading });
-							 
+							// refractionRatio: 0.90,, MeshPhongMaterial
+						    material = new THREE.MeshPhongMaterial( { ambient: 0x555555, color: 0x555555, specular: 0xffffff, shininess: 50, shading: THREE.SmoothShading }  ) ;
+//						    material = new THREE.MeshLambertMaterial({ color: 0xff6600, ambient: 0xff2200, combine: THREE.MixOperation, reflectivity: 1, shading: THREE.SmoothShading });
+							
 			
 						} else {
 							material = new THREE.MeshBasicMaterial({map : texture});
@@ -408,7 +356,7 @@ $(document)
 								// Copy the heights map to the geometry * scaleSize 
 								for ( var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
 	
-									if (mesh.geometry.vertices[i].y > 0 ) {
+									if (sceneDataDepth[i] > 0 ) {
 										mesh.geometry.vertices[i].y = sceneDataDepth[i]*scaleSize;
 									} 
 								}
@@ -453,7 +401,7 @@ $(document)
 					          $("select option:selected").each(function () {
 					        	  mode += $(this).text();
 					              });
-					          
+					          textureMode= mode;
 					            $('#ajaxBusy').show();
 					          
 					          	var urlQuery = location.search;

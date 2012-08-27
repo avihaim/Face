@@ -45,12 +45,6 @@ public class UploadImage extends HttpServlet {
 	private static Random generator = new Random();
 	private static ObjectMapper mapper = new ObjectMapper();
     
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		
-		doPost(req, resp);
-	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -189,10 +183,7 @@ public class UploadImage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String imageurl = request.getParameter("imageurl");
 		
-		System.out.println("imageurl " + imageurl); 
-		
 		if(imageurl != null) {
-			
 			
 			File savedFile = saveImage(imageurl, "chrome.png");
 			
