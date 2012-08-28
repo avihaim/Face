@@ -197,7 +197,7 @@ $(document)
 						camera.position.x = 0;
 						camera.position.z = 1;
 
-						// Removed unneded scene.add(camera);
+						// Removed uneeded scene.add(camera);
 						scene.add(camera);
 						
 						//var width_tiles_number = 80;

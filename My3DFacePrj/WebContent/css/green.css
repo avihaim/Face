@@ -138,12 +138,12 @@ h1#logo {
 	padding-top: 6px;
 	padding-bottom: 22px;
 }
-
+ 
 h1#logo a {
 	background: url('../images/green/logo.png') no-repeat 0 0;
 	display: block;
 	
-	height: 81px;
+	height: 91px;
     margin-top: 7px;
     width: 403px;
 }
@@ -178,6 +178,12 @@ h1#logo a {
 	color: #85ff02;
 }
 
+#navigation li a.active {
+	background: url('../images/green/nav-item.png') repeat-x 0 0;
+	text-decoration: none;
+	color: #85ff02;
+}
+
 /* Slider */
 #slider {
 	background: url('../images/green/slider-bg.png') repeat-x 0 bottom;
@@ -186,15 +192,15 @@ h1#logo a {
 #slider .slider-outer {
 	background: url('../images/green/slider-shadows.png') no-repeat center
 		bottom;
-	padding-bottom: 25px;
+	padding-bottom: 40px;
 	margin-bottom: 2px;
 }
 
 #slider .slider-inner {
 	background: #fff;
 	padding: 6px 7px 29px 7px;
-	width: 964px;
-	height: 310px;
+	width: 960px;
+	height: 230px;
 	position: relative;
 }
 
@@ -234,7 +240,7 @@ h1#logo a {
 	font-size: 35px;
 	color: #646464;
 	line-height: 35px;
-	padding-bottom: 65px;
+	padding-bottom: 30px;
 	padding-left: 3px;
 }
 

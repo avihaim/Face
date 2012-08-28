@@ -87,7 +87,7 @@ img.large_thumb_image {
 	background-size: 100% 100%;
 	
 	margin-top: 55px;
-	margin-left: 40px;
+	margin-left: 24px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-left: 1px solid #fff;
@@ -166,7 +166,6 @@ img.large_thumb_image {
 	height: 32px;
 	top : 0px;
 	left: 20px;
-	position: absolute;
 	background-repeat: no-repeat;
 	position: relative;
 }
