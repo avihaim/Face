@@ -94,12 +94,14 @@
             </td>
             <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
             <td colspan="2"></td>
-        {% } %}
-		<td class="start">{% if (!o.options.autoUpload) { %}
+			<td class="start">
+			{% if (!o.options.autoUpload) { %}
                 <button class="btn btn-primary" onclick="openWebGlPopup('{%=file.name%}','{%=file.id%}');">
                     <i class="icon-upload icon-white"></i>
                     <span>ThreeDaFace It</span>
                 </button>
+            {% } %}
+		
             {% } %}</td>
         <td class="delete">
             <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">

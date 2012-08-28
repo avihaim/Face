@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -31,6 +32,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.my.image.app.FaceDataManager;
+import org.my.image.exceptions.BadFileException;
 
 import sun.misc.BASE64Decoder;
 
@@ -44,6 +46,7 @@ public class UploadImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Random generator = new Random();
 	private static ObjectMapper mapper = new ObjectMapper();
+	private static List<String> imageTyps = Arrays.asList(".jpg",".png",".jpge");
     
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -73,17 +76,24 @@ public class UploadImage extends HttpServlet {
 	         if (image == null) {
 	        	 System.out.println("Buffered Image is null");
 	          }
-	         File f = cerateNewFile("webCam.png");
+	         File f;
+			try {
+				 f = cerateNewFile("webCam.png");
+				// write the image
+		          ImageIO.write(image, "png", f);
+		          
+		          System.out.println(f.getName());
+		          
+		          PrintWriter writer1 = response.getWriter();
+				  
+				  writer1.write(f.getName());
+				  writer1.close();
+			} catch (BadFileException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	 
-	         // write the image
-	          ImageIO.write(image, "png", f);
-	          
-	          System.out.println(f.getName());
-	          
-	          PrintWriter writer1 = response.getWriter();
-			  
-			  writer1.write(f.getName());
-			  writer1.close();
+	         
 //				response.setStatus(HttpServletResponse.SC_OK);
 //	          response.sendRedirect("myFaceShow.html?fileName=" + f.getName());
 			  
@@ -103,18 +113,14 @@ public class UploadImage extends HttpServlet {
 			response.setContentType("application/json");
 			
 			
-//			JSONArray json = new JSONArray();
 			ArrayNode json = mapper.createArrayNode();
 			
 			Iterator<?> itr = items.iterator();
 			while (itr.hasNext()) {
 				FileItem item = (FileItem) itr.next();
-				if (item.isFormField()) {
-					String name = item.getFieldName();
-					System.out.println("name: " + name);
-					String value = item.getString();
-					System.out.println("value: " + value);
-				} else {
+				
+				ObjectNode jsono = mapper.createObjectNode();
+				
 					try {
 						String itemName = item.getName();
 						
@@ -122,8 +128,7 @@ public class UploadImage extends HttpServlet {
 						File savedFile = cerateNewFile(itemName);
 						
 						item.write(savedFile);
-						ObjectNode jsono = mapper.createObjectNode();
-//						JSONObject jsono = new JSONObject();
+						
 						jsono.put("name", savedFile.getName());
 						jsono.put("id", generator.nextLong());
 						jsono.put("size", item.getSize());
@@ -133,11 +138,10 @@ public class UploadImage extends HttpServlet {
 						jsono.put("delete_url", "upload?delfile=" + savedFile.getName());
 						jsono.put("delete_type", "GET");
 						json.add(jsono);
-						
-//						response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
+					} catch (BadFileException e) {
+						jsono.put("error", e.getMessage());
+						json.add(jsono);
 					} catch (Exception e) {
-						e.printStackTrace();
-					} catch (Throwable e) {
 						e.printStackTrace();
 					} finally {
 						
@@ -145,12 +149,11 @@ public class UploadImage extends HttpServlet {
 						writer.close();
 					}
 				}
-			}
 		}
 		
 	}
 	
-	private File cerateNewFile(String itemName) throws IOException {
+	private File cerateNewFile(String itemName) throws BadFileException {
 		
 		
 		int r = Math.abs(generator.nextInt());
@@ -169,6 +172,10 @@ public class UploadImage extends HttpServlet {
 		int IndexOf = itemName.indexOf(".");
 		String domainName = itemName.substring(IndexOf);
 		System.out.println("domainName: " + domainName);
+		
+		if(!imageTyps.contains(domainName.toLowerCase())) {
+			throw new BadFileException("This file type is not allow, only one of the follwing : " + imageTyps);
+		}
 
 		String finalimage = buffer.toString() + "_" + r
 				+ domainName;
@@ -185,14 +192,19 @@ public class UploadImage extends HttpServlet {
 		
 		if(imageurl != null) {
 			
-			File savedFile = saveImage(imageurl, "chrome.png");
+			File savedFile = null;
+			try {
+				savedFile = saveImage(imageurl, "chrome.png");
+			} catch (BadFileException e) {
+				e.printStackTrace();
+			}
 			
 			response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
 		}
 	
 	}
 	
-	public File saveImage(String imageUrl, String destinationFile) throws IOException {
+	public File saveImage(String imageUrl, String destinationFile) throws IOException, BadFileException {
 		
 		File newFile = cerateNewFile(destinationFile);
 		URL url = new URL(imageUrl);
