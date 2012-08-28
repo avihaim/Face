@@ -32,6 +32,7 @@
 .fileupload-buttonbar .btn,
 .fileupload-buttonbar .toggle {
   margin-bottom: 5px;
+  background-image: url("../images/Button-Upload-icon.png");
 }
 .files .progress {
   width: 200px;

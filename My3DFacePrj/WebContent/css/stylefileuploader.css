@@ -2327,18 +2327,18 @@ button.close {
 .btn {
 	display: inline-block;
 	*display: inline;
-	padding: 4px 10px 4px;
+	padding: 6px 10px 4px;
 	margin-bottom: 0;
 	*margin-left: .3em;
 	font-size: 13px;
-	line-height: 18px;
+	line-height: 24px;
 	*line-height: 20px;
 	color: #333333;
 	text-align: center;
 	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 	vertical-align: middle;
 	cursor: pointer;
-	background-color: #f5f5f5;
+/* 	background-color: #f5f5f5; */
 	*background-color: #e6e6e6;
 	background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff),
@@ -2364,12 +2364,12 @@ button.close {
 		rgba(0, 0, 0, 0.05);
 	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
 		rgba(0, 0, 0, 0.05);
-	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px
-		rgba(0, 0, 0, 0.05);
+/* 	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px */
+/* 		rgba(0, 0, 0, 0.05); */
 }
 
 .btn:hover,.btn:active,.btn.active,.btn.disabled,.btn[disabled] {
-	background-color: #e6e6e6;
+/* 	background-color: #e6e6e6; */
 	*background-color: #d9d9d9;
 }
 
@@ -2381,18 +2381,18 @@ button.close {
 	*margin-left: 0;
 }
 
-.btn:hover {
-	color: #333333;
-	text-decoration: none;
-	background-color: #e6e6e6;
-	*background-color: #d9d9d9;
-	background-position: 0 -15px;
-	-webkit-transition: background-position 0.1s linear;
-	-moz-transition: background-position 0.1s linear;
-	-ms-transition: background-position 0.1s linear;
-	-o-transition: background-position 0.1s linear;
-	transition: background-position 0.1s linear;
-}
+/* .btn:hover { */
+/* 	color: #333333; */
+/* 	text-decoration: none; */
+/* 	background-color: #e6e6e6; */
+/* 	*background-color: #d9d9d9; */
+/* 	background-position: 0 -15px; */
+/* 	-webkit-transition: background-position 0.1s linear; */
+/* 	-moz-transition: background-position 0.1s linear; */
+/* 	-ms-transition: background-position 0.1s linear; */
+/* 	-o-transition: background-position 0.1s linear; */
+/* 	transition: background-position 0.1s linear; */
+/* } */
 
 .btn:focus {
 	outline: thin dotted #333;
@@ -2401,7 +2401,7 @@ button.close {
 }
 
 .btn.active,.btn:active {
-	background-color: #e6e6e6;
+/* 	background-color: #e6e6e6; */
 	background-color: #d9d9d9 \9;
 	background-image: none;
 	outline: 0;

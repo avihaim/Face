@@ -175,11 +175,11 @@ img.large_thumb_image {
 	cursor : pointer;
 /* 	width: 32px; */
 /* 	height: 32px; */
-	top : 1070px;
-	left: 400px;
+ 	top: -55px;
+	left: 5%;
 /* 	background-image: url('images/Button-Upload-icon.png'); */
 	background-repeat: no-repeat;
-	position: absolute;
+	position: relative;
 	
 }
 
