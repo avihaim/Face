@@ -26,7 +26,7 @@ $(document)
 					
 					var camera, scene, renderer;
 
-					var mesh;
+					var mesh , pointLight;
 					
 					var worldWidth = 6000, worldDepth = 6000;
 					
@@ -211,8 +211,8 @@ $(document)
 						//var depth_ratio = worldDepth/depth_tiles_number;
 						
 						// Copy the heights map to the geometry
-						for ( var i = 0, l = geometry.vertices.length; i < l; i++) {
-							
+						var i = geometry.vertices.length;
+						while (--i >= 0)  {
 							//var curr_depth = i/width_tiles_number;
 							//var curr_width = i%width_tiles_number;
 							
@@ -226,13 +226,7 @@ $(document)
 						}
 						
 						
-						// Create the texture for the mash
-						var texture = new THREE.Texture(
-								generateTexture(faceData.texture,worldWidth, worldDepth));
-//								new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping,THREE.RGBAFormat);
 						
-						
-						texture.needsUpdate = true;
 						
 						
 						
@@ -244,26 +238,40 @@ $(document)
 							var ambient = new THREE.AmbientLight( 0xffffff );
 							scene.add( ambient );
 
-//							directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
-//							directionalLight.position.set(1, 0, 0 ).normalize();
+//							directionalLight = new THREE.DirectionalLight( 0xCC00CC, 2 );
+//							directionalLight.position.set(0, 1, 0 ).normalize();
 //							scene.add( directionalLight );
-//
-//							directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+
+//							directionalLight = new THREE.DirectionalLight( 0xCC00CC, 1 );
 //							directionalLight.position.set( -1, 0, 0 ).normalize();
 //							scene.add( directionalLight );
-//
+////
+							
+//							var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+//							directionalLight.position.set( 1, 1, 1 ).normalize();
+//							scene.add( directionalLight );
+							
 							pointLight = new THREE.PointLight( 0xffaa00, 2 );
-							pointLight.position.set( 0, 260, 0 );
+							pointLight.position.set( 0, 100, 0 );
 							scene.add( pointLight );
 							
-//							 
 							// For the single color model we probably need to use the MeshLambertMaterial
 							// refractionRatio: 0.90,, MeshPhongMaterial
-						    material = new THREE.MeshPhongMaterial( { ambient: 0x555555, color: 0x555555, specular: 0xffffff, shininess: 50, shading: THREE.SmoothShading }  ) ;
+						    material = new THREE.MeshPhongMaterial( { ambient: 0x555555, color: 0x555555, specular: 0x555555, shininess: 0, metal: true, shading: THREE.SmoothShading, perPixel: true }  ) ;
 //						    material = new THREE.MeshLambertMaterial({ color: 0xff6600, ambient: 0xff2200, combine: THREE.MixOperation, reflectivity: 1, shading: THREE.SmoothShading });
 							
+						    
 			
 						} else {
+							
+							// Create the texture for the mash
+							var texture = new THREE.Texture(
+									generateTexture(faceData.texture,worldWidth, worldDepth));
+//									new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping,THREE.RGBAFormat);
+							
+							
+							texture.needsUpdate = true;
+							
 							material = new THREE.MeshBasicMaterial({map : texture});
 						}
 						
@@ -354,17 +362,25 @@ $(document)
 								scaleSize = newScaleSize;
 								
 								// Copy the heights map to the geometry * scaleSize 
-								for ( var i = 0, l = mesh.geometry.vertices.length; i < l; i++) {
+								
+								var i = mesh.geometry.vertices.length;
+								while (--i >= 0)  {
 	
 									if (sceneDataDepth[i] > 0 ) {
 										mesh.geometry.vertices[i].y = sceneDataDepth[i]*scaleSize;
 									} 
 								}
-								
+//								pointLight.position.y = 33*scaleSize;
 								//Flag vertices need to update in the scene
 								mesh.geometry.verticesNeedUpdate = true;
 							}
 							
+//							var timer = Date.now() * 0.00025;
+							
+//							pointLight.position.x = Math.sin( timer * 7 ) * 300;
+//							pointLight.position.y = Math.cos( timer * 5 ) * 400;
+//							pointLight.position.z = Math.cos( timer * 3 ) * 300;
+
 	
 							renderer.render(scene, camera);
 						}
