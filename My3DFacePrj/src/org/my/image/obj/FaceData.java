@@ -16,6 +16,7 @@ public class FaceData implements Comparable<FaceData> {
 	private int facePosX = 0;
 	private int facePosY = 0;
 	private int pos = 0;
+	private Long fileCerateTime = Long.valueOf(0);
 	
 	public FaceData() {
 	}
@@ -33,7 +34,7 @@ public class FaceData implements Comparable<FaceData> {
 
 	public FaceData(String imageName, String dImageName, String thumName,
 			String imageNameRealPath, String dImageNameRealPath,
-			String thumNameRealPath,String realPath, int facePosX, int facePosY, int pos) {
+			String thumNameRealPath,String realPath, int facePosX, int facePosY, int pos, long fileCerateTime) {
 		super();
 		this.imageName = imageName;
 		this.dImageName = dImageName;
@@ -45,6 +46,7 @@ public class FaceData implements Comparable<FaceData> {
 		this.facePosX = facePosX;
 		this.facePosY = facePosY;
 		this.pos = pos;
+		this.setFileCerateTime(fileCerateTime);
 	}
 	
 	
@@ -132,7 +134,15 @@ public class FaceData implements Comparable<FaceData> {
 
 	@Override
 	public int compareTo(FaceData o) {
-		return this.imageName.compareTo(o.getImageName());
+		return o.getFileCerateTime().compareTo(this.getFileCerateTime());
+	}
+
+	public Long getFileCerateTime() {
+		return fileCerateTime;
+	}
+
+	public void setFileCerateTime(Long fileCerateTime) {
+		this.fileCerateTime = fileCerateTime;
 	}
 
 }

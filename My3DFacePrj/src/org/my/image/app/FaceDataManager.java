@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +40,24 @@ public class FaceDataManager {
 					imageName = file.getName();
 					System.out.println(imageName);
 					
-					int[] extractFacePosFile = extractFacePosFile(imageName);
+					if(ImageUtil.isFileIsImage(imageName)) {
 					
-					int x = extractFacePosFile[0];
-					int y = extractFacePosFile[1];
-					
-					FaceData faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
-					
-					addFaceData(imageName, faceData);
+						int[] extractFacePosFile = extractFacePosFile(imageName);
+						
+						int x = extractFacePosFile[0];
+						int y = extractFacePosFile[1];
+						
+						FaceData faceData = new FaceData(imageName, 
+								"images" + File.separator + "depths" + File.separator + "D_" + imageName, 
+								"t_" + imageName, 
+								IMAGES_PATH + File.separator + "textures" + File.separator + imageName, 
+								IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, 
+								IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,
+								IMAGES_PATH, x, y, imageList.size(),file.lastModified());
+						
+						
+						addFaceData(imageName, faceData);
+					}
 				} catch (Exception e) {
 					System.out.println(imageName);
 					e.printStackTrace();
@@ -54,6 +65,18 @@ public class FaceDataManager {
 			}
 		}
 		
+		sort();
+	}
+	
+	private static void sort() {
+		Collections.sort(imageList);
+		
+		
+		for (int i = 0; i < imageList.size(); i++) {
+			imageList.get(i).setPos(i);
+		}
+		
+
 	}
 	
 	public static int[] extractFacePosFile(String filesName) {
@@ -117,17 +140,19 @@ public class FaceDataManager {
 				
 				int x = extractFacePosFile[0];
 				int y = extractFacePosFile[1];
-				System.out.println("y="+y);
-				System.out.println("x="+x);
-	//			
-	//			BufferedImage resizeImage = resizeImage(ImageIO.read(new File(IMAGES_PATH + File.separator + "textures" + File.separator + imageName)), BufferedImage.TYPE_INT_ARGB);
-	//			
-	//			System.out.println(IMAGES_PATH + File.separator + "textures" + File.separator + imageName);
-	//			System.out.println(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName);
-	//			ImageIO.write(resizeImage, domainName, new File(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName)); 
 				
-				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
+				faceData = new FaceData(imageName, 
+						"images" + File.separator + "depths" + File.separator + "D_" + imageName, 
+						"t_" + imageName, 
+						IMAGES_PATH + File.separator + "textures" + File.separator + imageName,
+						IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, 
+						IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,
+						IMAGES_PATH, x, y, imageList.size(),System.currentTimeMillis());
+				
 				FaceDataManager.addFaceData(imageName, faceData );
+				
+				sort();
+				
 			} catch (Exception e) {
 				System.out.println("FaceDataManager Exception " + e.getMessage());
 				e.printStackTrace();
@@ -139,15 +164,6 @@ public class FaceDataManager {
 		return faceData;
 	}
 	
-//	private static BufferedImage resizeImage(BufferedImage originalImage, int type){
-//		BufferedImage resizedImage = new BufferedImage(50, 50, type);
-//		Graphics2D g = resizedImage.createGraphics();
-//		g.drawImage(originalImage, 0, 0, 50, 50, null);
-//		g.dispose();
-//	 
-//		return resizedImage;
-//	 }
-
 	public static List<FaceData> getAllFaceData(int fromIndex) {
 		
 		List<FaceData> subList = null;
@@ -189,14 +205,5 @@ public class FaceDataManager {
 	public static int geSize() {
 		return imageList.size();
 	}
-
-	// private static String appPath() {
-	// java.net.URL r = ClassLoader.getSystemResource("my.html");
-	// String filePath = r.getFile();
-	// String result = new File(new File(new
-	// File(filePath).getParent()).getParent()).getParent();
-	//
-	// return result;
-	// }
 
 }

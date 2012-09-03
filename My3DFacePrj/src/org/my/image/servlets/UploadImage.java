@@ -32,6 +32,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.my.image.app.FaceDataManager;
+import org.my.image.app.ImageUtil;
 import org.my.image.exceptions.BadFileException;
 
 import sun.misc.BASE64Decoder;
@@ -46,7 +47,7 @@ public class UploadImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Random generator = new Random();
 	private static ObjectMapper mapper = new ObjectMapper();
-	private static List<String> imageTyps = Arrays.asList(".jpg",".png",".jpge");
+	
     
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -173,9 +174,7 @@ public class UploadImage extends HttpServlet {
 		String domainName = itemName.substring(IndexOf);
 		System.out.println("domainName: " + domainName);
 		
-		if(!imageTyps.contains(domainName.toLowerCase())) {
-			throw new BadFileException("This file type is not allow, only one of the follwing : " + imageTyps);
-		}
+		ImageUtil.isImage(domainName);
 
 		String finalimage = buffer.toString() + "_" + r
 				+ domainName;

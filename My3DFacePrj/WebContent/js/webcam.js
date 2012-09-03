@@ -11,7 +11,8 @@ function fancyboxHrefItem(href,item) {
 		'width'		    : 1000,
 		'height'		: 650,
 		'href'			: href,
-		'type'			: 'iframe'
+		'type'			: 'iframe',
+		'onClosed'      : window.parent.updateData
 		
 	});
 

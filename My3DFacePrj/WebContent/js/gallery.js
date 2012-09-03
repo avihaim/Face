@@ -4,6 +4,13 @@ function openWebGlPopup(imageName,imageId) {
 	$("a#upimage").trigger('click');
 	$('.image' + imageId).remove();
 }
+
+function updateData() {
+	getData(0,'next');
+	
+	$('#back').unbind('click');
+	$('#back').css('cursor' ,'default');
+}
   
 function fancyboxHrefUploud(href) {
 	
@@ -18,13 +25,26 @@ function fancyboxHrefUploud(href) {
 		'width'		    : 1000,
 		'height'		: 650,
 		'href'			: href,
-		'type'			: 'iframe'
+		'type'			: 'iframe',
+		'onClosed'      : updateData
 	});
 
 }
 
 function fancyboxHref(href) {
-	fancyboxHrefItem(href,"div#largephoto");
+	$("div#largephoto").fancybox({
+		'padding'		: 0,
+		'autoScale'		: false,
+		'speedIn' 		: 200,
+		'speedOut' 		: 200,
+		'transitionIn'	: 'elastic',
+		'transitionOut'	: 'elastic',
+		'title'			: this.title,
+		'width'		    : 1000,
+		'height'		: 650,
+		'href'			: href,
+		'type'			: 'iframe'
+	});
 
 }
 
@@ -41,7 +61,8 @@ function fancyboxHrefItem(href,item) {
 		'width'		    : 1000,
 		'height'		: 650,
 		'href'			: href,
-		'type'			: 'iframe'
+		'type'			: 'iframe',
+		'onClosed': updateData
 	});
 
 }
