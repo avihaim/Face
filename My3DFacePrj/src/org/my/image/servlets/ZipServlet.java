@@ -50,7 +50,7 @@ public class ZipServlet extends HttpServlet {
 		
 		String fileNameTexture = fileNameD.getImageNameRealPath();//getServletContext().getRealPath("images/textures/" + fileName);
 		
-		String fullFileNameD = fileNameD.getdImageNameRealPath();// getServletContext().getRealPath(fileNameD.getdImageName());
+		//String fullFileNameD = fileNameD.getdImageNameRealPath();// getServletContext().getRealPath(fileNameD.getdImageName());
 		
 		ImageOutputStream imageOutputStream = new FileImageOutputStream(new File("Depth_" + fileName));
 		
@@ -63,7 +63,7 @@ public class ZipServlet extends HttpServlet {
 		Zip.zip(response.getOutputStream(),
 				Arrays.asList(
 					fileNameTexture,
-					fullFileNameD,
+				//	fullFileNameD,
 					"Depth_" + fileName,
 					readme));
 	}

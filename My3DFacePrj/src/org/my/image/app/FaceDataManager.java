@@ -8,13 +8,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.my.image.obj.FaceData;
+import org.my.image.obj.GalleryConfig;
 
 public class FaceDataManager {
 
 	public static String IMAGES_PATH = System.getProperty("catalina.base") + File.separator + "work_dir";
 	private static Map<String, FaceData> imageMap = null;
 	private static List<FaceData> imageList;
+	private static GalleryConfig galleryConfig = null;
+	private static ObjectMapper mapper = new ObjectMapper();
+	private static boolean isGalleryConfigExsist = false;
 	
 	static {
 		try {
@@ -23,9 +31,43 @@ public class FaceDataManager {
 			e.printStackTrace();
 		}
 	}
+	
+	private static void fillGalleryConfig() throws JsonGenerationException, JsonMappingException, IOException {
+		List<String> imageNames = new ArrayList<>();
+		
+		for (FaceData faceData : imageList) {
+			imageNames.add(faceData.getImageName());
+		}
+		
+		GalleryConfig galleryConfigData = new GalleryConfig(true, imageNames);
+		  
+		mapper.writeValue( new File(IMAGES_PATH+"/galleryConfig.json"), galleryConfigData);
+	}
+	
+	private static void initGalleryConfig()  {
+		File galleryConfigFile = new File(IMAGES_PATH+"/galleryConfig.json");
+		
+		try {
+			galleryConfig = mapper.readValue(galleryConfigFile, GalleryConfig.class);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(galleryConfig != null) {
+			isGalleryConfigExsist = true;
+		}
+		
+	}
 
 	private static void init() throws IOException {
 
+		
+		initGalleryConfig();
+		
 		imageMap = new HashMap<String, FaceData>();
 		imageList = new ArrayList<FaceData>();
 		
@@ -54,6 +96,9 @@ public class FaceDataManager {
 			}
 		}
 		
+		if(!isGalleryConfigExsist) {
+			fillGalleryConfig();
+		}
 	}
 	
 	public static int[] extractFacePosFile(String filesName) {
@@ -177,7 +222,10 @@ public class FaceDataManager {
 		
 		if(faceData != null) {
 			imageMap.put(imageName, faceData);
-			imageList.add(faceData);
+			
+			if ((!isGalleryConfigExsist) || (!galleryConfig.isConstant()) || (galleryConfig.getGalleryImages().contains(imageName))) {
+				imageList.add(faceData);
+			} 
 		}
 	}
 	
