@@ -200,7 +200,15 @@ h1#logo a {
 	background: #fff;
 	padding: 6px 7px 29px 7px;
 	width: 960px;
-	height: 230px;
+	height: 220px;
+	position: relative;
+}
+
+#slider .slider-inner-tab {
+	background: #fff;
+	padding: 6px 7px 29px 7px;
+	width: 960px;
+	height: 125px;
 	position: relative;
 }
 
@@ -327,7 +335,12 @@ h1#logo a {
 
 /* Main */
 #main {
-	padding-top: 42px;
+	padding-top: 16px;
+	background: url('../images/green/main-top.png') no-repeat center 0;
+}
+/* Main body for the other tabs except the Home tab.*/
+#main-fortab {
+	padding-top: 62px;
 	background: url('../images/green/main-top.png') no-repeat center 0;
 }
 
@@ -587,7 +600,7 @@ h1#logo a {
 /* Content */
 #content-green {
 	width: 569px;
-	padding-left: 31px;
+	padding-left: 4px;
 	float: left;
 	display: inline;
 }

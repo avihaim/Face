@@ -156,6 +156,7 @@ img.large_thumb_image {
 }
 
 #controlPanel {
+	width: 150px;
 	top : 445px;
 	left: 500px;
 	position: relative;
@@ -181,18 +182,32 @@ img.large_thumb_image {
 	background-repeat: no-repeat;
 	position: relative;
 	
+	/* New upload buttons design properties */
+	
 }
 
+/* New prev/next gallery paging */
 #next {
-	background-image: url('images/navigate-right-icon.png');
-	left: 80px;
-	top : -16px;
+	width: 31px;
+	height: 31px;
+	background-image: url('images/gallery_nav_right.png') ;
+	background-position: 0 -33px;
+	left: 120px;
+	top : -56px;
 }
 
 #back {
-	background-image: url('images/navigate-left-icon.png');
+	width: 31px;
+	height: 31px;
+	background-image: url('images/gallery_nav_left.png') ;
+	background-position: 0 -33px;
 	left: 45px;
-	top : 16px;
+	top : -25px;
+}
+
+#back:hover,
+#next:hover {
+	background-position: 0 0px;
 }
 
 #webcambox {

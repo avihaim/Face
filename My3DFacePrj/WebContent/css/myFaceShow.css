@@ -1,13 +1,15 @@
 @CHARSET "windows-1255";
 
 body {
-	color: #61443e;
+	/*color: #61443e;*/
 	font-family: Monospace;
 	font-size: 13px;
 	text-align: center;
-	background-color: #bfd1e5;
+	/*background-color: #bfd1e5;*/
+	background: url('../images/interface/WebGL_BackGround.png') repeat top left;
 	margin: 0px;
 	overflow: hidden;
+	
 }
 
 #info {
@@ -67,8 +69,8 @@ a {
 
 
 .zipLink {
-	top: 0px;
-	left: 20px;
+	bottom:10px;
+	left: 30px;
 	position: absolute;
 	background-image: url('../images/Download-icon.png');
 	background-repeat: no-repeat;
@@ -93,7 +95,9 @@ a {
 
 
 
+
 /* slider root element */
+/*
 .slider {
     background:#3C72E6 url(../images/h30.png) repeat-x 0 0;
     height:9px;
@@ -109,16 +113,20 @@ a {
     -webkit-border-radius:5px;
     -moz-box-shadow:inset 0 0 8px #000;
 }
+*/
 
 /* progress bar (enabled with progress: true) */
+/*
 .progress {
     height:9px;
     background-color:#C5FF00;
     display:none;
     opacity:0.6;
+    */
 }
 
 /* drag handle */
+/*
 .handle {
     background:#fff url(../images/h30.png) repeat-x 0 0;
     height:24px;
@@ -135,8 +143,10 @@ a {
     -webkit-border-radius:14px;
 
 }
+*/
 
 /* the input field */
+/*
 .range {
     border:1px inset #ddd;
     float:left;
@@ -146,7 +156,7 @@ a {
     text-align:center;
     width:50px;
     -moz-border-radius:5px;
-    -webkit-border-radius:5px;
-}
+    -webkit-border-radius:5px;*/
+}*/
 
 
