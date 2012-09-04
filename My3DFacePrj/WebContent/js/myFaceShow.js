@@ -32,19 +32,98 @@ $(document)
 					
 //					==============================================
 					
-					
+					// the container div of the webgl canvas.
 					var container = document.getElementById('container');
 					
+					// Inits the new slider members.
+					var slider  = $('#slider');
+					var tooltip = $('.tooltip');
 					
 					if (!Detector.webgl) {
 						Detector.addGetWebGLMessage();
 						container.innerHTML = "";
 					} else {
+						
+						
 						init();
 						initEvents();
+						//AMIR:for debug
+						/*
+						initNewUiControls();*/
+						
+						// AMIR: this is the first selected default value of the select box.
+						/*
+						$("#modeSelect option:selected").each(function () {
+				        	  alert( $(this).text());
+				           });*/
 					}
 					
+					// Inits the new slider design.
+					function initNewUiControls() {
+						//Inits the select box.
+						$("#modeSelect").selectbox({
+							onChange: function (val, inst) {
+								    textureMode= val;
+						            $('#ajaxBusy').show();
+						            $('#modeSelect').attr("disabled", "disabled");
+						            
+						          	var urlQuery = location.search;
+									urlQuery = urlQuery.replace('?', '');
+									var split = urlQuery.split('=');
+
+									var fileName = split[1];
+									
+									updateSceneData(fileName,scaleSize,val);
+							},effect:'fade'
+						});
+						
+						//Hide the Tooltip at first
+						tooltip.hide();
+						
+						// Add the minimum/maximum position value of range.
+						var minimumSliderValue = 1;
+						var currentSliderValue = 3;
+						var maximumSliderValue = 20;
+						
+						// declare the minimum position of the tooltip according to its css.
+						tooltip.text(currentSliderValue);
+						tooltip.parent().append('<div id="tooltipMinPos"></div>');
+						
+						//set the value of the tooltip min pos.
+						var min_pos = parseInt(slider.position().left, 10) + (slider.width()/2) - (tooltip.width()/2);
+						
+						// sets the left position of the tooltip according to the slider right pos.
+						tooltip.css('left', min_pos);
+						
+						$("#tooltipMinPos").data('value', min_pos);
+																		
+						//Call the Slider
+						slider.slider({
+							//Config
+							range: "min",
+							min: minimumSliderValue,
+							value: 3,
+							max: maximumSliderValue,
+
+							start: function(event,ui) {
+							    tooltip.fadeIn('fast');
+							},
+
+							//Slider Event
+							slide: function(event, ui) { //When the slider is sliding
+								var pos_value = $("#tooltipMinPos").data('value');
+											
+								//Adjust the tooltip accordingly
+								tooltip.css('left', pos_value).text(ui.value);
+							},
+
+							stop: function(event,ui) {
+							    tooltip.fadeOut('fast');
+							},
+						});				
+					}// end initNewUiControls().
 					
+					// Inits the canvas.
 					function init() {
 						// Setup the ajax indicator
 						$('body')
@@ -67,7 +146,6 @@ $(document)
 
 						// Start ajaxBusy
 						$('#ajaxBusy').show();
-
 
 						// Get the file model name
 						var urlQuery = location.search;
@@ -94,8 +172,11 @@ $(document)
 								'<iframe  style="display: none;" class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
 								'" "scrolling="no" frameborder="0" style="border:none; width:450px; height:80px"></iframe>');
 						
-						$(":range").rangeinput();
-						 
+						//$(":range").rangeinput();
+						
+						// Create the new slider div.
+						initNewUiControls();
+												 
 						// FIX: Zoom out so the use can zoom in
 						zoom(-360*20);
 						
@@ -222,8 +303,7 @@ $(document)
 							}
 						}
 						
-						
-						
+
 						var material;
 						
 						if(textureMode == 'singleColor') {
@@ -284,12 +364,11 @@ $(document)
 						modelIsReady = true;
 						
 						animate();
-						
 					}
 					
-					var newScaleSize = $("#scaleSize").val();
-					
-					
+					//var newScaleSize = $("#scaleSize").val();
+					var newScaleSize = $('#slider').slider('value');
+				
 					var vctZ = new THREE.Vector3(0,0,1);
 					var vctX = new THREE.Vector3(1,0,0);
 					var vctXYZ = new THREE.Vector3(1,1,1);
@@ -322,7 +401,8 @@ $(document)
 							delta_x = 0;
 							delta_y = 0;
 							
-							newScaleSize = $("#scaleSize").val();
+							//newScaleSize = $("#scaleSize").val();
+							newScaleSize = $('#slider').slider('value');
 							
 							// Update the scale only if there is a change in the scaleSize
 							if(newScaleSize != scaleSize) {
