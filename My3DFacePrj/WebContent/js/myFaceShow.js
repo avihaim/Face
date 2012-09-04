@@ -4,8 +4,8 @@ $(document)
 				function() {
 
 					var sceneDataDepth;
-					var scaleSize = 3;
-					var textureMode = 'singleColor';
+					var scaleSize = 12;
+					var textureMode = 'rgb';
 //				    =============================================
 				    var delta_x_rotate = 0;
 					var delta_y_rotate = 0;
@@ -26,7 +26,7 @@ $(document)
 					
 					var camera, scene, renderer;
 
-					var mesh , pointLight;
+					var mesh ;
 					
 					var worldWidth = 6000, worldDepth = 6000;
 					
@@ -63,7 +63,17 @@ $(document)
 						//Inits the select box.
 						$("#modeSelect").selectbox({
 							onChange: function (val, inst) {
-								alert( val);
+								    textureMode= val;
+						            $('#ajaxBusy').show();
+						            $('#modeSelect').attr("disabled", "disabled");
+						            
+						          	var urlQuery = location.search;
+									urlQuery = urlQuery.replace('?', '');
+									var split = urlQuery.split('=');
+
+									var fileName = split[1];
+									
+									updateSceneData(fileName,scaleSize,val);
 							},effect:'fade'
 						});
 						
@@ -210,6 +220,7 @@ $(document)
 					
 					function updateSceneData(fileName,scaleSize,mode) {
 						
+						
 						container = document.getElementById('container');
 
 						var dataString = new Object();
@@ -255,10 +266,15 @@ $(document)
 						scene = new THREE.Scene();
 
 						// LIGHTS
-//						 Removed unneded scene.add(ambientLight);
-						 ambientLight = new THREE.AmbientLight( 0xFFFFFF);
-						 scene.add( ambientLight );
+						var ambient = new THREE.AmbientLight( 0xffffff );
+						scene.add( ambient );
 
+						spotLight =  new THREE.SpotLight( 0xffffff, 0.5, 2390 ,Math.PI/2,0.01);
+						spotLight.position.set( 0, 1390, 0 );
+						
+						scene.add( spotLight );
+						
+						
 						// CAMERA
 						camera = new THREE.PerspectiveCamera(10,
 								window.innerWidth / window.innerHeight, 1,
@@ -271,23 +287,14 @@ $(document)
 						// Removed uneeded scene.add(camera);
 						scene.add(camera);
 						
-						//var width_tiles_number = 80;
-						//var depth_tiles_number = 80;
-						
 						// Create new geometry object
 						var geometry = new THREE.PlaneGeometry(
 								//4000, 4000,width_tiles_number  ,depth_tiles_number);
 								2000, 2000, worldWidth - 1,worldDepth - 1);
-						//var width_ratio = worldWidth/width_tiles_number;
-						//var depth_ratio = worldDepth/depth_tiles_number;
 						
 						// Copy the heights map to the geometry
 						var i = geometry.vertices.length;
 						while (--i >= 0)  {
-							//var curr_depth = i/width_tiles_number;
-							//var curr_width = i%width_tiles_number;
-							
-							//var real_pixel_pos =Math.floor((curr_depth*depth_ratio)*worldWidth + curr_width*width_ratio);
 							
 							if (faceData.depth[i] > 0) {
 								geometry.vertices[i].y = faceData.depth[i]*scaleSize;
@@ -296,45 +303,23 @@ $(document)
 							}
 						}
 						
+
 						var material;
-//						textureMode = 'singleColor';
 						
 						if(textureMode == 'singleColor') {
+							
+							material = new THREE.MeshPhongMaterial( { ambient: 0x002266, diffuse:0x002266, specular:0xffffff, metal: true , shading: THREE.SmoothShading, combine: THREE.MixOperation, reflectivity: 2.0, shininess: 30} );
+							
+							
+							geometry.computeFaceNormals();
+							geometry.computeVertexNormals();
 
-							var ambient = new THREE.AmbientLight( 0xffffff );
-							scene.add( ambient );
-
-//							directionalLight = new THREE.DirectionalLight( 0xCC00CC, 2 );
-//							directionalLight.position.set(0, 1, 0 ).normalize();
-//							scene.add( directionalLight );
-
-//							directionalLight = new THREE.DirectionalLight( 0xCC00CC, 1 );
-//							directionalLight.position.set( -1, 0, 0 ).normalize();
-//							scene.add( directionalLight );
-////
-							
-//							var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
-//							directionalLight.position.set( 1, 1, 1 ).normalize();
-//							scene.add( directionalLight );
-							
-							pointLight = new THREE.PointLight( 0xffaa00, 2 );
-							pointLight.position.set( 0, 100, 0 );
-							scene.add( pointLight );
-							
-							// For the single color model we probably need to use the MeshLambertMaterial
-							// refractionRatio: 0.90,, MeshPhongMaterial
-						    material = new THREE.MeshPhongMaterial( { ambient: 0x555555, color: 0x555555, specular: 0x555555, shininess: 0, metal: true, shading: THREE.SmoothShading, perPixel: true }  ) ;
-//						    material = new THREE.MeshLambertMaterial({ color: 0xff6600, ambient: 0xff2200, combine: THREE.MixOperation, reflectivity: 1, shading: THREE.SmoothShading });
-							
-						    
 			
 						} else {
 							
 							// Create the texture for the mash
 							var texture = new THREE.Texture(
 									generateTexture(faceData.texture,worldWidth, worldDepth));
-//									new THREE.UVMapping(),THREE.ClampToEdgeWrapping,THREE.ClampToEdgeWrapping,THREE.RGBAFormat);
-							
 							
 							texture.needsUpdate = true;
 							
@@ -374,6 +359,8 @@ $(document)
 						// Hide the ajaxBusy image
 						$('#ajaxBusy').hide();
 						
+						$('#modeSelect').removeAttr('disabled');
+						
 						modelIsReady = true;
 						
 						animate();
@@ -393,11 +380,6 @@ $(document)
 						// isMadeAMove - try to save some memory and CPU by render only after
 						// the user asked to do some moves in the model
 						if ((modelIsReady == true) && (isMadeAMove == true)) {
-							// For Debug only
-//							 $('#x').html('<p>x=' + camera.position.x + ' mx ='</p>');
-//							 $('#y').html('<p>y=' + camera.position.y + ' my ='</p>');
-//							 $('#z').html('<p>z=' + camera.position.z + '</p>');
-						
 							 
 							var tempMat = new THREE.Matrix4();
 							mesh.scale.x = mesh.scale.y = mesh.scale.z = scale_factor;
@@ -441,12 +423,6 @@ $(document)
 								mesh.geometry.verticesNeedUpdate = true;
 							}
 							
-//							var timer = Date.now() * 0.00025;
-							
-//							pointLight.position.x = Math.sin( timer * 7 ) * 300;
-//							pointLight.position.y = Math.cos( timer * 5 ) * 400;
-//							pointLight.position.z = Math.cos( timer * 3 ) * 300;
-
 	
 							renderer.render(scene, camera);
 						}
@@ -485,7 +461,8 @@ $(document)
 					              });
 					          textureMode= mode;
 					            $('#ajaxBusy').show();
-					          
+					            $('#modeSelect').attr("disabled", "disabled");
+					            
 					          	var urlQuery = location.search;
 								urlQuery = urlQuery.replace('?', '');
 								var split = urlQuery.split('=');
