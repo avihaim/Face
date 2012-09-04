@@ -8,8 +8,6 @@
 	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/myFaceShow.css"></link>
 	<link rel="stylesheet" type="text/css" href="css/myFaceShowDesign.css"></link>
-</head>
-<body oncontextmenu="return false;">
 	<script src="js/jquery-1.7.2.min.js"></script>
 	<script src="js/build/Three.js"></script>
 	<script src="js/ImprovedNoise.js"></script>
@@ -18,24 +16,15 @@
 	<script src="js/jquery-ui-1.8.21.custom.min.js"></script> 
 	<script src="js/myFaceShow.js"></script>
 	<script src="js/jquery.selectbox-0.2.min.js"></script>
-	<!--<script src="js/myFaceShowFuncs.js"></script>-->
-	
-	<div style="display: none;" >
-		<div id="x">x</div>
-		<div id="y">y</div>
-		<div id="z">z</div>
-	</div>
-	
+</head>
+<body oncontextmenu="return false;">
+
 	<!--<input id="scaleSize" type="range" value="3"  min="1" max="20"/>-->
 		
 	<!--Div that contains all the actions buttons and options.-->
 	<div id="actions_buttons">
 		<ul>
 			<li>
-				<!--<select id="modeSelect" name="modeSelect">
-			  		<option  value="rgb">rgb</option>
-					<option selected value="singleColor">singleColor</option>
-				</select>--> 
 				<select name="modeSelect" id="modeSelect" tabindex="1">
 					<option selected="selected" value="rgb">rgb</option>
 					<option value="singleColor">singleColor</option>
@@ -59,9 +48,7 @@
 			</li>
 		</ul>
 	</div>
-	
-	
-	
+
 	<!-- Container of the web gl canvas-->
 	<div id="container"></div>
 
