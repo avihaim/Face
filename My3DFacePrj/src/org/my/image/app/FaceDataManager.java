@@ -111,7 +111,19 @@ public class FaceDataManager {
 		// We will create him with all of the images thet are available
 		if(!isGalleryConfigExsist) {
 			fillGalleryConfig();
+		} else {
+			imageList = sortBy(imageMap, galleryConfig.getGalleryImages());
 		}
+	}
+	
+	private static List<FaceData> sortBy(Map<String, FaceData> imageMap,List<String> sortByList) {
+		List<FaceData> sortedList = new ArrayList<>();
+		
+		for (String imageName : sortByList) {
+			sortedList.add(imageMap.get(imageName));
+		}
+		return sortedList;
+ 
 	}
 	
 	// Return the position of the face in the image

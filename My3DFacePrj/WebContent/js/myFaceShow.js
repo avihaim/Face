@@ -4,6 +4,7 @@ $(document)
 				function() {
 
 					var sceneDataDepth;
+//					var sceneData;
 					var scaleSize = 12;
 					var textureMode = 'rgb';
 //				    =============================================
@@ -58,70 +59,31 @@ $(document)
 				           });*/
 					}
 					
-					// Inits the new slider design.
-					function initNewUiControls() {
-						//Inits the select box.
-						$("#modeSelect").selectbox({
-							onChange: function (val, inst) {
-								    textureMode= val;
-						            $('#ajaxBusy').show();
-						            $('#modeSelect').attr("disabled", "disabled");
-						            
-						          	var urlQuery = location.search;
-									urlQuery = urlQuery.replace('?', '');
-									var split = urlQuery.split('=');
+					function initscene() {
+						scene = new THREE.Scene();
 
-									var fileName = split[1];
-									
-									updateSceneData(fileName,scaleSize,val);
-							},effect:'fade'
-						});
-						
-						//Hide the Tooltip at first
-						tooltip.hide();
-						
-						// Add the minimum/maximum position value of range.
-						var minimumSliderValue = 1;
-						var currentSliderValue = 3;
-						var maximumSliderValue = 20;
-						
-						// declare the minimum position of the tooltip according to its css.
-						tooltip.text(currentSliderValue);
-						tooltip.parent().append('<div id="tooltipMinPos"></div>');
-						
-						//set the value of the tooltip min pos.
-						var min_pos = parseInt(slider.position().left, 10) + (slider.width()/2) - (tooltip.width()/2);
-						
-						// sets the left position of the tooltip according to the slider right pos.
-						tooltip.css('left', min_pos);
-						
-						$("#tooltipMinPos").data('value', min_pos);
-																		
-						//Call the Slider
-						slider.slider({
-							//Config
-							range: "min",
-							min: minimumSliderValue,
-							value: 3,
-							max: maximumSliderValue,
+						// LIGHTS
+						var ambient = new THREE.AmbientLight( 0xffffff );
+						scene.add( ambient );
 
-							start: function(event,ui) {
-							    tooltip.fadeIn('fast');
-							},
+						spotLight =  new THREE.SpotLight( 0xffffff, 0.5, 2390 ,Math.PI/2,0.01);
+						spotLight.position.set( 0, 1390, 0 );
+						
+						scene.add( spotLight );
+						
+						
+						// CAMERA
+						camera = new THREE.PerspectiveCamera(10,
+								window.innerWidth / window.innerHeight, 1,
+								400000);
+						
+						camera.position.y = 10000;
+						camera.position.x = 0;
+						camera.position.z = 1;
 
-							//Slider Event
-							slide: function(event, ui) { //When the slider is sliding
-								var pos_value = $("#tooltipMinPos").data('value');
-											
-								//Adjust the tooltip accordingly
-								tooltip.css('left', pos_value).text(ui.value);
-							},
-
-							stop: function(event,ui) {
-							    tooltip.fadeOut('fast');
-							},
-						});				
-					}// end initNewUiControls().
+						// Removed uneeded scene.add(camera);
+						scene.add(camera);
+					}
 					
 					// Inits the canvas.
 					function init() {
@@ -153,13 +115,17 @@ $(document)
 						var split = urlQuery.split('=');
 						var fileName = split[1];
 						
-						var mode = "";
-				          $("select option:selected").each(function () {
-				        	  mode += $(this).text();
-				        	  
-				              });
-				          textureMode= mode;
-						updateSceneData(fileName,scaleSize,mode);
+//						var mode = "";
+//				          $("select option:selected").each(function () {
+//				        	  mode = $(this).val();
+//				        	  
+//				              });
+//				          textureMode= mode;
+						
+						
+						
+						
+						updateSceneData(fileName,scaleSize,textureMode);
 						
 						// Add link to download a ZIP with the model images
 						$('body')
@@ -253,6 +219,7 @@ $(document)
 						
 						// We save all depth data for the scale changes 
 						sceneDataDepth = data.depth;
+//						sceneData = data;
 						updateData(data);
 					}
 					
@@ -262,30 +229,7 @@ $(document)
 						worldWidth = faceData.width;
 						worldDepth = faceData.height;
 						// =====================
-						
-						scene = new THREE.Scene();
-
-						// LIGHTS
-						var ambient = new THREE.AmbientLight( 0xffffff );
-						scene.add( ambient );
-
-						spotLight =  new THREE.SpotLight( 0xffffff, 0.5, 2390 ,Math.PI/2,0.01);
-						spotLight.position.set( 0, 1390, 0 );
-						
-						scene.add( spotLight );
-						
-						
-						// CAMERA
-						camera = new THREE.PerspectiveCamera(10,
-								window.innerWidth / window.innerHeight, 1,
-								400000);
-						
-						camera.position.y = 10000;
-						camera.position.x = 0;
-						camera.position.z = 1;
-
-						// Removed uneeded scene.add(camera);
-						scene.add(camera);
+						initscene();
 						
 						// Create new geometry object
 						var geometry = new THREE.PlaneGeometry(
@@ -293,7 +237,7 @@ $(document)
 								2000, 2000, worldWidth - 1,worldDepth - 1);
 						
 						// Copy the heights map to the geometry
-						var i = geometry.vertices.length;
+						var i = faceData.depth.length;
 						while (--i >= 0)  {
 							
 							if (faceData.depth[i] > 0) {
@@ -454,25 +398,27 @@ $(document)
 								onContextMenuEvet, false); 
 						
 						// Event for Change model mode
-						 $("select").change(function () {
-					          var mode = "";
-					          $("select option:selected").each(function () {
-					        	  mode += $(this).text();
-					              });
-					          textureMode= mode;
-					            $('#ajaxBusy').show();
-					            $('#modeSelect').attr("disabled", "disabled");
-					            
-					          	var urlQuery = location.search;
-								urlQuery = urlQuery.replace('?', '');
-								var split = urlQuery.split('=');
-
-								var fileName = split[1];
-								
-								updateSceneData(fileName,scaleSize,mode);
-								
-					        });
-						 
+//						 $("select").change(function () {
+//					          var mode = "";
+//					          $("select option:selected").each(function () {
+//					        	  mode += $(this).text();
+//					              });
+//					          textureMode= mode;
+//					          
+//					          
+//					            $('#ajaxBusy').show();
+//					            $('#modeSelect').attr("disabled", "disabled");
+//					            
+//					          	var urlQuery = location.search;
+//								urlQuery = urlQuery.replace('?', '');
+//								var split = urlQuery.split('=');
+//
+//								var fileName = split[1];
+//								
+//								updateSceneData(fileName,scaleSize,mode);
+//								
+//					        });
+//						 
 						//End add all the mouse event
 						 
 						 $.support.touch = 'ontouchend' in document;
@@ -498,6 +444,75 @@ $(document)
 							}
 
 					}// end init_events()
+					
+					// Inits the new slider design.
+					function initNewUiControls() {
+						//Inits the select box.
+						$("#modeSelect").selectbox({
+							onChange: function (val, inst) {
+								    textureMode= val;
+//						            $('#ajaxBusy').show();
+						            $('#modeSelect').attr("disabled", "disabled");
+						            
+						          	var urlQuery = location.search;
+									urlQuery = urlQuery.replace('?', '');
+									var split = urlQuery.split('=');
+
+									var fileName = split[1];
+									
+									updateSceneData(fileName,scaleSize,val);
+									
+//									updateData(sceneData);
+									
+									
+							},effect:'fade'
+						});
+						
+						//Hide the Tooltip at first
+						tooltip.hide();
+						
+						// Add the minimum/maximum position value of range.
+						var minimumSliderValue = 1;
+						var currentSliderValue = 3;
+						var maximumSliderValue = 20;
+						
+						// declare the minimum position of the tooltip according to its css.
+						tooltip.text(currentSliderValue);
+						tooltip.parent().append('<div id="tooltipMinPos"></div>');
+						
+						//set the value of the tooltip min pos.
+						var min_pos = parseInt(slider.position().left, 10) + (slider.width()/2) - (tooltip.width()/2);
+						
+						// sets the left position of the tooltip according to the slider right pos.
+						tooltip.css('left', min_pos);
+						
+						$("#tooltipMinPos").data('value', min_pos);
+																		
+						//Call the Slider
+						slider.slider({
+							//Config
+							range: "min",
+							min: minimumSliderValue,
+							value: 3,
+							max: maximumSliderValue,
+
+							start: function(event,ui) {
+							    tooltip.fadeIn('fast');
+							},
+
+							//Slider Event
+							slide: function(event, ui) { //When the slider is sliding
+								var pos_value = $("#tooltipMinPos").data('value');
+											
+								//Adjust the tooltip accordingly
+								tooltip.css('left', pos_value).text(ui.value);
+							},
+
+							stop: function(event,ui) {
+							    tooltip.fadeOut('fast');
+							},
+						});				
+					}// end initNewUiControls().
 					
 					function onDocumentMouseDown(event) {
 						
