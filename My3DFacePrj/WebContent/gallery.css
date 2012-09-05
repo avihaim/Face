@@ -22,6 +22,7 @@ body {
 }
 
 #containerSite .thumbnails {
+	margin-top: -25px;
 	float: left;
 	width: 293px;
 	height: 498px;
@@ -86,7 +87,7 @@ img.large_thumb_image {
 	background-color: #333333;
 	background-size: 100% 100%;
 	
-	margin-top: 55px;
+	margin-top: 31px;
 	margin-left: 24px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
