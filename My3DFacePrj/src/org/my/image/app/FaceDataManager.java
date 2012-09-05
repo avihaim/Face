@@ -40,14 +40,20 @@ public class FaceDataManager {
 		}
 		
 		GalleryConfig galleryConfigData = new GalleryConfig(true, imageNames);
-		  
+		
+		// Write the config file
 		mapper.writeValue( new File(IMAGES_PATH+"/galleryConfig.json"), galleryConfigData);
+		
+		isGalleryConfigExsist = false;
 	}
 	
 	private static void initGalleryConfig()  {
 		File galleryConfigFile = new File(IMAGES_PATH+"/galleryConfig.json");
 		
 		try {
+			// Read the config file
+			// If the file is ot there or if is corrupt
+			// we still run the gallery with all images
 			galleryConfig = mapper.readValue(galleryConfigFile, GalleryConfig.class);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -65,12 +71,13 @@ public class FaceDataManager {
 
 	private static void init() throws IOException {
 
-		
+		// Read the Gallery config (the images names to display in the gallery)
 		initGalleryConfig();
 		
 		imageMap = new HashMap<String, FaceData>();
 		imageList = new ArrayList<FaceData>();
 		
+		// Load all the images from the textures folder
 		File folder = new File(IMAGES_PATH+"/textures");
 		File[] listOfFiles = folder.listFiles();
 
@@ -81,6 +88,7 @@ public class FaceDataManager {
 					imageName = file.getName();
 					System.out.println(imageName);
 					
+					// Extract the position of the face in the image from file
 					int[] extractFacePosFile = extractFacePosFile(imageName);
 					
 					int x = extractFacePosFile[0];
@@ -88,6 +96,9 @@ public class FaceDataManager {
 					
 					FaceData faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
 					
+					// Save the image data in the list
+					// All of the images will be available to view,
+					// but only those in GalleryConfig will display in the gallery
 					addFaceData(imageName, faceData);
 				} catch (Exception e) {
 					System.out.println(imageName);
@@ -96,11 +107,14 @@ public class FaceDataManager {
 			}
 		}
 		
+		// If the config file is not exsist
+		// We will create him with all of the images thet are available
 		if(!isGalleryConfigExsist) {
 			fillGalleryConfig();
 		}
 	}
 	
+	// Return the position of the face in the image
 	public static int[] extractFacePosFile(String filesName) {
 		
 		int[] is = new int[2];
@@ -112,6 +126,7 @@ public class FaceDataManager {
 		return is;
 	}
 
+	// Return a String from a file
 	private static String[] extractFacePosFile(String path, String imageName) {
 		
 		String[] split = new String[2];
@@ -144,16 +159,18 @@ public class FaceDataManager {
 		
 		System.out.println("FaceDataManager start");
 		
+		
 		FaceData faceData = imageMap.get(imageName);
 		
 		
-		
+		// If the file is already in the system
+		// we dont whant to recreate hime
 		if(faceData == null) { 
 			
 			System.out.println("FaceDataManager - start to create new faceData for " + imageName);
 			
 			try {
-				
+				// Call to ThreeDaFace dll to create the depth map
 				String makeDepthMap = MakeDepthMapWrapper.makeDepthMap(imageName,IMAGES_PATH + File.separator);
 				
 				System.out.println("FaceDataManager - makeDepthMap response is " + makeDepthMap);
@@ -162,16 +179,11 @@ public class FaceDataManager {
 				
 				int x = extractFacePosFile[0];
 				int y = extractFacePosFile[1];
-				System.out.println("y="+y);
-				System.out.println("x="+x);
-	//			
-	//			BufferedImage resizeImage = resizeImage(ImageIO.read(new File(IMAGES_PATH + File.separator + "textures" + File.separator + imageName)), BufferedImage.TYPE_INT_ARGB);
-	//			
-	//			System.out.println(IMAGES_PATH + File.separator + "textures" + File.separator + imageName);
-	//			System.out.println(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName);
-	//			ImageIO.write(resizeImage, domainName, new File(IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName)); 
-				
+			//	System.out.println("y="+y);
+			//	System.out.println("x="+x);
+			
 				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
+				
 				FaceDataManager.addFaceData(imageName, faceData );
 			} catch (Exception e) {
 				System.out.println("FaceDataManager Exception " + e.getMessage());
@@ -184,15 +196,7 @@ public class FaceDataManager {
 		return faceData;
 	}
 	
-//	private static BufferedImage resizeImage(BufferedImage originalImage, int type){
-//		BufferedImage resizedImage = new BufferedImage(50, 50, type);
-//		Graphics2D g = resizedImage.createGraphics();
-//		g.drawImage(originalImage, 0, 0, 50, 50, null);
-//		g.dispose();
-//	 
-//		return resizedImage;
-//	 }
-
+	// Return 15 gallery images from request index
 	public static List<FaceData> getAllFaceData(int fromIndex) {
 		
 		List<FaceData> subList = null;
@@ -214,6 +218,7 @@ public class FaceDataManager {
 		return subList;
 	}
 	
+	// Return all available images
 	public static Map<String,FaceData> getAllFaceData() {
 		return imageMap;
 	}
@@ -223,7 +228,14 @@ public class FaceDataManager {
 		if(faceData != null) {
 			imageMap.put(imageName, faceData);
 			
-			if ((!isGalleryConfigExsist) || (!galleryConfig.isConstant()) || (galleryConfig.getGalleryImages().contains(imageName))) {
+			// Add to the gallery list only if:
+			// 1. Gallery config is not exsist
+			// 2. The gallery is NOT constant
+			// 3. Image name is in the callery config
+			if ((!isGalleryConfigExsist) || 
+				(!galleryConfig.isConstant()) || 
+				(galleryConfig.getGalleryImages().contains(imageName))) {
+					
 				imageList.add(faceData);
 			} 
 		}
@@ -237,14 +249,5 @@ public class FaceDataManager {
 	public static int geSize() {
 		return imageList.size();
 	}
-
-	// private static String appPath() {
-	// java.net.URL r = ClassLoader.getSystemResource("my.html");
-	// String filePath = r.getFile();
-	// String result = new File(new File(new
-	// File(filePath).getParent()).getParent()).getParent();
-	//
-	// return result;
-	// }
 
 }
