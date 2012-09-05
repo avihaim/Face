@@ -13,6 +13,8 @@ import java.util.zip.ZipOutputStream;
 public class Zip {
 	static final int BUFFER = 2048;
 
+
+	// Create a zip file with the all files in list 
 	public static void zip(OutputStream dest,List<String> files) {
 		
 		
@@ -23,9 +25,9 @@ public class Zip {
 			
 			// out.setMethod(ZipOutputStream.DEFLATED);
 			byte data[] = new byte[BUFFER];
-			// get a list of files from current directory
-
 			
+
+			// Add eche file to the zip file
 			for (String fileName : files) {
 				File file = new File(fileName);
 				System.out.println("Adding: " + fileName);
