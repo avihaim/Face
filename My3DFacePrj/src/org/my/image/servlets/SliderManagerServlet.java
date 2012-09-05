@@ -35,27 +35,34 @@ public class SliderManagerServlet extends HttpServlet {
 		
 		String fromString = request.getParameter("from");
 		String direction = request.getParameter("direction");
+		
+		// Fleg to client if there are some more imgaes in gallery 
 		boolean isHaveMore = false;
 		
 		int from = Integer.parseInt(fromString);
 		
 		List<FaceData> allFaceData = null;
 		
+		// If the client ask to get previous resullt in gallery
 		if("back".equals(direction)) {
 			from -=15;
 			
+			// Is there are more imdags?
 			if(from > 0) {
-				System.out.println(from);
+			//	System.out.println(from);
 				isHaveMore = true;
 			}
+			
+			// Is there are more imdags?
 		} else if(from + 15 < FaceDataManager.geSize()) {
+			
 			isHaveMore = true;
 		}
 		
-		
+		// Get the gallery data
 		allFaceData = FaceDataManager.getAllFaceData(from);
 		
-		
+		// Write the gallery bake to client via json
 		mapper.writeValue(response.getWriter(),new SilderData(allFaceData,isHaveMore) );
 		
 	}
