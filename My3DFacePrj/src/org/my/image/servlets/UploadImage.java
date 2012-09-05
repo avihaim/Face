@@ -55,7 +55,7 @@ public class UploadImage extends HttpServlet {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		System.out.println("request: ");
 		
-		
+		// WebCam case
 		if (!isMultipart) {
 		//	handleNotMultipart(request);
 			
@@ -95,7 +95,8 @@ public class UploadImage extends HttpServlet {
 	         
 //				response.setStatus(HttpServletResponse.SC_OK);
 //	          response.sendRedirect("myFaceShow.html?fileName=" + f.getName());
-			  
+		
+		// file upload case
 		} else {
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -152,6 +153,7 @@ public class UploadImage extends HttpServlet {
 		
 	}
 	
+	// Cerate new file and generate new name
 	private File cerateNewFile(String itemName) throws BadFileException {
 		
 		
@@ -184,6 +186,7 @@ public class UploadImage extends HttpServlet {
 		return new File(fileFullName);
 	}
 	
+	// Image in url case
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String imageurl = request.getParameter("imageurl");
 		
@@ -201,6 +204,7 @@ public class UploadImage extends HttpServlet {
 	
 	}
 	
+	// save the image in file system
 	public File saveImage(String imageUrl, String destinationFile) throws IOException, BadFileException {
 		
 		File newFile = cerateNewFile(destinationFile);
