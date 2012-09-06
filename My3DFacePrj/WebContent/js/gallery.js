@@ -200,9 +200,30 @@ function getData(from, direction) {
 
 			/* When the main photo is hovered over */
 			$('#largephoto').hover(function() {
-
-			}
-			);
+				var largeCaption =  $(this).find('#largecaption');
+				var textInCaption = $(this).attr('title');
+				
+				$(this).data('title', textInCaption);
+		        $(this).removeAttr('title');
+				
+				largeCaption.stop();
+				largeCaption.css('opacity','0.80');
+				largeCaption.find('.captionContent').html(textInCaption);
+				largeCaption.fadeIn();
+				
+				largeCaption.find('.captionShine').stop();
+		        largeCaption.find('.captionShine').css("background-position","-550px 0"); 
+		        largeCaption.find('.captionShine').animate({backgroundPosition: '550px 0'},700);
+				 
+				Cufon.replace('.captionContent');
+			},
+			function() {
+			    var largeCaption = 	$(this).find('#largecaption');
+			   
+			    $(this).attr('title', $(this).data('title'));
+				largeCaption.find('.captionContent').html('');
+				largeCaption.fadeOut();
+			});
 
 			/* When a thumbnail is hovered over */
 			$('.thumb_container')
