@@ -11,6 +11,15 @@ body {
 	overflow: hidden;
 	
 }
+.share-icons {
+	float:right;
+	margin-right:10px;
+	margin-top:1px;	
+
+}
+#top-menu-left a, #top-menu-right a {
+    cursor: pointer;
+}
 
 #info {
 	position: absolute;

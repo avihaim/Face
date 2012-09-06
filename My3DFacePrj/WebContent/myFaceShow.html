@@ -2,8 +2,11 @@
 <html lang="en" >
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>My face show 3D</title>
+<title>ThreeDaFace</title>
 <meta charset="utf-8">
+<meta name="description" content="ThreeDaFace" />
+<meta name="keywords" content="face, 3d, tree js, webgl" />
+<meta name="author" content="ThreeDaFace" />
 <meta name="viewport"
 	content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/myFaceShow.css"></link>
@@ -16,6 +19,8 @@
 	<script src="js/jquery-ui-1.8.21.custom.min.js"></script> 
 	<script src="js/myFaceShow.js"></script>
 	<script src="js/jquery.selectbox-0.2.min.js"></script>
+	
+	<script type="text/javascript" src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 </head>
 <body oncontextmenu="return false;">
 
@@ -49,6 +54,13 @@
 		</ul>
 	</div>
 
+	<div id="top-menu-right">
+       	<div class="share-icons">
+       		<a id="facebookShare"><img src="images/facebook-share-button.png" title="Share on facebook"></a>
+       		<a id="googleShare"><img src="images/google-plus-button.png" title="Share on google+"></a>
+       		<a id="twitterShare"><img src="images/twitter-share-button.png" title="Share on twitter"></a>
+        </div>
+    </div>       
 	<!-- Container of the web gl canvas-->
 	<div id="container"></div>
 

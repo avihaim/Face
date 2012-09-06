@@ -144,6 +144,7 @@ $(document)
 								'<iframe  style="display: none;" class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
 								'" "scrolling="no" frameborder="0" style="border:none; width:450px; height:80px"></iframe>');
 						
+						
 						// Create the new slider div.
 						initNewUiControls();
 												 
@@ -405,6 +406,13 @@ $(document)
 						container.addEventListener('onContextMenu',
 								onContextMenuEvet, false); 
 						
+						
+						
+						$('#facebookShare').bind('mousedown',facebookShare);
+						$('#googleShare').bind('mousedown',googleShare);
+						$('#twitterShare').bind('mousedown',twitterShare);
+						
+						
 						 $.support.touch = 'ontouchend' in document;
 							
 							// Ignore browsers without touch support
@@ -428,6 +436,32 @@ $(document)
 							}
 
 					}// end init_events()
+					
+					
+					function facebookShare() {
+						javascript:void window.open('http://www.facebook.com/sharer/sharer.php?t=ThreeDaFace&image=http://pdfstorage.mta.ac.il:8081/ThreeDaFace/upload?getoldthumb='+getFileName()+'&u=http://pdfstorage.mta.ac.il:8081/ThreeDaFace/myFaceShow.html?fileName='+getFileName() );
+						return false;
+					}
+					
+					function googleShare() {
+						javascript:void window.open('https://plus.google.com/share?url=http://pdfstorage.mta.ac.il:8081/ThreeDaFace/myFaceShow.html?fileName='+getFileName() );
+						return false;
+					}
+					
+					function twitterShare() {
+						javascript:void window.open('https://twitter.com/intent/tweet?source=webclient&text=ThreeDaFace&url=http://pdfstorage.mta.ac.il:8081/ThreeDaFace/myFaceShow.html?fileName='+getFileName() );
+						return false;
+					}
+					
+					function getFileName() {
+						var urlQuery = location.search;
+						urlQuery = urlQuery.replace('?', '');
+						var split = urlQuery.split('=');
+
+						return split[1];
+					}
+					
+					
 					
 					// Inits the new slider design.
 					function initNewUiControls() {
