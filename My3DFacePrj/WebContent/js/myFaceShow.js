@@ -7,6 +7,11 @@ $(document)
 //					var sceneData;
 					var scaleSize = 12;
 					var textureMode = 'rgb';
+					var meshMatrix;
+					
+					var cameraPosition;
+					
+					var isModeCahge = false;
 //				    =============================================
 				    var delta_x_rotate = 0;
 					var delta_y_rotate = 0;
@@ -77,12 +82,21 @@ $(document)
 								window.innerWidth / window.innerHeight, 1,
 								400000);
 						
-						camera.position.y = 10000;
-						camera.position.x = 0;
-						camera.position.z = 1;
-
+						if (isModeCahge == false) {
+							camera.position.y = 10000;
+							camera.position.x = 0;
+							camera.position.z = 1;
+						} else {
+							camera.position.x = cameraPosition.x;
+							camera.position.z = cameraPosition.z;
+						}
+						
+						
+						
 						// Removed uneeded scene.add(camera);
 						scene.add(camera);
+						
+						
 					}
 					
 					// Inits the canvas.
@@ -115,15 +129,7 @@ $(document)
 						var split = urlQuery.split('=');
 						var fileName = split[1];
 						
-//						var mode = "";
-//				          $("select option:selected").each(function () {
-//				        	  mode = $(this).val();
-//				        	  
-//				              });
-//				          textureMode= mode;
-						
-						
-						
+						initscene();
 						
 						updateSceneData(fileName,scaleSize,textureMode);
 						
@@ -137,8 +143,6 @@ $(document)
 						.append(
 								'<iframe  style="display: none;" class="faceboklike" src="https://www.facebook.com/plugins/like.php?href=http://pdfstorage.mta.ac.il:8081/My3DFacePrj/myFaceShow.html?fileName='+fileName+
 								'" "scrolling="no" frameborder="0" style="border:none; width:450px; height:80px"></iframe>');
-						
-						//$(":range").rangeinput();
 						
 						// Create the new slider div.
 						initNewUiControls();
@@ -199,20 +203,20 @@ $(document)
 
 						// Ajax call to server side to get the model data 
 						$
-								.ajax({
-									url : "ImageRGBServlet",
-									data : dataString,
-									dataType : "json",
-									contentType : "application/json",
-									success : successUpdateData,
-									error : function(jqXHR, textStatus,
-											errorThrown) {
-										if(errorThrown != '') {
-											alert(errorThrown);
-										}
-										
+							.ajax({
+								url : "ImageRGBServlet",
+								data : dataString,
+								dataType : "json",
+								contentType : "application/json",
+								success : successUpdateData,
+								error : function(jqXHR, textStatus,
+										errorThrown) {
+									if(errorThrown != '') {
+										alert(errorThrown);
 									}
-								});
+									
+								}
+							});
 					}
 					// Success callback when calling ImageRGBServlet. 
 					function successUpdateData(data) {
@@ -229,7 +233,7 @@ $(document)
 						worldWidth = faceData.width;
 						worldDepth = faceData.height;
 						// =====================
-						initscene();
+						
 						
 						// Create new geometry object
 						var geometry = new THREE.PlaneGeometry(
@@ -247,13 +251,11 @@ $(document)
 							}
 						}
 						
-
 						var material;
 						
 						if(textureMode == 'singleColor') {
 							
 							material = new THREE.MeshPhongMaterial( { ambient: 0x002266, diffuse:0x002266, specular:0xffffff, metal: true , shading: THREE.SmoothShading, combine: THREE.MixOperation, reflectivity: 2.0, shininess: 30} );
-							
 							
 							geometry.computeFaceNormals();
 							geometry.computeVertexNormals();
@@ -278,13 +280,19 @@ $(document)
 						
 						mesh.doubleSided = true;
 						
+						if (isModeCahge == true) {
+							mesh.matrix =	meshMatrix;
+						} else {
+							// We like that the camera lookAt the model, 
+							// we don't use it at the render function because we 
+							// want the user can be free to move the model   
+							camera.lookAt( mesh.position );
+						}
+						
 						// FIX: The mesh wosen't at the right rotation, so we rotate it in 90 dr'
 						mesh.rotation.x = 90 * (Math.PI/180);
 						
-						// We like that the camera lookAt the model, 
-						// we don't use it at the render function because we 
-						// want the user can be free to move the model   
-						camera.lookAt( mesh.position );
+						
 						
 						// Add the model to the scene
 						scene.add(mesh);
@@ -338,8 +346,8 @@ $(document)
 							mesh.rotation.getRotationFromMatrix(mesh.matrix,vctXYZ);
 							
 							
-							camera.position.x -= delta_x*14;
-							camera.position.z -= delta_y*14;
+							camera.position.x -= delta_x*10;
+							camera.position.z -= delta_y*10;
 							delta_x_rotate = 0;
 							delta_y_rotate = 0;
 							delta_x = 0;
@@ -397,30 +405,6 @@ $(document)
 						container.addEventListener('onContextMenu',
 								onContextMenuEvet, false); 
 						
-						// Event for Change model mode
-//						 $("select").change(function () {
-//					          var mode = "";
-//					          $("select option:selected").each(function () {
-//					        	  mode += $(this).text();
-//					              });
-//					          textureMode= mode;
-//					          
-//					          
-//					            $('#ajaxBusy').show();
-//					            $('#modeSelect').attr("disabled", "disabled");
-//					            
-//					          	var urlQuery = location.search;
-//								urlQuery = urlQuery.replace('?', '');
-//								var split = urlQuery.split('=');
-//
-//								var fileName = split[1];
-//								
-//								updateSceneData(fileName,scaleSize,mode);
-//								
-//					        });
-//						 
-						//End add all the mouse event
-						 
 						 $.support.touch = 'ontouchend' in document;
 							
 							// Ignore browsers without touch support
@@ -447,27 +431,58 @@ $(document)
 					
 					// Inits the new slider design.
 					function initNewUiControls() {
-						//Inits the select box.
-						$("#modeSelect").selectbox({
-							onChange: function (val, inst) {
-								    textureMode= val;
-//						            $('#ajaxBusy').show();
+						
+					 $.support.touch = 'ontouchend' in document;
+							
+					
+					 if (!$.support.touch) {
+							//Inits the select box.
+							$("#modeSelect").selectbox({
+								onChange: function (val, inst) {
+									    textureMode= val;
+							            $('#ajaxBusy').show();
+							            $('#modeSelect').attr("disabled", "disabled");
+							            
+							          	var urlQuery = location.search;
+										urlQuery = urlQuery.replace('?', '');
+										var split = urlQuery.split('=');
+	
+										var fileName = split[1];
+										
+										modelIsReady = false;
+										isModeCahge = true;
+										cameraPosition = camera.position;
+										meshMatrix = mesh.matrix;
+										
+										updateSceneData(fileName,scaleSize,val);
+										
+	//									updateData(sceneData);
+										
+										
+								},effect:'fade'
+							});
+						} else {
+							 $("select").change(function () {
+						          var mode = "";
+						          $("select option:selected").each(function () {
+						        	  mode = $(this).attr('value');
+						              });
+						          	textureMode= mode;
+						          
+						            $('#ajaxBusy').show();
 						            $('#modeSelect').attr("disabled", "disabled");
 						            
 						          	var urlQuery = location.search;
 									urlQuery = urlQuery.replace('?', '');
 									var split = urlQuery.split('=');
-
+	
 									var fileName = split[1];
 									
-									updateSceneData(fileName,scaleSize,val);
+									updateSceneData(fileName,scaleSize,mode);
 									
-//									updateData(sceneData);
-									
-									
-							},effect:'fade'
-						});
-						
+						        });
+						}
+							
 						//Hide the Tooltip at first
 						tooltip.hide();
 						
