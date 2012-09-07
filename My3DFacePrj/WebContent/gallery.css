@@ -211,14 +211,5 @@ img.large_thumb_image {
 	background-position: 0 0px;
 }
 
-#webcambox {
-	cursor : pointer;
-	background-image: url('images/blue-camera-icon.png');
-	width: 32px;
-	height: 32px;
-	top : 460px;
-	left: 450px;
-	background-repeat: no-repeat;
-	position: absolute;
-}
+
 

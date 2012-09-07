@@ -327,19 +327,7 @@ $(document)
 						'type'			: 'iframe'
 					});
 					
-					$("a#webcambox").fancybox({
-						'padding'		: 0,
-						'autoScale'		: false,
-						'speedIn' 		: 200,
-						'speedOut' 		: 200,
-						'transitionIn'	: 'elastic',
-						'transitionOut'	: 'elastic',
-						'title'			: 'webcam',
-						'width'		    : 500,
-						'height'		: 420,
-						'href'			: 'webcam.html',
-						'type'			: 'iframe'
-					});
+					
 					
 					$('#largephoto').click(onImageSelected);
 					
