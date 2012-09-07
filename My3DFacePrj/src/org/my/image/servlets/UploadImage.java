@@ -55,6 +55,12 @@ public class UploadImage extends HttpServlet {
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		System.out.println("request: ");
 		
+		String imageurl = request.getParameter("imageUrl");
+		
+		if(imageurl != null) {
+			System.out.println("============" + imageurl);
+		}
+		  
 		// WebCam case
 		if (!isMultipart) {
 		//	handleNotMultipart(request);
@@ -124,20 +130,21 @@ public class UploadImage extends HttpServlet {
 					try {
 						String itemName = item.getName();
 						
-						
-						File savedFile = cerateNewFile(itemName);
-						
-						item.write(savedFile);
-						
-						jsono.put("name", savedFile.getName());
-						jsono.put("id", generator.nextLong());
-						jsono.put("size", item.getSize());
-						jsono.put("url", "upload?getfile=" + savedFile.getName());
-						jsono.put("thumbnail_url",
-								"upload?getthumb=" + savedFile.getName());
-						jsono.put("delete_url", "upload?delfile=" + savedFile.getName());
-						jsono.put("delete_type", "GET");
-						json.add(jsono);
+						if(itemName != null) {
+							File savedFile = cerateNewFile(itemName);
+							
+							item.write(savedFile);
+							
+							jsono.put("name", savedFile.getName());
+							jsono.put("id", generator.nextLong());
+							jsono.put("size", item.getSize());
+							jsono.put("url", "upload?getfile=" + savedFile.getName());
+							jsono.put("thumbnail_url",
+									"upload?getthumb=" + savedFile.getName());
+							jsono.put("delete_url", "upload?delfile=" + savedFile.getName());
+							jsono.put("delete_type", "GET");
+							json.add(jsono);
+						}
 					} catch (BadFileException e) {
 						jsono.put("error", e.getMessage());
 						json.add(jsono);

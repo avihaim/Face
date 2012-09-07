@@ -10,3 +10,14 @@
 	background-repeat: no-repeat;
 	position: absolute;
 }
+
+#urlbox {
+	cursor : pointer;
+	background-image: url('../images/File-URL-icon.png');
+	width: 32px;
+	height: 32px;
+/* 	top : 460px; */
+/* 	left: 450px; */
+	background-repeat: no-repeat;
+	position: absolute;
+}

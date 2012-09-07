@@ -3,6 +3,17 @@ function openWebGlPopup(imageName,imageId) {
 	$("a#upimage").trigger('click');
 	$('.image' + imageId).remove();
 }
+
+function openWebGlPopupByURL() {
+	
+	var imageURL= $("#imageUrl").val();
+	
+	if(imageURL != '') {
+		fancyboxHrefItem('UploadImage?imageurl=' +  imageURL,"a#imageurl");
+		$("a#imageurl").trigger('click');
+	}
+	
+}
   
 function fancyboxHrefItem(href,item) {
 	
