@@ -3,6 +3,7 @@ $(document)
 				
 				function() {
 
+					
 					var sceneDataDepth;
 //					var sceneData;
 					var scaleSize = 12;
@@ -602,7 +603,13 @@ $(document)
 							stop: function(event,ui) {
 							    tooltip.fadeOut('fast');
 							},
-						});				
+						});		
+						
+						if(window.parent.location.href.indexOf('myFaceShow') !== -1) {
+							$('#seeMore').removeClass('hide');
+						}
+
+						
 					}// end initNewUiControls().
 					
 					function onDocumentMouseDown(event) {

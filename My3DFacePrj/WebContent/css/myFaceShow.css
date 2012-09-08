@@ -144,5 +144,8 @@ a {
 	position: absolute;
 }
 
+.hide {
+	display: none;
+}
 
 
