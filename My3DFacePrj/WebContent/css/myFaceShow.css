@@ -11,6 +11,7 @@ body {
 	overflow: hidden;
 	
 }
+
 .share-icons {
 	float:right;
 	margin-right:10px;
@@ -77,15 +78,58 @@ a {
 }
 
 
+.zipSeperator {
+	background: url('../images/green/widget-sep.png') no-repeat center 100%;
+	/*background:yellow;*/
+	width:110px;
+	display: block; 
+	height: 2px; 
+}
 .zipLink {
-	bottom:10px;
-	left: 30px;
+	bottom:11px;
+	left: 20px;
 	position: absolute;
-	background-image: url('../images/Download-icon.png');
-	background-repeat: no-repeat;
-	width: 24px;
-	height: 24px;
+	background: url('../images/green/widget-sep.png') no-repeat center 95%;
+	 
+	display: block; 
+	width: 110px;
+	height: 38px; 
 	cursor : pointer;
+	font-size: 12px; font-family: "Trebuchet MS", arial, sans-serif;
+	text-align: center;
+}
+
+.zipLink a { 
+	color: #c2c2c2; 
+	font-size: 11px; 
+	padding-left: 13px; 
+	background: url('../images/green/widget-item.png') repeat-x 0 0; 
+	display: block; 
+	text-transform: uppercase; 
+	line-height: 33px; 
+	overflow: hidden; 
+}
+
+.zipLink a:hover {
+	background: #2a2a2a url('../images/green/body-bg.png') repeat-x 0 -35px;
+	text-decoration: none; 
+	color: #7af502; 
+}
+
+.zipLink a img.zipImage {
+	border: none;
+	position: absolute;
+	top: -2px;
+	margin-left: -25px; 
+	width:40px;
+	height:40px;
+	display: block; 
+	float:left;
+}
+.zipLink a span {
+	float:left;
+	padding-left: 22px; 
+	display: block; 
 }
 
 .faceboklike {
@@ -100,72 +144,5 @@ a {
 	position: absolute;
 }
 
-
-
-
-
-
-/* slider root element */
-/*
-.slider {
-    background:#3C72E6 url(../images/h30.png) repeat-x 0 0;
-    height:9px;
-    position:relative;
-    cursor:pointer;
-    border:1px solid #333;
-    width:200px;
-    left:275px;
-    float:left;
-    clear:right;
-    margin-top:10px;
-    -moz-border-radius:5px;
-    -webkit-border-radius:5px;
-    -moz-box-shadow:inset 0 0 8px #000;
-}
-*/
-
-/* progress bar (enabled with progress: true) */
-/*
-.progress {
-    height:9px;
-    background-color:#C5FF00;
-    display:none;
-    opacity:0.6;
-    */
-}
-
-/* drag handle */
-/*
-.handle {
-    background:#fff url(../images/h30.png) repeat-x 0 0;
-    height:24px;
-    width:24px;
-    top:-10px;
-    position:absolute;
-    display:block;
-    margin-top:1px;
-    border:1px solid #000;
-    cursor:move;
-    -moz-box-shadow:0 0 6px #000;
-    -webkit-box-shadow:0 0 6px #000;
-    -moz-border-radius:14px;
-    -webkit-border-radius:14px;
-
-}
-*/
-
-/* the input field */
-/*
-.range {
-    border:1px inset #ddd;
-    float:left;
-    font-size:20px;
-    margin:0 0 0 15px;
-    padding:3px 0;
-    text-align:center;
-    width:50px;
-    -moz-border-radius:5px;
-    -webkit-border-radius:5px;*/
-}*/
 
 

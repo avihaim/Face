@@ -1,6 +1,6 @@
 
 #actions_buttons {
-	width: 80%;
+	width: 100%;
 	padding: 8px 2px 14px;
 	margin-left: -25px;
 	
@@ -15,12 +15,19 @@
 	padding-right: 18px;
 }
 
+#actions_buttons .right_area {
+	float:right;
+	margin-top: -8px;
+	padding-right: 1px;
+}
+
 #actions_buttons .icon_item {
 	margin-top:  -4px;
 }
 
 .largerIconSpace{
 	padding-left: 35px;
+	padding-right: 7px;
 }
 
 a { text-decoration: none;  }
@@ -92,14 +99,14 @@ select { font-size: 12px; font-family: "Trebuchet MS", arial, sans-serif; }
 	background: url(../images/selectbox-icons.png) 0 -66px no-repeat;
 }
 .sbHolderDisabled{
-	background-color: #3C3C3C;
-	border: solid 1px #515151;
+	background-color: #515151;
+	border: solid 3px #405130;
 }
 .sbHolderDisabled .sbHolder{
-	
+
 }
 .sbHolderDisabled .sbToggle{
-	
+	border: solid 1px #515151;
 }
 .sbOptions{
 	text-align:left;

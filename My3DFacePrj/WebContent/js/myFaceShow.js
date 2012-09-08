@@ -50,12 +50,13 @@ $(document)
 						container.innerHTML = "";
 					} else {
 						
-						
+						// Call the web main Initialize methods.
 						init();
 						initEvents();
+						
 						//AMIR:for debug
-						/*
-						initNewUiControls();*/
+						//initNewUiControls();
+						//initZipLinkButton();
 						
 						// AMIR: this is the first selected default value of the select box.
 						/*
@@ -96,8 +97,26 @@ $(document)
 						// Removed uneeded scene.add(camera);
 						scene.add(camera);
 						
+					}//end initscene()
+					
+					// Inits the new download ziplink button.
+					function initZipLinkButton() {
+						$('body')
+						.append(
+						'<div class="zipLink"><div class="zipSeperator"></div><a  href="ZipServlet?fileName='+getFileName()+'"><img src="images/green/DownloadArrow_NoStroke.png" class="zipImage" /><span>Download</span></a></div>');
 						
-					}
+						var zipLinkTop  = $(".zipLink a img.zipImage").css("top");
+						zipLinkTop = parseFloat(zipLinkTop);
+						$(".zipLink a").hover(function(){							
+							
+			                $(".zipLink a img")
+			                .animate({top:zipLinkTop - 6}, 200).animate({top:zipLinkTop}, 200) // first jump
+			                .animate({top:zipLinkTop - 3}, 100).animate({top:zipLinkTop}, 100) // second jump
+			                .animate({top:zipLinkTop - 2}, 100).animate({top:zipLinkTop}, 100); // the last jump
+			                
+			            }, function(){});
+						
+					} //end initZipLinkButton()
 					
 					// Inits the canvas.
 					function init() {
@@ -130,14 +149,13 @@ $(document)
 						var fileName = split[1];
 						
 						initscene();
-						
+												
+						// update the scene in first time.
 						updateSceneData(fileName,scaleSize,textureMode);
 						
 						// Add link to download a ZIP with the model images
-						$('body')
-						.append(
-								'<div><a class="zipLink" href="ZipServlet?fileName='+fileName+'"></a></div>');
-						
+						initZipLinkButton();
+
 						// Add link to facebook like
 						$('body')
 						.append(
@@ -306,13 +324,13 @@ $(document)
 						
 						container.innerHTML = "";
 
-						container
-								.appendChild(renderer.domElement);
+						container.appendChild(renderer.domElement);
 						
 						// Hide the ajaxBusy image
 						$('#ajaxBusy').hide();
 						
-						$('#modeSelect').removeAttr('disabled');
+						// enable the select box control.
+						enableSelectBox();						
 						
 						modelIsReady = true;
 						
@@ -461,6 +479,26 @@ $(document)
 						return split[1];
 					}
 					
+					// Select box enable\disable function.
+					function disableSelectBox(){
+						$('#modeSelect').attr("disabled", "disabled");
+						$('#modeSelect').selectbox('disable');
+					}
+					
+					function enableSelectBox() {
+						$('#modeSelect').removeAttr('disabled');
+						$('#modeSelect').selectbox('enable');
+					}
+					
+					// Detach = Remove the selectbox graphics completely and return to default select control.
+					function detachSelectBox() {
+						$('#modeSelect').selectbox('detach');
+					}
+					
+					// Attach = Attach back the selectbox graphics view completely.
+					function attachSelectBox() {
+						$('#modeSelect').selectbox('attach');
+					}
 					
 					
 					// Inits the new slider design.
@@ -475,7 +513,9 @@ $(document)
 								onChange: function (val, inst) {
 									    textureMode= val;
 							            $('#ajaxBusy').show();
-							            $('#modeSelect').attr("disabled", "disabled");
+							            
+							            // disable the select box control.
+										disableSelectBox();	
 							            
 							          	var urlQuery = location.search;
 										urlQuery = urlQuery.replace('?', '');
@@ -504,7 +544,9 @@ $(document)
 						          	textureMode= mode;
 						          
 						            $('#ajaxBusy').show();
-						            $('#modeSelect').attr("disabled", "disabled");
+						            
+						            // disable the select box control.
+									disableSelectBox();	
 						            
 						          	var urlQuery = location.search;
 									urlQuery = urlQuery.replace('?', '');
