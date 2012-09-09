@@ -109,18 +109,38 @@ object {
 	text-align: center;
 }
 
-
-.blueButton,
-.greenButton{
-	background:url('../img/buttons.png') no-repeat;
+.camShootButton {
+	background:url('../img/SnapIcon.png') no-repeat;
 	text-shadow:1px 1px 1px #277c9b;
 	color:#fff !important;
 	width:99px;
-	height:38px;
+	height:37px;
 	border:none;
 	text-decoration:none;
 	display:inline-block;
-	font-size: 16px;
+	font-family: "Trebuchet MS", arial, sans-serif;
+	font-size: 14px;
+	font-weight:bold;
+	line-height: 32px;
+	text-align: center;
+	margin: 0 4px;
+	margin-left: -12px;
+	top: 340px;
+	position:relative;
+}
+.blueButton,
+.greenButton{
+	background:url('../img/buttons2.png') no-repeat;
+	text-shadow:1px 1px 1px #277c9b;
+	color:#fff !important;
+	width:99px;
+	height:37px;
+	border:none;
+	text-decoration:none;
+	display:inline-block;
+	font-family: "Trebuchet MS", arial, sans-serif;
+	font-size: 14px;
+	font-weight:bold;
 	line-height: 32px;
 	text-align: center;
 	margin: 0 4px;

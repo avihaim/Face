@@ -162,36 +162,38 @@
 			<!-- Begin Inner -->
 			<div class="inner-green">
 				<div class="shell">
-
-
 					<!-- Begin Content -->
 					<div id="content-green">
-					<!-- Begin Post -->
+						<!-- Begin Post Of URL section -->
 						<div class="post">
-							<h2>
-								WebCam<span class="title-bottom">&nbsp;</span>
+							<div class="TopSeperator"></div>
+							<h2 class="floatToLeft TitleBox">URL<span>&nbsp;</span>
 							</h2>
-							<div>
-								 <a href="#webcamboxDiv" id="webcambox" class="camera"></a>
+							<div class="floatToLeft">
+								 <input class="floatToLeft" type="text" name="imageUrl" id="imageUrl">  
+								 <a title="Upload url link" class="floatToLeft" 
+								    href="#urlDiv" id="urlbox" class="urlbox" 
+								    onclick="openWebGlPopupByURL()"></a>
 							</div>
 						</div>
-						<!-- End Post -->
-					<!-- Begin Post -->
+						<!-- End Post Of URL section -->
+						<div class="cl">&nbsp;</div>
+						<!-- Begin Post Of WebCam section -->
 						<div class="post">
-							<h2>
-								URL<span class="title-bottom">&nbsp;</span>
+							<h2 class ="noTopTitle floatToLeft TitleBox">WebCam<span>&nbsp;</span>
 							</h2>
 							<div>
-								 <input type="text" name="imageUrl" id="imageUrl">  
-								 <a href="#urlDiv" id="urlbox" class="urlbox" onclick="openWebGlPopupByURL()"></a>
+								 <a 
+								 title="Upload image by webcam" 
+								 href="#webcamboxDiv" 
+								 id="webcambox" class="camera"></a>
 							</div>
 						</div>
-						<!-- End Post -->
-						<!-- Begin Post -->
+						<!-- End Post Of WebCam section -->
+						<div class="cl">&nbsp;</div>
+						<!-- Begin Post Of UploadFile section -->
 						<div class="post">
-							<h2>
-								File<span class="title-bottom">&nbsp;</span>
-							</h2>
+							<h2 class="noTopTitle floatToLeft TitleBox">File</h2>
 									<div id="fileUpload">
 													<div class="container">
 														<br>
@@ -203,8 +205,9 @@
 																<div class="span7">
 																	<!-- The fileinput-button span is used to style the file input field as button -->
 																	<span
-																		class="btn  fileinput-button uploadImage">
-<!-- 															btn-success			 -->
+																		id="uploadFileBtn" class="btn  fileinput-button uploadImage">
+																		<!-- btn-success-->
+																		
 																		<i class="icon-plus icon-white"></i> 
 																		<span></span> 
 																		<input type="file" name="files[]">
@@ -226,6 +229,7 @@
 															</div>
 															<!-- The loading indicator is shown during file processing -->
 															<div class="fileupload-loading"></div>
+															<span class="title-bottom">&nbsp;</span>
 															<br>
 															<!-- The table listing the files available for upload/download -->
 															<table role="presentation" class="table table-striped">
@@ -260,7 +264,7 @@
 													</div>
 												</div>
 						</div>
-						<!-- End Post -->
+						<!-- End Post of UploadFile section-->
 						
 					</div>
 					<!-- End Content -->

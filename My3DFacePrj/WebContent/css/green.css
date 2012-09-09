@@ -587,7 +587,6 @@ h1#logo a {
 }
 
 
-
 /* Content */
 #content-green {
 	width: 569px;
@@ -618,9 +617,37 @@ h1#logo a {
 	text-indent: -4000px;
 }
 
+#content-green .floatToLeft {
+	display:inline;
+	float: left;
+}
+
+#content-green .TitleBox {
+	width:30px;
+	padding-top: 0px;
+	margin-top: -6px;
+	margin-right: 70px;	
+	margin-bottom: 40px;
+}
+
+#content-green .TopSeperator {
+	margin-bottom: 10px;
+	background: url('../images/green/title-top.png') no-repeat 0 0;
+	width: 569px;
+	height: 5px;
+	display: block;
+	left: 0;
+}
+
+#content-green .noTopTitle {
+	background: none;
+}
+
+
 #content-green p {
 	word-spacing: -1px;
 }
+
 
 #content-green .post {
 	padding-bottom: 31px;

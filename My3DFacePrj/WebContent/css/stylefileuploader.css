@@ -1546,6 +1546,7 @@ table .span24 {
 }
 
 .icon-white {
+	display: none;
 /*	background-image: url("../img/glyphicons-halflings-white.png");*/
 }
 
@@ -2331,6 +2332,9 @@ button.close {
 	margin-bottom: 0;
 	*margin-left: .3em;
 	font-size: 13px;
+	font-weight:bold;
+	
+	font-family: "Trebuchet MS", arial, sans-serif;
 	line-height: 24px;
 	*line-height: 20px;
 	color: #333333;

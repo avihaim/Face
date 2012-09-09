@@ -1,5 +1,35 @@
 @CHARSET "windows-1255";
 
+#uploadFileBtn {
+	/* New upload buttons design properties */	
+	background-image: url("../images/UploadFile32.png");
+	background-repeat: no-repeat;
+	border:none;
+	width: 32px;
+	height: 32px;
+	float:left;
+	padding:0;
+	margin-left:-21px;
+	margin-top: -20px;
+	margin-bottom:-15px;
+	
+}
+
+#fileUpload  .title-bottom {
+	
+	background: url('../images/green/title-top.png') no-repeat 0 0;
+	display: block;
+	bottom: 0;
+	left: 0;
+	width: 569px;
+	height: 3px;
+	font-size: 0;
+	line-height: 0;
+	text-indent: -4000px;
+	margin-bottom: 30px;
+	margin-top: -35px;
+}
+
 #webcambox {
 	cursor : pointer;
 	background-image: url('../images/blue-camera-icon.png');
@@ -11,13 +41,14 @@
 	position: absolute;
 }
 
-#urlbox {
+#urlbox { 
 	cursor : pointer;
-	background-image: url('../images/File-URL-icon.png');
+	background-image: url('../images/Upload-url-new.png');
 	width: 32px;
 	height: 32px;
 /* 	top : 460px; */
 /* 	left: 450px; */
 	background-repeat: no-repeat;
 	position: absolute;
+	margin-left: 10px;
 }
