@@ -47,29 +47,33 @@ public class ImageRGBServlet extends HttpServlet {
 		
 		System.out.println("ImageRGBServlet start to getFaceData for file " + fileName);
 		
-		// Get the model data
-		FaceData fileNameD = FaceDataManager.getOrCreateFaceData(fileName);
-
-		if(fileNameD != null) {
-			FaceImage faceImage = null;
-					
-			switch (mode) {
-			case "rgb": // Normal mode
-				faceImage = ImageDepthServices.handleRGB(fileNameD);
-				break;
-			case "singleColor":
-				faceImage = ImageDepthServices.handleSingleColor(fileNameD);
-				break;
-			default:
-				break;
+		try {
+			// Get the model data
+			FaceData fileNameD = FaceDataManager.getOrCreateFaceData(fileName);
+	
+			if(fileNameD != null) {
+				FaceImage faceImage = null;
+						
+				switch (mode) {
+				case "rgb": // Normal mode
+					faceImage = ImageDepthServices.handleRGB(fileNameD);
+					break;
+				case "singleColor":
+					faceImage = ImageDepthServices.handleSingleColor(fileNameD);
+					break;
+				default:
+					break;
+				}
+				
+				mapper.writeValue(response.getWriter(),faceImage);
+				long tolal = System.currentTimeMillis() - currentTimeMillis;
+				
+				System.out.println("Total time " + tolal);
+			} else {
+				response.sendRedirect("error.html?errorCode=general");
 			}
-			
-			mapper.writeValue(response.getWriter(),faceImage);
-			long tolal = System.currentTimeMillis() - currentTimeMillis;
-			
-			System.out.println("Total time " + tolal);
-		} else {
-			response.sendRedirect("error.html?errorCode=1");
+		} catch (Exception e) {
+			response.sendRedirect("error.html?errorCode=general");
 		}
 
 	}

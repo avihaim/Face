@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.imgscalr.Scalr;
 import org.my.image.app.FaceDataManager;
+import org.my.image.app.ImageUtil;
 
 public class UploadServlet extends HttpServlet {
 
@@ -55,7 +56,7 @@ public class UploadServlet extends HttpServlet {
 				int bytes = 0;
 				ServletOutputStream op = response.getOutputStream();
 
-				response.setContentType(getMimeType(file));
+				response.setContentType(ImageUtil.getMimeType(file));
 				response.setContentLength((int) file.length());
 				response.setHeader("Content-Disposition", "inline; filename=\""
 						+ file.getName() + "\"");
@@ -84,7 +85,7 @@ public class UploadServlet extends HttpServlet {
 			File file = new File(fileUploadPath,
 					"\\textures\\" + request.getParameter("getthumb"));
 			if (file.exists()) {
-				String mimetype = getMimeType(file);
+				String mimetype = ImageUtil.getMimeType(file);
 				if (mimetype.endsWith("png") || mimetype.endsWith("jpg")
 						|| mimetype.endsWith("gif")) {
 					
@@ -124,7 +125,7 @@ public class UploadServlet extends HttpServlet {
 				int bytes = 0;
 				ServletOutputStream op = response.getOutputStream();
 
-				response.setContentType(getMimeType(file));
+				response.setContentType(ImageUtil.getMimeType(file));
 				response.setContentLength((int) file.length());
 				response.setHeader("Content-Disposition", "inline; filename=\""
 						+ file.getName() + "\"");
@@ -147,37 +148,5 @@ public class UploadServlet extends HttpServlet {
 		}
 	}
 
-	private String getMimeType(File file) {
-		String mimetype = "";
-		if (file.exists()) {
-			// URLConnection uc = new URL("file://" +
-			// file.getAbsolutePath()).openConnection();
-			// String mimetype = uc.getContentType();
-			// MimetypesFIleTypeMap gives PNG as application/octet-stream, but
-			// it seems so does URLConnection
-			// have to make dirty workaround
-			if (getSuffix(file.getName()).equalsIgnoreCase("png")) {
-				mimetype = "image/png";
-			} else if (getSuffix(file.getName()).equalsIgnoreCase("jpg")) {
-				mimetype = "image/jpg";
-			} else if (getSuffix(file.getName()).equalsIgnoreCase("gif")) {
-				mimetype = "image/gif";
-			} else {
-				javax.activation.MimetypesFileTypeMap mtMap = new javax.activation.MimetypesFileTypeMap();
-				mimetype = mtMap.getContentType(file);
-			}
-		}
-		//System.out.println("mimetype: " + mimetype);
-		return mimetype;
-	}
-
-	private String getSuffix(String filename) {
-		String suffix = "";
-		int pos = filename.lastIndexOf('.');
-		if (pos > 0 && pos < filename.length() - 1) {
-			suffix = filename.substring(pos + 1);
-		}
-		//System.out.println("suffix: " + suffix);
-		return suffix;
-	}
+	
 }

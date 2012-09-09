@@ -204,24 +204,27 @@ public class UploadImage extends HttpServlet {
 			
 			File savedFile = null;
 			try {
+				
+				String suffix = ImageUtil.getSuffix(imageurl);
+				ImageUtil.isImage(suffix);
 				savedFile = saveImage(imageurl, "chrome.png");
 				
 				response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
 			} catch (BadFileException e) {
 				e.printStackTrace();
-				response.sendRedirect("error.html?errorCode=1");
+				response.sendRedirect("error.html?errorCode=badFileType");
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-				response.sendRedirect("error.html?errorCode=1");
+				response.sendRedirect("error.html?errorCode=imgaeNotFound");
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
-				response.sendRedirect("error.html?errorCode=1");
+				response.sendRedirect("error.html?errorCode=imgaeNotFound");
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-				response.sendRedirect("error.html?errorCode=1");
+				response.sendRedirect("error.html?errorCode=imgaeNotFound");
 			} catch (Exception e) {
 				e.printStackTrace();
-				response.sendRedirect("error.html?errorCode=2");
+				response.sendRedirect("error.html?errorCode=general");
 			}
 			
 			

@@ -233,7 +233,8 @@ $(document)
 								error : function(jqXHR, textStatus,
 										errorThrown) {
 									if(errorThrown != '') {
-										 window.location = 'error.html?errorCode=1';
+										 window.location = 'error.html?errorCode=general';
+ 
 									}
 									
 								}

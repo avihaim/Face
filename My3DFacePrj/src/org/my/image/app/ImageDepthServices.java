@@ -356,31 +356,24 @@ public class ImageDepthServices {
 		return new FaceImage(texture, depth, img.getHeight(),img.getWidth());
 	}
 
-	public static int[] getImageDepthForTexture(BufferedImage img, FaceData fileNameD) {
+	public static int[] getImageDepthForTexture(BufferedImage img, FaceData fileNameD) throws IOException {
 
 		BufferedImage imgD = null;
 		int[] pixelData = null;
 
-		try {
 			
-			// Get the image (Depth) full path
-			String fullFileNameD = fileNameD.getdImageNameRealPath();//getServletContext().getRealPath(fileNameD.getdImageName());
-			System.out.println(fullFileNameD);
-			
-			// Read the image
-			imgD = ImageIO.read(new File(fullFileNameD));
+		// Get the image (Depth) full path
+		String fullFileNameD = fileNameD.getdImageNameRealPath();//getServletContext().getRealPath(fileNameD.getdImageName());
+		System.out.println(fullFileNameD);
+		
+		// Read the image
+		imgD = ImageIO.read(new File(fullFileNameD));
 
-			int facePosX = fileNameD.getFacePosX();
-			int facePosY = fileNameD.getFacePosY();
-			
-			// Convert the Depth to array by matching to texture
-			pixelData = ImageDepthServices.createImageDepth(img, imgD, facePosX, facePosY);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		int facePosX = fileNameD.getFacePosX();
+		int facePosY = fileNameD.getFacePosY();
+		
+		// Convert the Depth to array by matching to texture
+		pixelData = ImageDepthServices.createImageDepth(img, imgD, facePosX, facePosY);
 
 		return pixelData;
 	}
