@@ -3,13 +3,16 @@ package org.my.image.servlets;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -202,11 +205,26 @@ public class UploadImage extends HttpServlet {
 			File savedFile = null;
 			try {
 				savedFile = saveImage(imageurl, "chrome.png");
+				
+				response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
 			} catch (BadFileException e) {
 				e.printStackTrace();
+				response.sendRedirect("error.html?errorCode=1");
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				response.sendRedirect("error.html?errorCode=1");
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+				response.sendRedirect("error.html?errorCode=1");
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				response.sendRedirect("error.html?errorCode=1");
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.sendRedirect("error.html?errorCode=2");
 			}
 			
-			response.sendRedirect("myFaceShow.html?fileName=" + savedFile.getName());
+			
 		}
 	
 	}

@@ -17,6 +17,7 @@ import org.my.image.obj.GalleryConfig;
 
 public class FaceDataManager {
 
+	private static final String SUCCESS = "SUCCESS";
 	public static String IMAGES_PATH = System.getProperty("catalina.base") + File.separator + "work_dir";
 	private static Map<String, FaceData> imageMap = null;
 	private static List<FaceData> imageList;
@@ -185,18 +186,19 @@ public class FaceDataManager {
 				// Call to ThreeDaFace dll to create the depth map
 				String makeDepthMap = MakeDepthMapWrapper.makeDepthMap(imageName,IMAGES_PATH + File.separator);
 				
+				
 				System.out.println("FaceDataManager - makeDepthMap response is " + makeDepthMap);
 				
-				int[] extractFacePosFile = extractFacePosFile(imageName);
+				if(SUCCESS.equals(makeDepthMap)) {
+					int[] extractFacePosFile = extractFacePosFile(imageName);
+					
+					int x = extractFacePosFile[0];
+					int y = extractFacePosFile[1];
 				
-				int x = extractFacePosFile[0];
-				int y = extractFacePosFile[1];
-			//	System.out.println("y="+y);
-			//	System.out.println("x="+x);
-			
-				faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
-				
-				FaceDataManager.addFaceData(imageName, faceData );
+					faceData = new FaceData(imageName, "images" + File.separator + "depths" + File.separator + "D_" + imageName, "t_" + imageName, IMAGES_PATH + File.separator + "textures" + File.separator + imageName, IMAGES_PATH + File.separator  + "depths" + File.separator + "D_" + imageName, IMAGES_PATH + File.separator + "thumbnails" + File.separator + "t_" + imageName,IMAGES_PATH, x, y, imageList.size());
+					
+					FaceDataManager.addFaceData(imageName, faceData );
+				}
 			} catch (Exception e) {
 				System.out.println("FaceDataManager Exception " + e.getMessage());
 				e.printStackTrace();
