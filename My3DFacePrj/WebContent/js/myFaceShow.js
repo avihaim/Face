@@ -3,7 +3,7 @@ $(document)
 				
 				function() {
 
-					
+					var lastLength = 0;
 					var sceneDataDepth;
 //					var sceneData;
 					var scaleSize = 12;
@@ -155,8 +155,14 @@ $(document)
 						// update the scene in first time.
 						updateSceneData(fileName,scaleSize,textureMode);
 						
-						// Add link to download a ZIP with the model images
-						initZipLinkButton();
+						 $.support.touch = 'ontouchend' in document;
+							
+						// Ignore browsers without touch support
+						if (!$.support.touch) {
+							
+							// Add link to download a ZIP with the model images
+							initZipLinkButton();
+						}
 
 						// Add link to facebook like
 						$('body')
@@ -428,12 +434,6 @@ $(document)
 								onContextMenuEvet, false); 
 						
 						
-						
-						$('#facebookShare').bind('mousedown',facebookShare);
-						$('#googleShare').bind('mousedown',googleShare);
-						$('#twitterShare').bind('mousedown',twitterShare);
-						
-						
 						 $.support.touch = 'ontouchend' in document;
 							
 							// Ignore browsers without touch support
@@ -445,16 +445,36 @@ $(document)
 								.append('<div id="touchAction" class="transform-move"></div>');
 								$('#touchAction').bind('mousedown',changeTouchAction);
 								
-								// Add button to zoom-in in touch
-								$('body')
-								.append('<div id="zoom-in" </div>');
-								$('#zoom-in').bind('mousedown',onZoomIn);
+								// Touch browser have an intrgaerte share opsion
+								$('.share').addClass("hide");
+								$('.depthicon').addClass("hide");
+								$('#slider').css('width','200px');
+								$('#slider').css('left','20%');
 								
-								// Add button to zoom-in in touch
-								$('body')
-								.append('<div id="zoom-out" </div>');
-								$('#zoom-out').bind('mousedown',onZoomOut);
+//								// Add button to zoom-in in touch
+//								$('body')
+//								.append('<div id="zoom-in" </div>');
+//								$('#zoom-in').bind('mousedown',onZoomIn);
+//								
+//								// Add button to zoom-in in touch
+//								$('body')
+//								.append('<div id="zoom-out" </div>');
+//								$('#zoom-out').bind('mousedown',onZoomOut);
+							} else {
+								$('#facebookShare').bind('mousedown',facebookShare);
+								$('#googleShare').bind('mousedown',googleShare);
+								$('#twitterShare').bind('mousedown',twitterShare);
 							}
+							
+							// Detect whether device supports orientationchange event, otherwise fall back to
+							// the resize event.
+//							var supportsOrientationChange = "onorientationchange" in window,
+//							    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
+//
+//							window.addEventListener(orientationEvent, function() {
+//							    alert('HOLY ROTATING SCREENS BATMAN:' + window.orientation + " ");
+//							}, false);
+
 
 					}// end init_events()
 					
@@ -787,9 +807,11 @@ $(document)
 						}
 					}
 					
+					
 					function touchHandler(event) {
 					    var touches = event.changedTouches,
 					        point = touches[0],
+					        point2 = touches[1],
 					        type = "";
 					    
 					    switch(event.type) {
@@ -799,6 +821,14 @@ $(document)
 					        default: return;
 					    }
 					   
+					    if (touches.length > 1) {
+					    	var length = Math.sqrt(Math.pow(point2.clientX - point.clientX,2) + Math.pow(point2.clientY - point.clientY,2));
+					    	zoom((length - lastLength)*10);
+					    	lastLength = length;
+					    	
+					    } else {
+					    	
+					    
 					    
 					    var simulatedEvent = document.createEvent("MouseEvent");
 					    
@@ -813,6 +843,7 @@ $(document)
 
 					    point.target.dispatchEvent(simulatedEvent);
 					    event.preventDefault();
+					    }
 					}
 
 					function touchInit()
