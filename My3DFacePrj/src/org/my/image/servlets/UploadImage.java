@@ -66,9 +66,6 @@ public class UploadImage extends HttpServlet {
 		  
 		// WebCam case
 		if (!isMultipart) {
-		//	handleNotMultipart(request);
-			
-			
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(request.getInputStream(), writer);
 			String imageBase64 = writer.toString();
@@ -83,23 +80,24 @@ public class UploadImage extends HttpServlet {
 	         BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
 	         if (image == null) {
 	        	 System.out.println("Buffered Image is null");
-	          }
-	         File f;
-			try {
-				 f = cerateNewFile("webCam.png");
-				// write the image
-		          ImageIO.write(image, "png", f);
-		          
-		          System.out.println(f.getName());
-		          
-		          PrintWriter writer1 = response.getWriter();
-				  
-				  writer1.write(f.getName());
-				  writer1.close();
-			} catch (BadFileException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	          } else {
+				 
+				 try {
+					 File f = cerateNewFile("webCam.png");
+					// write the image
+					  ImageIO.write(image, "png", f);
+					  
+					  System.out.println(f.getName());
+					  
+					  PrintWriter writer1 = response.getWriter();
+					  
+					  writer1.write(f.getName());
+					  writer1.close();
+					} catch (BadFileException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	         }
 	 
 	         
 //				response.setStatus(HttpServletResponse.SC_OK);
