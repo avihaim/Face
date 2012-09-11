@@ -1,4 +1,3 @@
-
 function getErrorCode() {
 	var urlQuery = location.search;
 	urlQuery = urlQuery.replace('?', '');
@@ -11,29 +10,36 @@ $(document)
 		.ready(
 				
 				function() {
+					var msgText = '';
 					var errorCode = getErrorCode();
-					
-					switch (errorCode) {
-					   case 'imgaeNotFound':
-					      $('#errorMsg').append('The system can not found the requestd');
-					      break;
-					   case 'badFileType':
-						  $('#errorMsg').append('The requestd file type is not a supported image');
-						  break;
-					   case 'faceNotFound':
-					      $('#errorMsg').append('The face in the image can not be found');
-					      break;
-					   case 'threeDaFaceError':
-						   $('#errorMsg').append('Some error occurred, Perhaps the image is not ThreeDaFaceable ');
-						   break;
-					   case 'general':
-					      $('#errorMsg').append('Sory, but we can not complete the operation at the moment');
-					      break;
-					   default:
-						   $('#errorMsg').append('Sory, but we can not complete the operation at the moment');
-					      break;
-					}
+					var errorMsgArea = $('#errorMsg');
 
+					switch (errorCode) {
+					case 'imgaeNotFound':
+						msgText = 'The system cannot find the requested image';
+						break;
+						
+					case 'badFileType':
+						msgText = 'The requested file type is not a supported image extention';
+						break;
+						
+					case 'faceNotFound':
+						msgText = 'The face in the image be recognized';
+						break;
+						
+					case 'threeDaFaceError':
+						msgText = 'Some error occurred, perhaps the image is not ThreeDaFaceable ';
+						break;
+						
+					case 'general':
+						msgText = 'Sorry, but we cannot complete the operation at the moment';
+						break;
+						
+					default:
+						msgText = 'Sorry, but we cannot complete the operation at the moment';
+						break;
+					}
 					
-				}
-				);
+					// set the text message to the div.
+					errorMsgArea.text(msgText);
+				});

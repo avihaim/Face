@@ -1,0 +1,86 @@
+* {
+	margin: 0;
+	padding: 0;
+	outline: 0;
+}
+
+body {
+	
+	background-image: url('../images/interface/bgnoise.png');
+	text-align: center;
+	
+	line-height: 16px;
+	font-family: "Trebuchet MS", arial, sans-serif;
+	font-size: 18px;
+	color: #fff;
+	width: 100%;
+	min-width: 998px;
+}
+
+
+#errorPanel {
+	width: 97%;
+	height: 60%;
+	padding: 8px 2px 14px;
+	float: left;
+	display: inline;
+	margin: 0;
+	overflow: hidden;
+}
+
+#errorIcon {
+	margin-left: 50px;
+	margin-top:35px;
+	background-image: url('../images/XIcon.png');
+	background-repeat: no-repeat;
+	background-size:64px 64px;
+	width: 64px;
+	height: 64px;
+	border:none;
+	float:left;
+	padding:0;
+	display: block;	
+}
+
+#errorMsg {
+	margin-left: 50px;
+	margin-top:48px;
+	
+	float:left;
+	width:75%;
+	height: 50%;
+	min-height:150px;
+	padding:0;
+	display: block;
+	font-size: 28px;
+	font-weight: bold;
+	line-height: 31px;
+	word-spacing: 2px;
+	word-wrap:break-word;
+	text-align: left;
+	text-indent: 0px;
+	padding-left: 0px;
+}
+
+.cl {
+	display: block;
+	height: 0;
+	font-size: 0;
+	line-height: 0;
+	text-indent: -4000px;
+	clear: both;
+}
+
+#sadThreeIcon{
+	margin-left: 42%;
+	margin-top:5px;
+	background-image: url('../images/IconSad.png');
+	background-repeat: no-repeat;
+	background-size:100px 100px;
+	width: 100px;
+	height: 100px;
+	border:none;
+	float:left;
+	padding:0;
+	display: block;	
+}
