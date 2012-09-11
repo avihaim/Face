@@ -56,20 +56,13 @@ public class UploadImage extends HttpServlet {
 		
 		System.out.println("in UploadImage");
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		System.out.println("request: ");
 		
-		String imageurl = request.getParameter("imageUrl");
-		
-		if(imageurl != null) {
-			System.out.println("============" + imageurl);
-		}
-		  
 		// WebCam case
 		if (!isMultipart) {
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(request.getInputStream(), writer);
 			String imageBase64 = writer.toString();
-
+			
 			imageBase64 = imageBase64.replaceFirst("data:image/png;base64,", "");
 			
 	        BASE64Decoder decoder = new BASE64Decoder();
@@ -80,6 +73,7 @@ public class UploadImage extends HttpServlet {
 	         BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodedBytes));
 	         if (image == null) {
 	        	 System.out.println("Buffered Image is null");
+	        	 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	          } else {
 				 
 				 try {
@@ -100,7 +94,7 @@ public class UploadImage extends HttpServlet {
 	         }
 	 
 	         
-//				response.setStatus(HttpServletResponse.SC_OK);
+//				
 //	          response.sendRedirect("myFaceShow.html?fileName=" + f.getName());
 		
 		// file upload case

@@ -33,10 +33,6 @@ $(function() {
 
 		var dataUrl =  canvas.toDataURL("image/png");
 
-//		fancyboxHrefItem('myFaceShow.html?fileName=a1.jpg','a#webCamImage');
-//		window.parent.$("a#webCamImage").trigger('click');
-		
-		
 		$.ajax({
 			type: "post",
 			url : "UploadImage",
