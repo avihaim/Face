@@ -11,11 +11,14 @@
 	font-style: normal;
 }
 
+
 * {
 	margin: 0;
 	padding: 0;
 	outline: 0;
 }
+
+
 
 body {
 	font-size: 12px;
@@ -35,7 +38,8 @@ body {
 }
 
 a {
-	color: #0252aa;
+	/*color: #0252aa;*/
+	color:#0077B3;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -594,6 +598,18 @@ h1#logo a {
 	float: left;
 	display: inline;
 }
+#content-green h3 {
+	font-weight: bold;
+	font-size: 15px;
+	font-family: Calibri;
+}
+
+
+
+
+#content-green .NameBold {
+	color: #c5db87;
+}
 
 #content-green h2 {
 	font-size: 18px;
@@ -603,6 +619,8 @@ h1#logo a {
 	padding: 16px 2px 12px;
 	position: relative;
 }
+
+
 
 #content-green h2 .title-bottom {
 	background: url('../images/green/title-bottom.png') no-repeat 0 0;

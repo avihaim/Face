@@ -1,5 +1,21 @@
 @CHARSET "windows-1255";
 
+
+@font-face {
+	font-family:"KOMIK";
+	src: url('../fonts/KOMIKAX_.ttf');
+}
+
+#content-green h2.InfoTitle {
+	font-family:"KOMIK";
+	margin-top:-18px;
+	margin-bottom:24px;
+	background:none;
+	font-weight:normal;
+	text-transform:none;
+	font-size: 20px;
+}
+
 #uploadFileBtn {
 	/* New upload buttons design properties */	
 	background-image: url("../images/UploadFile32.png");
