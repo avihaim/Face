@@ -1,0 +1,18 @@
+.shutterAnimationHolder .film canvas{
+	display: block;
+    margin: 0 auto;
+}
+
+.shutterAnimationHolder .film{
+	position:absolute;
+	left:50%;
+	top:0;
+}
+
+.shutterAnimationHolder{
+	position:absolute;
+	overflow:hidden;
+	top:4px;
+	left:4px;
+	z-index:1000;
+}

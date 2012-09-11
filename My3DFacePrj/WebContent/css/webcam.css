@@ -5,17 +5,24 @@ body {
 	background-image: url('../images/interface/bgnoise.png');
 }
 
+.visible {
+	display: block;
+}
+.hidden {
+	display: none;
+}
 #webcam, #canvas {
+	height: 240px;
 	width: 320px;
 	border:20px solid #333;
 	background:#eee;
 	-webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
 	border-radius: 20px;
-	left: 15%;
+	left:0px;
 	
 	border:5px solid #333;
-	position:absolute;
+	
 	right:-90px;
 	padding:5px;
 	-webkit-border-radius: 8px;
@@ -25,15 +32,21 @@ body {
 	
 	margin-top:50px;
 	margin-bottom:20px;
+	position: :fixed;
+	margin-left: 80px;
+	/*position:absolute;*/
 }
 
-#webcam {
-	
-/* 	position:relative; */
-/* 	margin-top:50px; */
-/* 	margin-bottom:50px; */
-	
+#buttons {
+	width: 320px;
+	position: fixed;
+	margin-left: 85px;
 }
+.buttonPane{
+	text-align: center;
+}
+
+
 
 #webcam > span {
 	z-index:2;
@@ -73,10 +86,7 @@ body {
 	border:0px none;
 }
 
-#canvas {
-/* 	border:20px solid #ccc; */
-/* 	background:#eee; */
-}
+
 
 #flash {
 	position:absolute;
@@ -91,7 +101,7 @@ body {
 
 object {
 	display:block; /* HTML5 fix */
-	position:relative;
+	position:fixed;
 	z-index:1000;
 }
 
@@ -105,11 +115,8 @@ object {
 }
 
 
-.buttonPane{
-	text-align: center;
-}
-
 .camShootButton {
+	cursor:pointer;
 	background:url('../img/SnapIcon.png') no-repeat;
 	text-shadow:1px 1px 1px #277c9b;
 	color:#fff !important;
@@ -125,7 +132,7 @@ object {
 	text-align: center;
 	margin: 0 4px;
 	margin-left: -12px;
-	top: 340px;
+	/*top: 340px;*/
 	position:relative;
 }
 .blueButton,
@@ -144,13 +151,13 @@ object {
 	line-height: 32px;
 	text-align: center;
 	margin: 0 4px;
-	
-	top: 340px;
+	margin-left: -1px;
+	/*top: 340px;*/
 	position:relative;
 }
 
 .greenButton {
-	background:url('../img/buttons.png') no-repeat right top;
+	background:url('../img/buttons2.png') no-repeat right top;
 	text-shadow:1px 1px 1px #498917;
 }
 

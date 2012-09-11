@@ -4,41 +4,28 @@
 <meta charset="windows-1255">
 <title>face show</title>
 
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/photoslider.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/webcam.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/photoslider.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/webcam.css" />
 
-<link rel="stylesheet" href="js/fancybox/jquery.fancybox-1.3.4.css"
-	type="text/css" media="screen" />
+<link rel="stylesheet" href="js/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="img/jquery.shutter/jquery.shutter.css" />
+
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 <!-- <script type="text/javascript" src="js/photoslider.js"></script> -->
-<script type="text/javascript"
-	src="js/infusion-jQuery-webcam/jquery.webcam.js"></script>
+<script type="text/javascript" src="js/infusion-jQuery-webcam/jquery.webcam.js"></script>
+
 <script type="text/javascript" src="js/webcam.js"></script>
-<script type="text/javascript"
-	src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script src="img/jquery.shutter/jquery.shutter.js"></script>
+
+<script type="text/javascript" src="js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+
 
 </head>
 <body>
 
-<!-- 	<div id="webcam" class="visible"></div> -->
-    
-<!--     <div id="buttons"> -->
-<!--     	<div class="buttonPane visible"> -->
-<!--         	<a id="shootButton" href="javascript:webcam.capture(0);changeFilter();void(0);" class="blueButton">Shoot!</a> -->
-<!--         </div> -->
-<!--         <div class="buttonPane hidden"> -->
-<!--         	<a id="cancelButton" href="" class="blueButton">Cancel</a> <a id="uploadButton" href="" class="greenButton">Upload!</a> -->
-<!--         </div> -->
-<!--     </div> -->
-    
-<!-- 	<p> -->
-<!-- 		<canvas id="canvas" height="240" width="320"></canvas> -->
-<!-- 	</p> -->
-
 
 	<div id="webcam" class="visible"></div>
+	
 	<p>
 		<canvas id="canvas" height="240" width="320" class="hidden"></canvas>
 	</p>
@@ -47,7 +34,7 @@
 		<div class="buttonPane visible">
 			<a 
 			id="shootButton" 
-			href="javascript:webcam.capture();changeFilter();void(0);" 
+			 
 			class="camShootButton"></a>
 		</div> 
 		<div class="buttonPane hidden">

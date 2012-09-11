@@ -22,7 +22,7 @@ $(function() {
 	var width = 320, height = 240;
 	
 	$('#shootButton').click(function(){
-		togglePanel();
+		ActivateShutter();
 	});
 	
 	$('#cancelButton').click(function(){
@@ -32,7 +32,7 @@ $(function() {
 	$('#uploadButton').click(function(){
 
 		var dataUrl =  canvas.toDataURL("image/png");
-		
+
 //		fancyboxHrefItem('myFaceShow.html?fileName=a1.jpg','a#webCamImage');
 //		window.parent.$("a#webCamImage").trigger('click');
 		
@@ -89,6 +89,7 @@ $(function() {
 				
 				pos=0;
 			}
+			
 		};
 
 	} else {
@@ -107,7 +108,37 @@ $(function() {
 			}
 		};
 	}
+	
+	var container = $("#webcam");
+	container.tzShutter({
+		imgSrc: 'img/jquery.shutter/shutter.png',
+		openCallback: function() {
+			// when shutter is opened capture the snapshot.
+			togglePanel();
+		},
+		closeCallback: function(){
+			// Scheduling a shutter open in 0.1 seconds:
+			webcam.capture();
+			void(0);
+		},
+		loadCompleteCallback:function(){
+			/*
+			setInterval(function(){
+				container.trigger('shutterClose');
+			},4000);*/
+			
+			//container.trigger('shutterClose');
+			//alert ('loadCompleteCallback');
+		}
+	});
 
+	
+	// Activate the cam shutter effect.
+	function ActivateShutter() {
+		$("#webcam").trigger('shutterClose');
+	}
+	
+	
 	$("#webcam").webcam({
 
 		width : width,
@@ -117,9 +148,6 @@ $(function() {
 
 		onSave : saveCB,
 
-		onCapture : function() {
-		//	webcam.save();
-		},
 
 		debug : function(type, string) {
 			console.log(type + ": " + string);
@@ -134,16 +162,19 @@ $(function() {
 		    }
 		},
 		onCapture: function () {
-			webcam.save();
 
+			webcam.save();
+			container.trigger('shutterOpen');
+			
+			/*
 			jQuery("#flash").css("display", "block");
 			jQuery("#flash").fadeOut(100, function () {
 				jQuery("#flash").css("opacity", 1);
-			});
+				
+			});*/			
 		}
 		
 	});
-	
 	
 	
 	function getPageSize() {
@@ -225,6 +256,7 @@ $(function() {
 function togglePanel(){
 	var visible = $('.visible');
 	var hidden = $('.hidden');
+	
 	
 	visible.fadeOut('fast',function(){
 		hidden.show();
