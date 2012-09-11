@@ -9,7 +9,7 @@ $(document)
 					var scaleSize = 12;
 					var textureMode = 'rgb';
 					var meshMatrix;
-					var site = 'http://pdfstorage.mta.ac.il:8081';
+					var site = window.location;// 'http://pdfstorage.mta.ac.il:8081';
 					
 					var cameraPosition;
 					
@@ -238,9 +238,11 @@ $(document)
 								success : successUpdateData,
 								error : function(jqXHR, textStatus,
 										errorThrown) {
-									if(errorThrown != '') {
+									
+									if(errorThrown == "Bad Request") {
+										 window.location = 'error.html?errorCode=threeDaFaceError';
+									} else {
 										 window.location = 'error.html?errorCode=general';
- 
 									}
 									
 								}
@@ -480,17 +482,17 @@ $(document)
 					
 					
 					function facebookShare() {
-						javascript:void window.open('http://www.facebook.com/sharer/sharer.php?t=ThreeDaFace&image=' + site +  + '/ThreeDaFace/upload?getoldthumb='+getFileName()+'&u=' + site +  + '/ThreeDaFace/myFaceShow.html?fileName='+getFileName() );
+						javascript:void window.open('http://www.facebook.com/sharer/sharer.php?t=ThreeDaFace&u=' + site );
 						return false;
 					}
 					
 					function googleShare() {
-						javascript:void window.open('https://plus.google.com/share?url=' + site +  + '/ThreeDaFace/myFaceShow.html?fileName='+getFileName() );
+						javascript:void window.open('https://plus.google.com/share?url=' + site  );
 						return false;
 					}
 					
 					function twitterShare() {
-						javascript:void window.open('https://twitter.com/intent/tweet?source=webclient&text=ThreeDaFace&url=' + site +  + '/ThreeDaFace/myFaceShow.html?fileName='+getFileName() );
+						javascript:void window.open('https://twitter.com/intent/tweet?source=webclient&text=ThreeDaFace&url=' + site );
 						return false;
 					}
 					

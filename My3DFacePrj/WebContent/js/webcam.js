@@ -42,7 +42,7 @@ $(function() {
 			success : opennew,
 			error : function(jqXHR, textStatus,
 					errorThrown) {
-				alert(textStatus);
+				 window.location = 'error.html?errorCode=general';
 			}
 			});
 		

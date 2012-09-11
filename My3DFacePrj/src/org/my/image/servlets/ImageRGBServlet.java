@@ -70,7 +70,7 @@ public class ImageRGBServlet extends HttpServlet {
 				
 				System.out.println("Total time " + tolal);
 			} else {
-				response.sendRedirect("error.html?errorCode=general");
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			response.sendRedirect("error.html?errorCode=general");

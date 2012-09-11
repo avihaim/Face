@@ -23,6 +23,9 @@ $(document)
 					   case 'faceNotFound':
 					      $('#errorMsg').append('The face in the image can not be found');
 					      break;
+					   case 'threeDaFaceError':
+						   $('#errorMsg').append('Some error occurred, Perhaps the image is not ThreeDaFaceable ');
+						   break;
 					   case 'general':
 					      $('#errorMsg').append('Sory, but we can not complete the operation at the moment');
 					      break;
