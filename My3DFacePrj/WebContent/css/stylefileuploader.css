@@ -4306,6 +4306,10 @@ to {
 }
 
 }
+
+.progressMargin {
+	margin-top: 30px;
+}
 .progress {
 	height: 18px;
 	margin-bottom: 18px;

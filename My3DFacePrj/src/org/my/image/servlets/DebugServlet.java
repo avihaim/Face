@@ -27,8 +27,13 @@ public class DebugServlet extends HttpServlet {
 		
 		String javaPath = System.getProperty("catalina.base");
 		
+		// print work_dir path.
 		response.getWriter().println("work_dir : " + javaPath);
 		
+		// print new line.
+		response.getWriter().println(" ");
+		
+		// print "java.library.path" paths.
 		String classpath = System.getProperty("java.library.path");
 		
 		String[] split = classpath.split(";");

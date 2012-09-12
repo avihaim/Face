@@ -25,6 +25,19 @@
 	margin-top:  -4px;
 }
 
+#seeMore {
+	color: #0077B3;
+	font-family: Calibri;
+	text-decoration:underline;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+#actions_buttons li h3.label_href {
+	margin-top: 2px;
+	margin-left:10px;
+}
+
 .largerIconSpace{
 	padding-left: 35px;
 	padding-right: 7px;

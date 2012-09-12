@@ -56,15 +56,10 @@ $(document)
 						init();
 						initEvents();
 						
-						//AMIR:for debug
+						//for trace:
 						//initNewUiControls();
 						//initZipLinkButton();
 						
-						// AMIR: this is the first selected default value of the select box.
-						/*
-						$("#modeSelect option:selected").each(function () {
-				        	  alert( $(this).text());
-				           });*/
 					}
 					
 					function initscene() {
