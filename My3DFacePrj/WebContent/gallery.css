@@ -154,6 +154,7 @@ img.large_thumb_image {
 	height: 100px;
 	background-position: -150px 0;
 	background-repeat: no-repeat;
+	cursor : pointer;
 }
 
 #controlPanel {

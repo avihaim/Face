@@ -5,7 +5,7 @@ $(document)
 
 					var lastLength = 0;
 					var sceneDataDepth;
-//					var sceneData;
+					var sceneData;
 					var scaleSize = 12;
 					var textureMode = 'rgb';
 					var meshMatrix;
@@ -248,7 +248,7 @@ $(document)
 						
 						// We save all depth data for the scale changes 
 						sceneDataDepth = data.depth;
-//						sceneData = data;
+						sceneData = data;
 						updateData(data);
 					}
 					
@@ -536,21 +536,17 @@ $(document)
 							            
 							            // disable the select box control.
 										disableSelectBox();	
-							            
-							          	var urlQuery = location.search;
-										urlQuery = urlQuery.replace('?', '');
-										var split = urlQuery.split('=');
 	
-										var fileName = split[1];
+										var fileName = getFileName();
 										
 										modelIsReady = false;
 										isModeCahge = true;
 										cameraPosition = camera.position;
 										meshMatrix = mesh.matrix;
 										
-										updateSceneData(fileName,scaleSize,val);
+//										updateSceneData(fileName,scaleSize,val);
 										
-	//									updateData(sceneData);
+										updateData(sceneData);
 										
 										
 								},effect:'fade'
@@ -567,12 +563,13 @@ $(document)
 						            
 						            // disable the select box control.
 									disableSelectBox();	
+									
+									modelIsReady = false;
+									isModeCahge = true;
+									cameraPosition = camera.position;
+									meshMatrix = mesh.matrix;
 						            
-						          	var urlQuery = location.search;
-									urlQuery = urlQuery.replace('?', '');
-									var split = urlQuery.split('=');
-	
-									var fileName = split[1];
+									var fileName = getFileName();
 									
 									updateSceneData(fileName,scaleSize,mode);
 									
