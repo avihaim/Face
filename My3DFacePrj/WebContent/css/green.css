@@ -18,7 +18,9 @@
 	outline: 0;
 }
 
-
+.footerBottomSpace {
+	margin-bottom: -6px;
+}
 
 body {
 	font-size: 12px;
@@ -94,7 +96,7 @@ textarea {
 	color: #c5db87;
 	font-size: 11px;
 	padding-top: 9px;
-	padding-bottom: 20px;
+	padding-bottom: 14px;
 /* 	margin-top: 100%; */
 /* margin-bottom */
 	text-align: center;
