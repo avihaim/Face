@@ -11,6 +11,11 @@
 	font-style: normal;
 }
 
+@font-face {
+	font-family:"KOMIK";
+	src: url('../fonts/KOMIKAX_.ttf');
+}
+
 
 * {
 	margin: 0;
@@ -608,6 +613,14 @@ h1#logo a {
 
 #content-green .NameBold {
 	color: #c5db87;
+}
+
+#content-green h2.TopTitle {
+	font-family:"KOMIK";
+	
+	font-weight:normal;
+	text-transform:none;
+	font-size: 19px;
 }
 
 #content-green h2 {
